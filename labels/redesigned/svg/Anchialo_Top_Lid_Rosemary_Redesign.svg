@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <radialGradient id="porcelain" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#FBF9F5"/>
+      <stop offset="100%" stop-color="#F0EBE1"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2C275"/>
+      <stop offset="50%" stop-color="#C5A059"/>
+      <stop offset="100%" stop-color="#9C7A32"/>
+    </linearGradient>
+    <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+    <path id="topArc" d="M 180,500 A 320,320 0 0,1 820,500" fill="none"/>
+    <path id="bottomArc" d="M 820,500 A 320,320 0 0,1 180,500" fill="none"/>
+  </defs>
+
+  <!-- Circular Die Cut Line -->
+  <circle cx="500" cy="500" r="490" fill="url(#porcelain)" stroke="url(#gold)" stroke-width="4"/>
+  <circle cx="500" cy="500" r="465" fill="none" stroke="#4A6B3D" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>
+  <circle cx="500" cy="500" r="455" fill="none" stroke="url(#gold)" stroke-width="1"/>
+
+  <!-- Top Curved Text -->
+  <text font-family="'Cinzel', 'Playfair Display', 'Georgia', serif" font-size="22" letter-spacing="4" fill="#3A3834" font-weight="600">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">
+      MAGNESIUM CHLORIDE &amp; MAGNESIUM SULFATE
+    </textPath>
+  </text>
+
+  <!-- Bottom Curved Text -->
+  <text font-family="'Cinzel', 'Playfair Display', 'Georgia', serif" font-size="20" letter-spacing="5" fill="#5A554E">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">
+      POMORIE HYPERSALINE LAGOON · ANCIENT ANCHIALO
+    </textPath>
+  </text>
+
+  <!-- Central Crest / Brand Mark -->
+  <g transform="translate(500, 260)" text-anchor="middle">
+    <!-- Stylized Mineral Waves Glyph -->
+    <path d="M -40,-25 Q -20,-35 0,-25 Q 20,-15 40,-25 M -40,-15 Q -20,-25 0,-15 Q 20,-5 40,-15" fill="none" stroke="url(#gold)" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="0" cy="-40" r="3" fill="url(#gold)"/>
+    
+    <!-- ANCHIALO Logo -->
+    <text y="40" font-family="'Cinzel', 'Trajan Pro', 'Cormorant Garamond', 'Times New Roman', serif" font-size="64" letter-spacing="14" fill="#24211D" font-weight="700">
+      ANCHIALO
+    </text>
+    <text y="75" font-family="'Montserrat', 'Inter', sans-serif" font-size="14" letter-spacing="8" fill="#8C8275" font-weight="500">
+      BALNEOTHERAPY LABS · EST. POMORIE
+    </text>
+  </g>
+
+  <!-- Middle Divider -->
+  <line x1="280" y1="400" x2="720" y2="400" stroke="url(#gold)" stroke-width="1.5"/>
+  <polygon points="500,396 505,400 500,404 495,400" fill="url(#gold)"/>
+
+  <!-- Main Product Title -->
+  <g transform="translate(500, 480)" text-anchor="middle">
+    <text font-family="'Cinzel', 'Playfair Display', serif" font-size="44" letter-spacing="6" fill="#1C1A18" font-weight="700">
+      DUAL MAGNESIUM GEL
+    </text>
+    <text y="38" font-family="'Montserrat', 'Inter', sans-serif" font-size="18" letter-spacing="4" fill="#55514B">
+      NATURAL TRANSDERMAL THERAPY
+    </text>
+  </g>
+
+  <!-- Botanical Badge -->
+  <g transform="translate(500, 595)">
+    <rect x="-180" y="-30" width="360" height="60" rx="30" fill="#4A6B3D" filter="url(#softGlow)"/>
+    <rect x="-176" y="-26" width="352" height="52" rx="26" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.4"/>
+    <text y="8" text-anchor="middle" font-family="'Montserrat', 'Inter', sans-serif" font-size="22" letter-spacing="5" fill="#FFFFFF" font-weight="700">
+      ROSEMARY BLEND
+    </text>
+  </g>
+
+  <!-- Lower Details & Purity Guarantee -->
+  <g transform="translate(500, 715)" text-anchor="middle">
+    <text font-family="'Montserrat', 'Inter', sans-serif" font-size="16" letter-spacing="3" fill="#4A453E" font-weight="600">
+      100% PURE BLACK SEA LYE MINERALS · ZERO PRESERVATIVES
+    </text>
+    <text y="32" font-family="'Montserrat', 'Inter', sans-serif" font-size="14" letter-spacing="2" fill="#7A7369">
+      FAST TRANSDERMAL ABSORPTION · MUSCLE &amp; JOINT RECOVERY
+    </text>
+    <text y="65" font-family="'Cinzel', serif" font-size="20" letter-spacing="6" fill="#C5A059" font-weight="700">
+      300 g ℮
+    </text>
+  </g>
+</svg>

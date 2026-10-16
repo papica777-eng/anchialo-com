@@ -1,0 +1,888 @@
+{
+  "platform": {
+    "ssrPropsUpdates": [
+      {
+        "comp-jxn1ldwa": {
+          "items": [
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "Profile",
+              "link": {
+                "href": "https://www.anchialo.com/profile/undefined/profile",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Orders",
+              "link": {
+                "href": "https://www.anchialo.com/account/my-orders",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Addresses",
+              "link": {
+                "href": "https://www.anchialo.com/account/my-addresses",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Wallet",
+              "link": {
+                "href": "https://www.anchialo.com/account/my-wallet",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Wishlist",
+              "link": {
+                "href": "https://www.anchialo.com/account/my-wishlist",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Subscriptions",
+              "link": {
+                "href": "https://www.anchialo.com/account/my-subscriptions",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Programs",
+              "link": {
+                "href": "https://www.anchialo.com/account/challenges",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "My Account",
+              "link": {
+                "href": "https://www.anchialo.com/account/my-account",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "Settings",
+              "link": {
+                "href": "https://www.anchialo.com/account/settings",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            },
+            {
+              "isVisible": true,
+              "isVisibleMobile": true,
+              "items": [],
+              "label": "Notifications",
+              "link": {
+                "href": "https://www.anchialo.com/account/notifications",
+                "target": "_self",
+                "type": "DynamicPageLink"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "ssrStyleUpdates": [],
+    "ssrStructureUpdates": []
+  },
+  "pages": {
+    "compIdToTypeMap": {
+      "masterPage": "MasterPage",
+      "BACKGROUND_GROUP": "BackgroundGroup",
+      "SCROLL_TO_TOP": "Anchor",
+      "SCROLL_TO_BOTTOM": "Anchor",
+      "SKIP_TO_CONTENT_BTN": "SkipToContentButton",
+      "SITE_HEADER": "HeaderContainer",
+      "comp-jk11xf0w": "StripColumnsContainer",
+      "comp-jk11xf20": "Column",
+      "comp-jk11zpi4": "WRichText",
+      "comp-mh987ikg": "StripColumnsContainer",
+      "comp-mh987iks": "Column",
+      "comp-jk125mur": "WRichText",
+      "comp-mhh33vl7": "LinkBar",
+      "comp-jk12e8p3": "DropDownMenu",
+      "comp-krt7q2ic": "AppWidget",
+      "comp-krt7q2j4": "SearchBox",
+      "comp-jxn1ldsg": "LoginSocialBar",
+      "comp-jjnx2phv": "tpaWidgetNative",
+      "comp-mh987dej": "StripColumnsContainer",
+      "comp-mh987dg5": "Column",
+      "PAGES_CONTAINER": "PagesContainer",
+      "SITE_PAGES": "PageGroup",
+      "soapAfterPagesContainer": "MeshGroup",
+      "CONTROLLER_COMP_CUSTOM_ID": "AppController",
+      "SOSP_CONTAINER_CUSTOM_ID": "Container",
+      "comp-jxn1le6v": "tpaWidgetNative",
+      "comp-jxn1ldwa": "VerticalMenu",
+      "pinnedBottomCenter": "DivWithChildren",
+      "comp-krt7q2lr-pinned-layer": "PinnedLayer",
+      "comp-krt7q2lr": "AppController",
+      "pinnedBottomRight": "DivWithChildren",
+      "comp-joqtciyw-pinned-layer": "PinnedLayer",
+      "comp-joqtciyw": "TPAGluedWidget",
+      "SITE_FOOTER": "FooterContainer",
+      "comp-jk28jaqs": "FiveGridLine",
+      "comp-mhgkicxm": "FiveGridLine",
+      "comp-mhh47fgc": "StripColumnsContainer",
+      "comp-mhh47fip": "Column",
+      "comp-mhookph5": "FiveGridLine",
+      "comp-mhh47fis": "WRichText",
+      "comp-mhh47fiz5": "WRichText",
+      "comp-mhh47fit2": "WRichText",
+      "comp-mhh47fjc": "WRichText",
+      "comp-mhh47fj1": "WRichText",
+      "comp-mhh47fiy1": "WRichText",
+      "comp-mhh47fj7": "WRichText",
+      "comp-mhh47fj82": "WRichText",
+      "comp-mhh47fja": "LinkBar",
+      "comp-mhotg4wy": "WRichText",
+      "comp-mhh47fiw5": "WRichText",
+      "comp-mhh47fje": "WRichText",
+      "comp-mhh47fjf1": "tpaWidgetNative",
+      "comp-mhh47fj52": "WRichText",
+      "comp-mhh47fj22": "WRichText",
+      "comp-mhh47fj4": "WRichText",
+      "zbmu3": "Page",
+      "pageBackground_zbmu3": "PageBackground",
+      "Containerzbmu3": "Group",
+      "comp-mhduazym": "ClassicSection",
+      "comp-mhduazyo1": "WRichText",
+      "comp-mhduazyq1": "WRichText",
+      "DYNAMIC_STRUCTURE_CONTAINER": "DynamicStructureContainer",
+      "site-root": "DivWithChildren",
+      "main_MF": "DivWithChildren",
+      "zbmu3_wrapper": "PageMountUnmount",
+      "zbmu3_wrapper_background": "PageMountUnmount"
+    }
+  },
+  "appsWarmupData": {
+    "225dd912-7dea-4738-8688-4b8c6955ffc2": {
+      "form-viewer-comp-mhh47fjf1": {
+        "formsById": {
+          "c40252af-13a3-4a32-88fc-6f11712f487c": {
+            "id": "c40252af-13a3-4a32-88fc-6f11712f487c",
+            "fields": [
+              {
+                "id": "e802ad4b-7735-43c7-a1b7-5c086281a52c",
+                "pii": false,
+                "hidden": false,
+                "view": {
+                  "content": {
+                    "nodes": [
+                      {
+                        "id": "kcwyq36",
+                        "type": "HEADING",
+                        "nodes": [
+                          {
+                            "id": "",
+                            "type": "TEXT",
+                            "nodes": [],
+                            "textData": {
+                              "text": "Join our mailing list",
+                              "decorations": []
+                            }
+                          }
+                        ],
+                        "headingData": {
+                          "level": 1,
+                          "textStyle": {
+                            "textAlignment": "AUTO"
+                          }
+                        }
+                      }
+                    ],
+                    "documentStyle": {}
+                  },
+                  "fieldType": "HEADER"
+                },
+                "readOnly": false
+              },
+              {
+                "id": "73220c62-c0bd-47e5-bb8d-25317f30c186",
+                "target": "email",
+                "validation": {
+                  "string": {
+                    "format": "EMAIL",
+                    "enum": []
+                  },
+                  "required": true
+                },
+                "pii": true,
+                "hidden": false,
+                "view": {
+                  "label": "Email",
+                  "fieldType": "CONTACTS_EMAIL",
+                  "hideLabel": false
+                },
+                "readOnly": false
+              },
+              {
+                "id": "76ba7a82-5de2-49e9-ad5a-f5641d8d003a",
+                "pii": false,
+                "hidden": false,
+                "view": {
+                  "nextText": "Next",
+                  "fieldType": "SUBMIT_BUTTON",
+                  "submitText": "Subscribe",
+                  "previousText": "Back"
+                },
+                "readOnly": false
+              },
+              {
+                "id": "8283b475-3bc2-4a82-293f-64e5201d74ef",
+                "target": "form_field_36fc",
+                "validation": {
+                  "boolean": {
+                    "enum": []
+                  },
+                  "required": false
+                },
+                "pii": false,
+                "hidden": false,
+                "view": {
+                  "label": {
+                    "nodes": [
+                      {
+                        "id": "tybb07",
+                        "type": "PARAGRAPH",
+                        "nodes": [
+                          {
+                            "id": "",
+                            "type": "TEXT",
+                            "nodes": [],
+                            "textData": {
+                              "text": "I want to subscribe to your mailing list.",
+                              "decorations": []
+                            }
+                          }
+                        ],
+                        "paragraphData": {
+                          "textStyle": {
+                            "textAlignment": "AUTO"
+                          }
+                        }
+                      }
+                    ],
+                    "documentStyle": {}
+                  },
+                  "fieldType": "CONTACTS_SUBSCRIBE",
+                  "defaultValue": false
+                },
+                "readOnly": false
+              }
+            ],
+            "formFields": [
+              {
+                "id": "e802ad4b-7735-43c7-a1b7-5c086281a52c",
+                "hidden": false,
+                "identifier": "HEADER",
+                "fieldType": "DISPLAY",
+                "displayOptions": {
+                  "displayFieldType": "RICH_CONTENT",
+                  "richContentOptions": {
+                    "richContent": {
+                      "nodes": [
+                        {
+                          "type": "HEADING",
+                          "id": "kcwyq36",
+                          "nodes": [
+                            {
+                              "type": "TEXT",
+                              "id": "",
+                              "nodes": [],
+                              "textData": {
+                                "text": "Join our mailing list",
+                                "decorations": []
+                              }
+                            }
+                          ],
+                          "headingData": {
+                            "level": 1,
+                            "textStyle": {
+                              "textAlignment": "AUTO"
+                            }
+                          }
+                        }
+                      ],
+                      "documentStyle": {}
+                    }
+                  }
+                }
+              },
+              {
+                "id": "73220c62-c0bd-47e5-bb8d-25317f30c186",
+                "hidden": false,
+                "identifier": "CONTACTS_EMAIL",
+                "fieldType": "INPUT",
+                "inputOptions": {
+                  "target": "email",
+                  "pii": true,
+                  "required": true,
+                  "inputType": "STRING",
+                  "contactMapping": {
+                    "contactField": "EMAIL",
+                    "emailInfo": {
+                      "tag": "UNTAGGED"
+                    }
+                  },
+                  "readOnly": false,
+                  "stringOptions": {
+                    "validation": {
+                      "format": "EMAIL",
+                      "enum": []
+                    },
+                    "componentType": "TEXT_INPUT",
+                    "textInputOptions": {
+                      "label": "Email",
+                      "showLabel": true,
+                      "mediaSettings": {
+                        "imagePosition": "ABOVE",
+                        "imageAlignment": "CENTER",
+                        "imageFit": "COVER"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "id": "76ba7a82-5de2-49e9-ad5a-f5641d8d003a",
+                "hidden": false,
+                "identifier": "SUBMIT_BUTTON",
+                "fieldType": "DISPLAY",
+                "displayOptions": {
+                  "displayFieldType": "PAGE_NAVIGATION",
+                  "pageNavigationOptions": {
+                    "nextPageText": "Next",
+                    "previousPageText": "Back",
+                    "submitText": "Subscribe"
+                  }
+                }
+              },
+              {
+                "id": "8283b475-3bc2-4a82-293f-64e5201d74ef",
+                "hidden": false,
+                "identifier": "CONTACTS_SUBSCRIBE",
+                "fieldType": "INPUT",
+                "inputOptions": {
+                  "target": "form_field_36fc",
+                  "pii": false,
+                  "required": false,
+                  "inputType": "BOOLEAN",
+                  "contactMapping": {
+                    "contactField": "SUBSCRIPTION"
+                  },
+                  "readOnly": false,
+                  "booleanOptions": {
+                    "validation": {
+                      "enum": []
+                    },
+                    "componentType": "CHECKBOX",
+                    "checkboxOptions": {
+                      "label": {
+                        "nodes": [
+                          {
+                            "type": "PARAGRAPH",
+                            "id": "tybb07",
+                            "nodes": [
+                              {
+                                "type": "TEXT",
+                                "id": "",
+                                "nodes": [],
+                                "textData": {
+                                  "text": "I want to subscribe to your mailing list.",
+                                  "decorations": []
+                                }
+                              }
+                            ],
+                            "paragraphData": {
+                              "textStyle": {
+                                "textAlignment": "AUTO"
+                              }
+                            }
+                          }
+                        ],
+                        "documentStyle": {}
+                      },
+                      "checked": false
+                    }
+                  }
+                }
+              }
+            ],
+            "steps": [
+              {
+                "id": "102edd7d-7662-4cb7-7d7a-f865a3e378ea",
+                "name": "Page 1",
+                "hidden": false,
+                "layout": {
+                  "large": {
+                    "items": [
+                      {
+                        "fieldId": "e802ad4b-7735-43c7-a1b7-5c086281a52c",
+                        "row": 0,
+                        "column": 0,
+                        "width": 12,
+                        "height": 1
+                      },
+                      {
+                        "fieldId": "73220c62-c0bd-47e5-bb8d-25317f30c186",
+                        "row": 1,
+                        "column": 0,
+                        "width": 8,
+                        "height": 1
+                      },
+                      {
+                        "fieldId": "76ba7a82-5de2-49e9-ad5a-f5641d8d003a",
+                        "row": 1,
+                        "column": 8,
+                        "width": 4,
+                        "height": 1
+                      },
+                      {
+                        "fieldId": "8283b475-3bc2-4a82-293f-64e5201d74ef",
+                        "row": 2,
+                        "column": 0,
+                        "width": 8,
+                        "height": 1
+                      }
+                    ],
+                    "sections": []
+                  }
+                }
+              }
+            ],
+            "rules": [],
+            "revision": "2",
+            "createdDate": "2025-11-01T17:18:52.132Z",
+            "updatedDate": "2025-11-02T04:51:59.440Z",
+            "properties": {
+              "name": "Subscribe Form 1",
+              "disabled": false
+            },
+            "deletedFields": [],
+            "deletedFormFields": [],
+            "kind": "REGULAR",
+            "postSubmissionTriggers": {
+              "upsertContact": {
+                "fieldsMapping": {
+                  "email": {
+                    "contactField": "EMAIL",
+                    "emailInfo": {
+                      "tag": "UNTAGGED"
+                    }
+                  },
+                  "form_field_36fc": {
+                    "contactField": "SUBSCRIPTION"
+                  }
+                },
+                "labels": []
+              }
+            },
+            "extendedFields": {
+              "namespaces": {
+                "@forms/form-app": {
+                  "automationId": "3a08f401-23c7-40c0-997b-ab2e5cd2a79d"
+                }
+              }
+            },
+            "namespace": "wix.form_app.form",
+            "nestedForms": [],
+            "spamFilterProtectionLevel": "ADVANCED",
+            "submitSettings": {
+              "submitSuccessAction": "THANK_YOU_MESSAGE",
+              "thankYouMessageOptions": {
+                "durationInSeconds": 8,
+                "richContent": {
+                  "nodes": [
+                    {
+                      "type": "PARAGRAPH",
+                      "id": "zfq3p31",
+                      "nodes": [
+                        {
+                          "type": "TEXT",
+                          "id": "",
+                          "nodes": [],
+                          "textData": {
+                            "text": "Thanks for subscribing!",
+                            "decorations": []
+                          }
+                        }
+                      ],
+                      "paragraphData": {
+                        "textStyle": {
+                          "textAlignment": "CENTER"
+                        }
+                      }
+                    }
+                  ],
+                  "documentStyle": {}
+                }
+              }
+            },
+            "fieldGroups": [],
+            "enabled": true,
+            "name": "Subscribe Form 1",
+            "formRules": [],
+            "autoFillContact": "FORM_INPUT",
+            "submissionAccess": "OWNER_AND_COLLABORATORS"
+          }
+        },
+        "translations": {
+          "field-description.a11y.aria-label": "{linkText} description link",
+          "form.submit-button.next-step": "Next",
+          "multiline-address.a11y.group-name": "Address field",
+          "error.could-not-load-form.button.label": "Refresh",
+          "submit.failed.message.SUBMISSION_LIMIT_PER_USER_EXCEEDED": "You've reached the submission limit for this form.",
+          "form.a11y.step.index.title": "Step {index} out of {total}",
+          "form.disabled.fallback-message": "Sorry, but the form is closed.",
+          "submit.failed.message.DISABLED_FORM_ERROR": "This form has expired and isn’t accepting submissions.",
+          "bookings-address.a11y.group-name": "Address field",
+          "error.could-not-load-form.title": "We couldn’t load this form",
+          "form.submit-button.state.in-progress": "Submitting form...",
+          "checkbox.input.error.message.required": "Check the box to continue.",
+          "submit.failed.message.SITE_MUST_ACCEPT_PAYMENTS_TO_CREATE_CHECKOUT": "We can’t accept online payments right now. Contact us to complete your transaction.",
+          "error.could-not-load-form.description": "It looks like there’s a temporary problem on our end. Wait a few minutes, refresh the screen and try again.",
+          "form.submit-button.previous-step": "Back",
+          "contacts-url-input.input.error.message.format-error": "Enter a web URL like https://www.example.com.",
+          "field-context-menu.cut": "Cut",
+          "input.error.message.incomplete-date-error.day-time": "Enter a day and time.",
+          "field.signature.a11y.action-description.type": "Use the keyboard to type.",
+          "input.error.message.invalid-default-value-error": "Enter a valid default value",
+          "input.error.message.required-error-forced": "This field is required.",
+          "field-context-menu.show-field": "Show field",
+          "date-picker.input.error.message.format-error": "Choose a date.",
+          "form.login-bar.actions.login": "Log in",
+          "date-picker.a11y.clear-button": "Clear",
+          "form.file-upload.uploading": "Uploading {count, plural, =0 {...} other {#%...}}",
+          "rating-input.a11y.reaction-label": "{count} {count, plural, =1 {star} other {stars}}",
+          "contacts-company.input.error.message.required-error": "Enter a company name.",
+          "dext-phone.input.error.message.required-error": "Enter a phone number.",
+          "field.signature.clear-button.label": "Clear",
+          "input.error.message.type-error": "Choose a {type}.",
+          "payment-input.input.error.message.required-error": "Enter a payment amount.",
+          "form.login-bar.action.logout": "Log out",
+          "date-picker.a11y.arrow-left": "Go to previous month",
+          "mla-subdivision.input.error.message.required-error.tr": "Choose a city.",
+          "settings.scheduling.sync-external-calendars.modal.tooltip.kb-link": "https://support.wix.com/en/article/wix-meetings-syncing-personal-calendars-with-wix-meetings",
+          "input.error.message.value-range-error": "Enter a number from {minLimit} to {maxLimit}.",
+          "input.error.message.incomplete-date-error.year-month": "Enter a month and year.",
+          "mla-address-line.input.error.message.required-error": "Enter an address.",
+          "contacts-position.input.error.message.required-error": "Enter a position or job title.",
+          "bookings-phone.input.error.message.format-error": "Enter a valid phone number.",
+          "input.error.message.incomplete-date-error.year-month-time": "Enter a month, time and year.",
+          "field.number.aria-role-description": "Number",
+          "signature.input.error.message.required-error": "Sign in the box above.",
+          "field.date.label.month": "Month",
+          "field.rich-text.read-more-button.label": "Read more",
+          "field.time.label.period": "AM/PM setting",
+          "submit.failed.message": "We could not submit your form. Try again later.",
+          "image-choice.input.error.message.required-error": "Choose an option.",
+          "dext-email.input.error.message.required-error": "Enter an email address like example@mysite.com.",
+          "mla-city.input.error.message.required-error.tr": "Enter a district.",
+          "date-picker.a11y.calendar-button.role-description": "Calendar dialog pop up collapsed",
+          "field.signature.a11y.action-description.draw-or-type": "Sign in the box or use the keyboard to type.",
+          "settings.scheduling.meeting-type.round-robin": "Round Robin",
+          "field.time.perdiod.AM": "AM",
+          "form.login-bar.title.logged-out-state": "Have an account? ",
+          "form.appointment.slots-not-found.text": "There’s no availability for this date. Try selecting another date.",
+          "input.error.message.format-error": "Use the format \"{format}.\"",
+          "input.email.mistype-check.warning": "This email domain looks like a typo. Please double-check it.",
+          "contacts-address.input.error.message.required-error": "Enter an address.",
+          "field-context-menu.copy": "Copy to clipboard",
+          "field.signature.a11y.state.empty": "Signature field is empty.",
+          "dext-date-picker.input.error.message.min-value-error": "Enter a valid date after today’s date.",
+          "payment-input.input.error.message.min-value-error": "Enter a payment amount greater than {currency}{limit}.",
+          "input.error.message.incomplete-date-error.year-time": "Enter a 4 digit year and time.",
+          "field.signature.a11y.state.signed": "Signed.",
+          "field.quiz-answer-feedback.wrong": "Incorrect",
+          "mla-city.input.error.message.required-error": "Enter a city.",
+          "full-name.input.error.message.required-error": "Enter a first and last name.",
+          "field.rich-text.read-less-button.label": "Read less",
+          "form.appointment.accessibility.calendar.previous-week.aria-label": "Show previous week",
+          "field.signature.mode.upload.description": "Upload mode selected. Upload an image of your signature.",
+          "field.quiz-file-upload.skipped": "This question was skipped. ",
+          "ecom.email.label": "Email",
+          "input.error.message.incomplete-date-error.year-month-day": "Enter a month, day and year.",
+          "field-context-menu.make-optional": "Make optional",
+          "settings.scheduling.meeting-type.info-icon.round-robin.description": " - Meetings rotate between hosts.",
+          "contacts-subscribe.input.error.message.not-allowed-value": "Check the box to continue.",
+          "input.email.mistype-check.suggestion": "Did you mean <0>{email}</0>?",
+          "field.signature.mode.draw.description": "Drawing mode selected. Drawing requires a mouse or touchpad. For keyboard accessibility, select Type or Upload.",
+          "checkbox.input.error.message.required-error": "Check the box to continue.",
+          "date-picker.input.error.message.required-error": "Choose a date.",
+          "dext-tags.input.error.message.required-error": "Choose an option.",
+          "field-context-menu.delete": "Delete",
+          "field.date.label.year": "Year",
+          "mla-address-line-2.input.error.message.required-error": "Enter a second address line (e.g., apartment, suite, floor).",
+          "form.login-bar.title.logged-in-state": "Logged in as {user}",
+          "payment-input.input.error.message.max-value-error": "Enter a payment amount less than {currency}{limit}.",
+          "ecom-phone.input.error.message.required-error": "Enter a phone number.",
+          "payment-input.input.error.message.value-range-error": "Enter a payment amount between {currency}{minLimit} and {currency}{maxLimit}.",
+          "settings.appointment.sync-external-calendars.hosts-title": "Sync calendar for hosts",
+          "input.error.message.incomplete-date-error.year-day": "Enter a day and year.",
+          "submission-table.signature.not-signed": "Not signed",
+          "dext-url-input.input.error.message.format-error": "Enter a web URL like https://www.example.com.",
+          "ecom-phone.input.error.message.pattern-error": "Enter a valid phone number.",
+          "contacts-phone.input.error.message.not-allowed-value": "Phone numbers with this country code aren’t accepted.",
+          "vat-id.input.error.message.required-error.il": "Enter a valid 9 digit ID (“teudat zehut”) or Company number (“het pey”).",
+          "input.error.message.incomplete-date-error.day": "Enter a day.",
+          "date-input.input.error.message.min-value-error": "Enter a valid date after today’s date.",
+          "input.error.message.invalid-location-id-error": "Location is invalid",
+          "input.error.message.max-length-error": "Enter less than {limit, plural, one {# character} other {# characters}}.",
+          "field.date.placeholder.day": "Day",
+          "services-dropdown.input.error.message.required-error": "Select a Service",
+          "ecom-email.input.error.message.required-error": "Enter an email address like example@mysite.com.",
+          "dext-phone.input.error.message.not-allowed-value": "Phone numbers with this country code aren’t accepted.",
+          "dext-url-input.input.error.message.required-error": "Enter a web URL like https://www.example.com.",
+          "contacts-date-input.input.error.message.format-error": "Enter a month, day and year.",
+          "signature.input.error.message.required-error.with-upload": "Sign in the box above or upload your signature.",
+          "forms.widget.modals.show-password-tooltip": "Show password",
+          "contacts-phone.input.error.message.required-error": "Enter a phone number.",
+          "field.phone.country-selector-button.aria-label": "Select a country code",
+          "field-context-menu.move-up": "Move up",
+          "dext-text-input.input.error.message.required-error": "Enter an answer.",
+          "settings.required-indicator-text": "(Required)",
+          "file-upload.dropzone.overlay.button": " Drop your files here",
+          "platform-quiz-radio-group.input.error.message.required-error": "Choose an option.",
+          "field.time.perdiod.PM": "PM",
+          "contacts-birthdate.input.error.message.format-error": "Enter a month, day and year.",
+          "field.quiz-answer-feedback.correct": "Correct",
+          "settings.appointment.duration.custom": "Custom",
+          "vat-id.input.error.message.required-error": "Enter a CPF/CNPJ number.",
+          "bookings-email.input.error.message.format-error": "Enter an email address like example@mysite.com.",
+          "input.error.message.character-length-range-error": "Enter between {minLimit} and {maxLimit} characters.",
+          "bookings-phone.input.error.message.not-allowed-value": "Phone numbers with this country code aren’t accepted.",
+          "contacts-email.input.error.message.format-error": "Enter an email address like example@mysite.com.",
+          "dropdown.input.error.message.required-error": "Choose an option.",
+          "dext-text-area.input.error.message.required-error": "Enter an answer.",
+          "field.signature.settings.upload-button.label": "Upload Image",
+          "field.date.placeholder.month": "Month",
+          "form.error.prefix.a11y": "Error:",
+          "contacts-tax-id.input.error.message.required-error": "Enter a VAT ID number.",
+          "contacts-number-input.input.error.message.required-error": "Enter a number.",
+          "date-picker.a11y.aria-label": "Show date picker",
+          "field.phone.country-search-input.aria-label": "Search",
+          "field.signature.a11y.state.drawing": "Writing signature...",
+          "input.error.message.unknown-value-error": "Must have additional properties.",
+          "phone.input.error.message.pattern-error": "Enter a valid phone number.",
+          "dext-date-picker.input.error.message.max-value-error": "Enter a valid date from January 1, 1000 to today.",
+          "form.appointment.empty-state.notification.text": "Currently, there’s no available time slots to schedule. Contact us to complete your request.",
+          "mla-country.input.error.message.required-error": "Choose a country/region.",
+          "field.time.label.hours": "Hours",
+          "file-upload.delete-file.aria-label": "Delete file",
+          "field.vat-id.label-br": "CPF/CNPJ",
+          "ecom-header.contact-details": "Customer details",
+          "input.error.message.invalid-staff-id-error": "This field is invalid.",
+          "date-input.input.error.message.format-error": "Enter a month, day and year.",
+          "contacts-first-name.input.error.message.required-error": "Enter a first name.",
+          "file-upload.dropzone.title": "Upload your file",
+          "field-context-menu.move-down": "Move down",
+          "contacts-url-input.input.error.message.required-error": "Enter a web URL like https://www.example.com.",
+          "field.time.label.minutes": "Minutes",
+          "dext-phone.input.error.message.format-error": "Enter a valid phone number.",
+          "bookings-phone.input.error.message.required-error": "Enter a phone number.",
+          "form.file-upload.explanation-text": "{count, plural, =1 {# file} other {# files}} uploaded",
+          "settings.scheduling.meeting-type.info-icon.intro": "How hosts are assigned:",
+          "pikachu.input.error.message.required-error": "Choose an option.",
+          "contacts-last-name.input.error.message.required-error": "Enter a last name.",
+          "forms.widget.modals.hide-password-tooltip": "Hide password",
+          "field.signature.mode.selector.aria-label": "Signature input mode",
+          "phone.input.error.message.not-allowed-value": "Phone numbers with this country code aren't accepted.",
+          "field.signature.mode.draw.label": "Draw",
+          "mla-postal-code.input.error.message.pattern-error": "Enter a valid zip/postal code.",
+          "date-picker.a11y.dropdown-year": "Select year",
+          "time-input.input.error.message.format-error": "Enter hours and minutes.",
+          "field-context-menu.hide-field": "Hide field",
+          "input.error.message.not-allowed-value": "The chosen value is not allowed.",
+          "input.error.message.min-value-error": "Enter a number that is {limit} or more.",
+          "input.error.message.incomplete-date-error.month-day": "Enter a month and day.",
+          "field.date.placeholder.time": "HH:MM",
+          "submit.checkout.message": "Redirecting to checkout...",
+          "form.file-upload.error.unsupported-file-format": "This file type is unsupported.",
+          "settings.scheduling.meeting-type.info-icon.single-host.description": " - One host runs every meeting.",
+          "input.error.message.invalid-phone-country-code-error": "Enter a valid country code.",
+          "mla-street-name.input.error.message.required-error": "Enter a street name.",
+          "settings.scheduling.sync-external-calendars.not-current-user.kb-link": "https://support.wix.com/en/article/wix-meetings-syncing-personal-calendars-with-wix-meetings",
+          "bookings-first-name.input.error.message.required-error": "Enter a first name.",
+          "vat-id.input.error.message.format-error": "Enter a valid CPF/CNPJ number.",
+          "form.appointment.accessibility.calendar.next-week.aria-label": "Show next week",
+          "donation.input.error.message.required-error": "Choose a donation amount.",
+          "settings.appointment.duration.hours-error": "Hours must be between 0 and 99.",
+          "input.email.mistype-check.fix-aria-label": "Use suggested email {email}",
+          "input.error.message.incomplete-date-error.month": "Enter a month.",
+          "input.error.message.incomplete-date-error.year": "Enter a 4 digit year.",
+          "vat-id.input.error.message.format-error.il": "Enter a valid 9 digit ID (“teudat zehut”) or Company number (“het pey”).",
+          "settings.appointment.duration.hours-label": "Hours",
+          "field.phone.aria-label": "Phone",
+          "field.signature.canvas.aria-label.empty": "Signature drawing area (empty)",
+          "file-upload.dropzone.limit-reached.title": "You’ve reached the file upload limit.",
+          "form.appointment.accessibility.calendar.has-availability.aria-label": "This day has available time slots.",
+          "bookings-phone.input.error.message.pattern-error": "Enter a valid phone number.",
+          "input.error.message.incomplete-date-error.month-time": "Enter a month and time.",
+          "product-list.input.error.message.required-error": "Choose an option.",
+          "field-context-menu.move-to-next-page": "Move to next page",
+          "mla-postal-code.input.error.message.required-error": "Enter a zip/postal code.",
+          "file-upload.input.error.message.required-error": "Upload a file.",
+          "vat-id.input.error.message.format-error.br": "Enter a valid CPF/CNPJ number.",
+          "input.error.message.exact-character-length-error": "Enter exactly {limit, plural, one {# character} other {# characters}}.",
+          "submission-table.signature.signed": "Signed",
+          "input.error.message.incomplete-date-error": "Enter a month, day and year.",
+          "ecom-email.input.error.message.format-error": "Enter an email address like example@mysite.com.",
+          "field.vat-id.label-il": "ID/Company number",
+          "text-input.input.error.message.required-error": "Enter an answer.",
+          "url-input.input.error.message.required-error": "Enter a web URL like https://www.example.com.",
+          "ecom-header.shipping-details": "Delivery details",
+          "service-dropdown.input.error.message.required-error": "Select a Service",
+          "field.signature.mode.type.description": "Type mode selected. Type your signature using the keyboard.",
+          "input.error.message.incomplete-date-error.year-day-time": "Enter a day, time and year.",
+          "number-input.input.error.message.required-error": "Enter a number.",
+          "field.signature.mode.upload.label": "Upload",
+          "input.error.message.unknown-error": "Unknown error, please contact Support.",
+          "input.error.message.max-items-error": "Choose up to {limit, plural, one {# option} other {# options}}.",
+          "file-upload.popover.aria-label": "List of uploaded files",
+          "input.error.message.multiple-of-value-error": "Choose a multiple of {multipleOf}.",
+          "full-name-last-name.input.error.message.required-error": "Enter a last name.",
+          "field-context-menu.paste": "Paste",
+          "input.error.message.pattern-error": "Match the pattern \"{pattern}\".",
+          "dext-number-input.input.error.message.required-error": "Enter a number.",
+          "field-context-menu.ai-assistant": "Ask AI",
+          "field-context-menu.move-to-previous-page": "Move to previous page",
+          "dext-date-picker.input.error.message.required-error": "Choose a date.",
+          "settings.appointment.duration.minutes-error": "Minutes must be between 0 and 59.",
+          "date-input.input.error.message.max-value-error": "Enter a valid date from January 1, 1000 to today.",
+          "dext-checkbox-group.input.error.message.required-error": "Choose an option.",
+          "file-upload.dropzone.subtitle": "Choose a file or drag and drop one here.",
+          "dext-radio-group.input.error.message.required-error": "Choose an option.",
+          "checkbox.input.error.message.not-allowed-value": "Check the box to continue.",
+          "contacts-birthdate.input.error.message.max-value-error": "Enter a date from January 1, 1900 to today.",
+          "input.error.message.incomplete-date-error.month-day-time": "Enter a month, day and time.",
+          "file-upload.aria-roledescription": "File upload",
+          "settings.appointment.duration.minutes-label": "Minutes",
+          "contacts-phone.input.error.message.pattern-error": "Enter a valid phone number.",
+          "mla-street-number.input.error.message.required-error": "Enter a house number.",
+          "date-picker.a11y.dropdown-month": "Select month",
+          "field.signature.mode.type.label": "Type",
+          "settings.default-value-conflict.min-value-error": "Min characters must be at least the default text length. Update the character limit or shorten the text.",
+          "date-picker.input.error.message.min-value-error": "Enter a valid date after today’s date.",
+          "settings.scheduling.meeting-type.personal": "Single Host",
+          "date-time-input.input.error.message.min-value-error": "Enter a valid date after today’s date.",
+          "dext-checkbox.input.error.message.required-error": "Check the box to continue.",
+          "url-input.input.error.message.format-error": "Enter a web URL like https://www.example.com.",
+          "file-upload.file.uploading-spinner.aria-label": "Loading file",
+          "field.phone.country-code.aria-label": "Country code",
+          "add-other.default-other-option-label": "Other",
+          "dext-checkbox.input.error.message.not-allowed-value": "Check the box to continue.",
+          "field.date.placeholder.year": "Year",
+          "date-picker.input.error.message.max-value-error": "Enter a valid date from January 1, 1000 to today.",
+          "field.signature.text.placeholder": "Type your signature",
+          "dext-date-picker.input.error.message.format-error": "Choose a date.",
+          "form.file-upload.error.upload-limit": "There is an upload limit of {limit, plural, one {# file} other {# files}}.",
+          "checkbox-group.input.error.message.required-error": "Choose an option.",
+          "rating-input.input.error.message.required-error": "Choose a star rating.",
+          "field.mla-apartment.label": "Apartment",
+          "text-area.input.error.message.required-error": "Enter an answer.",
+          "field.phone.country-search-input.placeholder": "Search",
+          "submission-table.appointment.meeting-tool-tip": "Go to Scheduled Meetings",
+          "donation.other-option.placeholder": "Enter an amount",
+          "dext-rating-input.input.error.message.required-error": "Choose a star rating.",
+          "field.signature.a11y.action-description.draw": "Sign in the box.",
+          "contacts-birthdate.input.error.message.min-value-error": "Enter a date from January 1, 1900 to today.",
+          "mla-subdivision.input.error.message.required-error": "Choose an option.",
+          "dext-dropdown.input.error.message.required-error": "Choose an option.",
+          "contacts-text-input.input.error.message.required-error": "Enter an answer.",
+          "field.date.label.day": "Day",
+          "vat-id.input.error.message.required-error.br": "Enter a CPF/CNPJ number.",
+          "date-picker.calendar.close-button": "Close",
+          "settings.appointment.duration.zero-error": "Duration must be at least 1 minute.",
+          "phone.input.error.message.required-error": "Enter a phone number.",
+          "phone.input.error.message.format-error": "Enter a valid phone number.",
+          "input.error.message.invalid-value-for-pattern": "Enter a valid answer.",
+          "radio-group.input.error.message.required-error": "Choose an option.",
+          "input.error.message.min-items-error": "Choose at least {limit, plural, one {# option} other {# options}}.",
+          "ecom.form.field-type.ecom-subscriptions.label": "I agree to receive news to the email address and/or phone numbers added",
+          "input.error.message.decimal_point_error": "Add {number} number(s) after the decimal point.",
+          "bookings-email.input.error.message.required-error": "Enter an email address like example@mysite.com.",
+          "contacts-subscribe.input.error.message.required-error": "Check the box to continue.",
+          "form.appointment.show-more-slots.text": "Show more slots",
+          "form.file-upload.error.upload-failed": "File upload failed.",
+          "dext-email.input.error.message.format-error": "Enter an email address like example@mysite.com.",
+          "full-name-first-name.input.error.message.required-error": "Enter a first name.",
+          "field-context-menu.settings": "Settings",
+          "settings.default-value-conflict.max-value-error": "Max characters must be at least the default text length. Update the character limit or shorten the text.",
+          "bookings-last-name.input.error.message.required-error": "Enter a last name.",
+          "appointment.input.error.message.required-error": "This field is required.",
+          "field-context-menu.make-required": "Make required",
+          "date-time-input.input.error.message.format-error": "Enter a month, day and year.",
+          "field.date.label.time": "Time",
+          "input.error.message.required-error": "This field is required.",
+          "field.phone.country-selector-dropdown.no-result": "No results found...",
+          "input.error.message.exact-items-number-error": "Choose {limit, plural, one {# option} other {# options}}.",
+          "form.appointment.timezone.label": "Time zone",
+          "dext-date-time-input.input.error.message.required-error": "Enter a month, day and year.",
+          "date-time-input.input.error.message.max-value-error": "Enter a valid date from January 1, 1000 to today.",
+          "date-picker.a11y.arrow-right": "Go to next month",
+          "input.error.message.incomplete-date-error.time": "Enter a time.",
+          "field.signature.canvas.aria-label.signed": "Signature drawing area (signed)",
+          "settings.default-value-conflict.regex-error": "The regex must be viable for the entered default value. Update the regex or change the text.",
+          "contacts-phone.input.error.message.format-error": "Enter a valid phone number.",
+          "tags.input.error.message.required-error": "Choose an option.",
+          "file-upload.dropzone.limit-reached.subtitle": "Delete a file to add a different one.",
+          "input.error.message.max-value-error": "Enter a number that is {limit} or less.",
+          "input.error.message.min-length-error": "Enter at least {limit, plural, one {# character} other {# characters}}.",
+          "form.appointment.meeting-format.in-person-location-method-os-location": "Business location",
+          "form.file-upload.error.limit": "You've reached your upload limit of {limit, number} files.",
+          "contacts-email.input.error.message.required-error": "Enter an email address like example@mysite.com.",
+          "field-context-menu.duplicate": "Duplicate"
+        },
+        "localeDataset": {},
+        "fieldInitialData": {}
+      }
+    },
+    "14cc59bc-f0b7-15b8-e1c7-89ce41d0e0c9": {
+      "initialData": {
+        "counters": {},
+        "roles": {}
+      }
+    }
+  },
+  "ooi": {
+    "failedInSsr": {}
+  },
+  "builderComponentsWarmupData": {}
+}

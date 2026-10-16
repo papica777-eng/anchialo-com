@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 480" width="3000" height="480">
+  <defs>
+    <linearGradient id="sideBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FAF8F5"/>
+      <stop offset="70%" stop-color="#FAF8F5"/>
+      <stop offset="100%" stop-color="#F3EFE9"/>
+    </linearGradient>
+    <linearGradient id="goldH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C5A059"/>
+      <stop offset="50%" stop-color="#E5C77C"/>
+      <stop offset="100%" stop-color="#C5A059"/>
+    </linearGradient>
+    <linearGradient id="variantBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#581820"/>
+      <stop offset="100%" stop-color="#722F37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="3000" height="480" fill="url(#sideBg)"/>
+  
+  <!-- Subtle Border Lines Top and Bottom -->
+  <line x1="0" y1="12" x2="3000" y2="12" stroke="url(#goldH)" stroke-width="2"/>
+  <line x1="0" y1="468" x2="3000" y2="468" stroke="url(#goldH)" stroke-width="2"/>
+
+  <!-- Top Accent Ribbon -->
+  <rect x="0" y="14" width="3000" height="28" fill="#722F37"/>
+  <text x="1500" y="33" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="13" font-weight="700" letter-spacing="4" fill="#FFFFFF">
+    ANCHIALO MEDICAL BALNEOTHERAPY · NATURAL TOPICAL GEL WITH MAGNESIUM CHLORIDE &amp; MAGNESIUM SULFATE
+  </text>
+
+  <!-- ==================== SECTION 1: KEY BENEFITS (Left) ==================== -->
+  <g transform="translate(60, 80)">
+    <rect x="0" y="0" width="160" height="26" rx="4" fill="#722F37"/>
+    <text x="80" y="17" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#FFFFFF">
+      KEY BENEFITS
+    </text>
+    <text x="0" y="55" font-family="'Inter', sans-serif" font-size="14" fill="#2E2C29" width="600">
+      <tspan x="0" dy="0" font-weight="600">• Fast-absorbing transdermal mineral therapy delivering natural Magnesium.</tspan>
+      <tspan x="0" dy="24">• Relieves acute muscle cramps, spasms, stiffness, and joint fatigue.</tspan>
+      <tspan x="0" dy="24">• Deep soothing comfort for arthritis, osteoarthritis, sprains &amp; tendon stress.</tspan>
+      <tspan x="0" dy="24">• Hydrates and rebalances skin with 100% pure Pomorie Black Sea lye minerals.</tspan>
+      <tspan x="0" dy="24">• Enriched with pure botanical Grape extract for soothing synergy.</tspan>
+    </text>
+    <text x="0" y="240" font-family="'Cinzel', serif" font-size="12" letter-spacing="2" fill="#8C8275">
+      HARVESTED FROM POMORIE LAGOON · ANCIENT HEALING TRADITION
+    </text>
+  </g>
+
+  <!-- Vertical Divider 1 -->
+  <line x1="780" y1="70" x2="780" y2="430" stroke="#DDD7CD" stroke-width="1.5"/>
+
+  <!-- ==================== SECTION 2: HOW TO USE & CAUTION ==================== -->
+  <g transform="translate(830, 80)">
+    <rect x="0" y="0" width="150" height="26" rx="4" fill="#3D3B37"/>
+    <text x="75" y="17" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#FFFFFF">
+      HOW TO USE
+    </text>
+    <text x="0" y="55" font-family="'Inter', sans-serif" font-size="14" fill="#33312D">
+      <tspan x="0" dy="0">Apply a generous amount onto clean, dry skin over the affected area.</tspan>
+      <tspan x="0" dy="24">Massage gently until partially absorbed. Allow minerals to act for 30–60 min</tspan>
+      <tspan x="0" dy="24">or leave overnight for maximum therapeutic benefit. If desired, rinse with water.</tspan>
+    </text>
+
+    <rect x="0" y="150" width="180" height="26" rx="4" fill="#6B655B"/>
+    <text x="90" y="167" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#FFFFFF">
+      CAUTION &amp; STORAGE
+    </text>
+    <text x="0" y="205" font-family="'Inter', sans-serif" font-size="13" fill="#55514B">
+      <tspan x="0" dy="0">For external topical use only. Avoid contact with eyes and open wounds.</tspan>
+      <tspan x="0" dy="22">Keep out of reach of children. Store in a cool, dry place (5°C – 25°C).</tspan>
+      <tspan x="0" dy="22">Protect from direct sunlight. Do not freeze.</tspan>
+    </text>
+  </g>
+
+  <!-- Vertical Divider 2 -->
+  <line x1="1520" y1="70" x2="1520" y2="430" stroke="#DDD7CD" stroke-width="1.5"/>
+
+  <!-- ==================== SECTION 3: INCI, SPECS, SYMBOLS ==================== -->
+  <g transform="translate(1570, 80)">
+    <rect x="0" y="0" width="150" height="26" rx="4" fill="#3D3B37"/>
+    <text x="75" y="17" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="11" font-weight="700" letter-spacing="2" fill="#FFFFFF">
+      INGREDIENTS (INCI)
+    </text>
+    <text x="0" y="55" font-family="'Inter', sans-serif" font-size="13" fill="#2E2C29" font-style="italic">
+      <tspan x="0" dy="0">Aqua (Water), Black Sea Lye Minerals (Magnesium Sulfate, Magnesium Chloride, Sodium Chloride), Glycerine, Hydroxyethylcellulose, Parfum (Natural Fragrance).</tspan>
+    </text>
+
+    <!-- Packaging & Lab Info -->
+    <g transform="translate(0, 150)">
+      <text font-family="'Montserrat', sans-serif" font-size="13" font-weight="600" fill="#3D3B37">
+        <tspan x="0" dy="0">LOT NUMBER / EXPIRY DATE:</tspan>
+        <tspan x="220" font-weight="700" fill="#1C1A18">Lot № 07 / 25.12.2027</tspan>
+        <tspan x="0" dy="30">NOMINAL PACK SIZE:</tspan>
+        <tspan x="220" font-weight="800" font-size="16" fill="#581820">300 g ℮ (10.1 fl oz)</tspan>
+      </text>
+
+      <!-- Compliance Icons (PAO, Recycling, Mobius) -->
+      <g transform="translate(0, 75)">
+        <!-- 12M Jar -->
+        <rect x="0" y="0" width="55" height="38" rx="6" fill="none" stroke="#4A453E" stroke-width="2"/>
+        <text x="27" y="24" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="14" font-weight="700" fill="#4A453E">12M</text>
+        
+        <!-- Recycling Symbol -->
+        <g transform="translate(85, 20)">
+          <circle cx="0" cy="0" r="18" fill="none" stroke="#4A453E" stroke-width="2"/>
+          <text x="0" y="6" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" fill="#4A453E">♳ PET</text>
+        </g>
+
+        <!-- Certified Pomorie Origin Seal -->
+        <g transform="translate(210, 0)">
+          <rect x="0" y="0" width="220" height="38" rx="19" fill="#F8ECED" stroke="#722F37" stroke-width="1.5"/>
+          <text x="110" y="24" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" font-weight="700" fill="#581820">
+            ✓ POMORIE BLACK SEA LYE
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Vertical Divider 3 -->
+  <line x1="2220" y1="70" x2="2220" y2="430" stroke="url(#goldH)" stroke-width="2"/>
+
+  <!-- ==================== SECTION 4: FRONT FACING HERO PANEL ==================== -->
+  <g transform="translate(2260, 60)">
+    <!-- Brand Crest & Logo -->
+    <text x="350" y="50" text-anchor="middle" font-family="'Cinzel', 'Trajan Pro', serif" font-size="44" letter-spacing="10" font-weight="700" fill="#1C1A18">
+      ANCHIALO
+    </text>
+    <text x="350" y="75" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" letter-spacing="6" font-weight="600" fill="#8C8275">
+      POMORIE BALNEOLOGY LABS
+    </text>
+
+    <!-- Product Title -->
+    <text x="350" y="125" text-anchor="middle" font-family="'Cinzel', serif" font-size="28" font-weight="700" letter-spacing="3" fill="#2E2C29">
+      DUAL MAGNESIUM GEL
+    </text>
+
+    <!-- Variant Accent Box -->
+    <rect x="100" y="145" width="500" height="42" rx="21" fill="url(#variantBar)"/>
+    <text x="350" y="172" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="16" font-weight="800" letter-spacing="4" fill="#FFFFFF">
+      BLACK SEA LYE WITH GRAPE
+    </text>
+
+    <!-- Barcode & Manufacturer -->
+    <g transform="translate(40, 210)">
+      <!-- EAN-13 Barcode Vector Graphic -->
+      <g fill="#1A1816">
+        <rect x="0" y="0" width="3" height="70"/>
+        <rect x="6" y="0" width="2" height="70"/>
+        <rect x="12" y="0" width="4" height="60"/>
+        <rect x="20" y="0" width="2" height="60"/>
+        <rect x="26" y="0" width="6" height="60"/>
+        <rect x="36" y="0" width="2" height="60"/>
+        <rect x="42" y="0" width="4" height="60"/>
+        <rect x="50" y="0" width="2" height="60"/>
+        <rect x="56" y="0" width="6" height="60"/>
+        <rect x="66" y="0" width="2" height="60"/>
+        <rect x="72" y="0" width="4" height="70"/>
+        <rect x="78" y="0" width="2" height="70"/>
+        <rect x="84" y="0" width="6" height="60"/>
+        <rect x="94" y="0" width="2" height="60"/>
+        <rect x="100" y="0" width="4" height="60"/>
+        <rect x="108" y="0" width="6" height="60"/>
+        <rect x="118" y="0" width="2" height="60"/>
+        <rect x="124" y="0" width="4" height="60"/>
+        <rect x="132" y="0" width="6" height="60"/>
+        <rect x="142" y="0" width="2" height="70"/>
+        <rect x="148" y="0" width="3" height="70"/>
+      </g>
+      <text x="75" y="85" text-anchor="middle" font-family="'Courier New', monospace" font-size="14" font-weight="700" fill="#1A1816">
+        3 800230 111746
+      </text>
+
+      <!-- Manufacturer Block -->
+      <g transform="translate(190, 10)">
+        <text font-family="'Inter', sans-serif" font-size="12" fill="#3D3B37">
+          <tspan x="0" dy="0" font-weight="700">PRODUCED IN BULGARIA (EU) BY:</tspan>
+          <tspan x="0" dy="18" font-weight="600">AZIMUT 6000 Ltd.</tspan>
+          <tspan x="0" dy="16">18 Ivan Vazov Str., 8200 Pomorie</tspan>
+          <tspan x="0" dy="16">Tel: +359 887 470 548</tspan>
+          <tspan x="0" dy="16" font-weight="600" fill="#581820">www.anchialo.com</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>

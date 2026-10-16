@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANCHIALO — Pomorie Black Sea Minerals | Official Archive &amp; Sovereign Web Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-primary: #C5A059;
+      --gold-light: #E5C77C;
+      --gold-dark: #9C7A32;
+      --obsidian: #141312;
+      --charcoal: #22201E;
+      --cream-bg: #FAF8F5;
+      --white-card: #FFFFFF;
+      --text-main: #2C2926;
+      --text-muted: #6E685F;
+      --border-soft: #E8E3DA;
+      --shadow-sm: 0 4px 15px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 50px rgba(0,0,0,0.12);
+      --radius: 8px;
+      --phi: 1.618;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--cream-bg);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sovereign Announcement */
+    .sovereign-banner {
+      background: var(--obsidian);
+      color: var(--gold-light);
+      padding: 10px 24px;
+      font-size: 13px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--gold-dark);
+    }
+
+    /* Navigation Header */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 18px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 10px;
+      color: var(--obsidian);
+      line-height: 1;
+    }
+    .brand-sub {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--gold-dark);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--charcoal);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover, nav a.active {
+      color: var(--gold-primary);
+    }
+    .cta-btn {
+      background: var(--obsidian);
+      color: var(--gold-light) !important;
+      padding: 10px 22px;
+      border-radius: var(--radius);
+      border: 1px solid var(--gold-primary);
+      transition: all 0.3s;
+    }
+    .cta-btn:hover {
+      background: var(--gold-primary);
+      color: var(--obsidian) !important;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 90px 48px;
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--cream-bg) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+      border-bottom: 1px solid var(--border-soft);
+      overflow: hidden;
+    }
+    .hero-content {
+      max-width: 620px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(197, 160, 89, 0.12);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 52px;
+      line-height: 1.15;
+      font-weight: 700;
+      color: var(--obsidian);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+    .hero p {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .stat-num {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--obsidian);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .hero-visual {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+    .hero-visual img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-soft);
+    }
+
+    /* Section Styling */
+    .section-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 80px 48px;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 54px auto;
+    }
+    .section-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 38px;
+      color: var(--obsidian);
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* Products Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 32px;
+    }
+    .product-card {
+      background: var(--white-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s;
+    }
+    .product-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+      border-color: var(--gold-primary);
+    }
+    .product-img {
+      width: 100%;
+      height: 260px;
+      object-fit: contain;
+      background: #FAF8F5;
+      border-radius: 6px;
+      margin-bottom: 18px;
+    }
+    .product-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--obsidian);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .product-price {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold-dark);
+      margin-bottom: 14px;
+    }
+    .product-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .in-stock {
+      font-size: 12px;
+      font-weight: 700;
+      color: #2E7D32;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Labels & Print Studio Section */
+    .labels-studio {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .specs-badge-box {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .spec-item {
+      background: var(--cream-bg);
+      border: 1px solid var(--border-soft);
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .spec-item b {
+      color: var(--gold-dark);
+    }
+
+    .label-preview-card {
+      background: var(--white-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 36px;
+      box-shadow: var(--shadow-sm);
+    }
+    .label-preview-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .variant-name {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .download-btns {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-dl {
+      background: var(--obsidian);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      border: 1px solid var(--gold-primary);
+      transition: background 0.2s;
+    }
+    .btn-dl:hover {
+      background: var(--gold-primary);
+      color: var(--obsidian);
+    }
+    .img-wrap-side {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-soft);
+      border-radius: 4px;
+      background: #FDFDFD;
+      padding: 8px;
+    }
+    .img-wrap-side img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--obsidian);
+      color: #FFFFFF;
+      padding: 60px 48px 30px 48px;
+    }
+    .footer-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid #333;
+    }
+    .footer-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 26px;
+      letter-spacing: 6px;
+      color: var(--gold-light);
+      margin-bottom: 14px;
+    }
+    .footer-desc {
+      font-size: 13.5px;
+      color: #A09D96;
+      line-height: 1.7;
+    }
+    .footer-hdr {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      color: #A09D96;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: var(--gold-light);
+    }
+    .copy-bottom {
+      text-align: center;
+      padding-top: 24px;
+      font-size: 12px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sovereign-banner">
+    <div>🔱 AETERNA SOVEREIGN REPOSITORY // ANCHIALO.COM ENTERPRISE WEB ARCHIVE</div>
+    <div>TGA-COMPLIANT 2025 MASTER PACKAGING SUITE (Φ = 1.618)</div>
+  </div>
+
+  <header>
+    <div class="brand-group">
+      <div class="brand-title">ANCHIALO</div>
+      <div class="brand-sub">POMORIE BLACK SEA BALNEOLOGY LABS</div>
+    </div>
+    <nav>
+      <a href="#products">Products</a>
+      <a href="#labels">Packaging Studio</a>
+      <a href="#blog">Research &amp; Lye</a>
+      <a href="data/products.csv" download class="cta-btn">Export Catalog (CSV)</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">◆ PURE POMORIE HYPERSALINE LAGOON ◆</div>
+      <h1>Ancient Mineral Balneotherapy, Re-Engineered.</h1>
+      <p>
+        The complete, verified digital archive and sovereign web infrastructure for Anchialo.
+        Featuring 100% natural transdermal Dual Magnesium complexes harvested from the Black Sea lye 
+        at Pomorie Lake, Bulgaria, engineered to exact Australian TGA standards.
+      </p>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">9</div>
+          <div class="stat-label">Active Formulations</div>
+        </div>
+        <div>
+          <div class="stat-num">16</div>
+          <div class="stat-label">Published Studies</div>
+        </div>
+        <div>
+          <div class="stat-num">300g</div>
+          <div class="stat-label">Nominal Tub Size</div>
+        </div>
+        <div>
+          <div class="stat-num">Φ 1.618</div>
+          <div class="stat-label">Golden Ratio Design</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img src="assets/mockups/anchialo_luxury_jar_mockup.jpg" alt="Anchialo Luxury Packaging Mockup">
+    </div>
+  </section>
+
+  <!-- PRODUCTS CATALOG -->
+  <section id="products" class="section-wrap">
+    <div class="section-header">
+      <h2>Curated Product Formulations</h2>
+      <p>Extracted high-potency topical magnesium complexes enriched with pure botanical extracts.</p>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- Injected via JavaScript from data/products.json -->
+    </div>
+  </section>
+
+  <!-- PACKAGING & PRODUCTION PRINT READY SUITE -->
+  <section id="labels" class="section-wrap labels-studio">
+    <div class="section-header">
+      <h2>Australian Master 2025 Label Suite</h2>
+      <p>Precision-engineered production files matching exact physical tub dimensions.</p>
+    </div>
+
+    <div class="specs-badge-box">
+      <div class="spec-item">Wrap Label Dimensions: <b>28.0 cm × 3.8 cm (3307 × 449 px @ 300 DPI)</b></div>
+      <div class="spec-item">Lid Label Diameter: <b>8.6 cm (1016 × 1016 px @ 300 DPI)</b></div>
+      <div class="spec-item">Color Profile: <b>CMYK ISO 12647 Print-Ready</b></div>
+      <div class="spec-item">Compliance: <b>Australian TGA &amp; EU Regulation 1223/2009</b></div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 40px;">
+      <img src="assets/mockups/anchialo_lineup_mockup.jpg" style="max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-md);" alt="Anchialo 5-Variant Lineup">
+    </div>
+
+    <!-- Arnica -->
+    <div class="label-preview-card">
+      <div class="label-preview-hdr">
+        <div class="variant-name" style="color: #C69214;">ARNICA BLEND — DUAL MAGNESIUM COMPLEX</div>
+        <div class="download-btns">
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Arnica_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Arnica_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+        </div>
+      </div>
+      <div class="img-wrap-side">
+        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Arnica Side Label">
+      </div>
+    </div>
+
+    <!-- Lavender -->
+    <div class="label-preview-card">
+      <div class="label-preview-hdr">
+        <div class="variant-name" style="color: #6B5B95;">LAVENDER BLEND — DUAL MAGNESIUM COMPLEX</div>
+        <div class="download-btns">
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Lavender_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Lavender_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+        </div>
+      </div>
+      <div class="img-wrap-side">
+        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Lavender_280x38mm_300dpi.png" alt="Lavender Side Label">
+      </div>
+    </div>
+
+    <!-- Rosemary -->
+    <div class="label-preview-card">
+      <div class="label-preview-hdr">
+        <div class="variant-name" style="color: #4B6B38;">ROSEMARY BLEND — DUAL MAGNESIUM COMPLEX</div>
+        <div class="download-btns">
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Rosemary_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Rosemary_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+        </div>
+      </div>
+      <div class="img-wrap-side">
+        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Rosemary_280x38mm_300dpi.png" alt="Rosemary Side Label">
+      </div>
+    </div>
+
+    <!-- Juniper -->
+    <div class="label-preview-card">
+      <div class="label-preview-hdr">
+        <div class="variant-name" style="color: #285844;">JUNIPER BLEND — DUAL MAGNESIUM COMPLEX</div>
+        <div class="download-btns">
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Juniper_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Juniper_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+        </div>
+      </div>
+      <div class="img-wrap-side">
+        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Juniper_280x38mm_300dpi.png" alt="Juniper Side Label">
+      </div>
+    </div>
+
+    <!-- Grape -->
+    <div class="label-preview-card">
+      <div class="label-preview-hdr">
+        <div class="variant-name" style="color: #7E2A3C;">GRAPE BLEND — DUAL MAGNESIUM COMPLEX</div>
+        <div class="download-btns">
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Grape_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
+          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Grape_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+        </div>
+      </div>
+      <div class="img-wrap-side">
+        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Grape_280x38mm_300dpi.png" alt="Grape Side Label">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">ANCHIALO</div>
+        <div class="footer-desc">
+          Official production archive, digital asset register, and brand repository.
+          Manufactured by AZIMUT 6000 Ltd, Ivan Vazov 18 str., 8200 Pomorie, Bulgaria.
+          Tel: +359 887 470 548 | E-mail: grudev_g@abv.bg
+        </div>
+      </div>
+      <div>
+        <div class="footer-hdr">Exports</div>
+        <ul class="footer-links">
+          <li><a href="data/products.csv">Products Catalog (CSV)</a></li>
+          <li><a href="data/products.json">Products Schema (JSON)</a></li>
+          <li><a href="data/blog_posts.json">Blog Articles (JSON)</a></li>
+          <li><a href="data/wix_viewer_model.json">Wix Viewer Model (JSON)</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-hdr">Label Specs</div>
+        <ul class="footer-links">
+          <li><a href="#labels">Side Wrap 28×3.8cm</a></li>
+          <li><a href="#labels">Top Lid Ø 8.6cm</a></li>
+          <li><a href="#labels">Azimut Logo Vector</a></li>
+          <li><a href="#labels">Pomorie Aerial Spit</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-hdr">Compliance</div>
+        <div class="footer-desc">
+          TGA Compliant 2025 Master Master text.<br>
+          PAO 12M | ♳ PET 1 Recyclable.<br>
+          ISO 22716 Good Manufacturing Practice.
+        </div>
+      </div>
+    </div>
+    <div class="copy-bottom">
+      &copy; 2026 ANCHIALO. Preserved &amp; Orchestrated by AETERNA Sovereign Systems for Dimitar Prodromov &amp; Sotir Kichukov.
+    </div>
+  </footer>
+
+  <script>
+    fetch('data/products.json')
+      .then(res => res.json())
+      .then(products => {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = products.map(p => `
+          <div class="product-card">
+            <div>
+              <img class="product-img" src="${p.images[0] || 'assets/mockups/anchialo_luxury_jar_mockup.jpg'}" alt="${p.name}">
+              <div class="product-title">${p.name}</div>
+              <div class="product-price">$${p.price || '49.00'} <span style="font-size:13px; color:#888;">USD</span></div>
+              <div class="product-desc">${p.description ? p.description.replace(/&#010;/g, ' ') : ''}</div>
+            </div>
+            <div class="card-footer">
+              <span class="in-stock">● In Stock</span>
+              <a href="${p.url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--gold-dark); text-decoration:none;">Original Page &rarr;</a>
+            </div>
+          </div>
+        `).join('');
+      })
+      .catch(err => console.error('Error loading products:', err));
+  </script>
+</body>
+</html>

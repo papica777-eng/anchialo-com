@@ -1,0 +1,19 @@
+# OS & IDE
+Thumbs.db
+.DS_Store
+*.tmp
+*.log
+.vscode/
+.idea/
+
+# Intermediate Chrome test files
+test_*.png
+test_*.html
+test_*.svg
+vietnam_drive.html
+drive_page.html
+
+# Node / Python
+__pycache__/
+*.pyc
+node_modules/

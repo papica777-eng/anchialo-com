@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* Physical dimensions: 8.6cm = 1016px x 1016px at 300 DPI */
+  body {
+    width: 1016px;
+    height: 1016px;
+    background: #EFECE6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .lid-circle {
+    width: 980px;
+    height: 980px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  /* Golden Ratio Concentric Foil Rings */
+  .ring-primary {
+    position: absolute;
+    top: 24px; left: 24px; right: 24px; bottom: 24px;
+    border-radius: 50%;
+    border: 2.5px solid #C5A059;
+  }
+  .ring-secondary {
+    position: absolute;
+    top: 36px; left: 36px; right: 36px; bottom: 36px;
+    border-radius: 50%;
+    border: 1px dashed #C69214;
+    opacity: 0.6;
+  }
+  .ring-tertiary {
+    position: absolute;
+    top: 46px; left: 46px; right: 46px; bottom: 46px;
+    border-radius: 50%;
+    border: 1px solid #C5A059;
+    opacity: 0.4;
+  }
+
+  /* Curved Text along Top Arc */
+  .curved-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 980px; height: 980px;
+  }
+  .curved-txt {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    fill: #222222;
+  }
+
+  /* Centered Balanced Typography (Golden Ratio Vertical Flow) */
+  .center-unit {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .crest-mark {
+    color: #C5A059;
+    font-size: 18px;
+    letter-spacing: 6px;
+    margin-bottom: 8px;
+  }
+  
+  .brand-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 78px;
+    font-weight: 700;
+    letter-spacing: 16px;
+    color: #1A1918;
+    line-height: 1;
+    margin-bottom: 22px;
+  }
+
+  .title-bar {
+    background: #1C1B1A;
+    color: #FFFFFF;
+    padding: 15px 50px;
+    border-radius: 4px;
+    letter-spacing: 5px;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-top: 2px solid #C5A059;
+    border-bottom: 2px solid #C5A059;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    margin-bottom: 16px;
+  }
+
+  .variant-ribbon-lid {
+    background: #C69214;
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    padding: 8px 32px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .badge-purity {
+    border: 1.5px solid #C5A059;
+    background: linear-gradient(135deg, #FFFDF7 0%, #F5ECE0 100%);
+    color: #4A3C20;
+    padding: 8px 30px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+
+  .bottom-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #333333;
+    text-transform: uppercase;
+  }
+  .bottom-vol {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: #C5A059;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="lid-circle">
+    <div class="ring-primary"></div>
+    <div class="ring-secondary"></div>
+    <div class="ring-tertiary"></div>
+
+    <svg class="curved-svg" viewBox="0 0 980 980">
+      <defs>
+        <path id="topArcLid" d="M 140,490 A 350,350 0 0,1 840,490" fill="none"/>
+      </defs>
+      <text class="curved-txt">
+        <textPath href="#topArcLid" startOffset="50%" text-anchor="middle">
+          MAGNESIUM CHLORIDE &amp; MAGNESIUM SULFATE
+        </textPath>
+      </text>
+    </svg>
+
+    <div class="center-unit">
+      <div class="crest-mark">◆ POMORIE MINERAL LABS ◆</div>
+      <div class="brand-logo">ANCHIALO</div>
+      <div class="title-bar">DUAL MAGNESIUM COMPLEX</div>
+      <div class="variant-ribbon-lid">ARNICA BLEND</div>
+      <div class="badge-purity">NO PRESERVATIVES ADDED</div>
+      <div class="bottom-sub">NATURAL TOPICAL GEL · BLACK SEA LYE</div>
+      <div class="bottom-vol">300 g ℮</div>
+    </div>
+  </div>
+</body>
+</html>
