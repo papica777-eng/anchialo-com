@@ -7,7 +7,7 @@
   <meta name="description" content="Discover Anchialo: Ancient Black Sea mineral balneotherapy. 100% natural Dual Magnesium complexes harvested from Pomorie Lake, Bulgaria, engineered to Australian TGA 2025 specifications.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
   <div class="announcement-bar">
     <div>
       <span class="pulse-dot"></span>
-      ✨ 100% PURE BULGARIAN BLACK SEA LYE • HARVESTED IN LAKE POMORIE
+      100% PURE BULGARIAN BLACK SEA LYE • HARVESTED IN LAKE POMORIE
     </div>
     <div style="display: flex; gap: 20px; align-items: center;">
       <span>FREE WORLDWIDE SHIPPING OVER $100</span>
@@ -36,7 +36,7 @@
 
     <nav class="nav-links">
       <a href="#products">Formulations</a>
-      <a href="#studio">3D Packaging Studio</a>
+      <a href="#studio">Packaging HUD Studio</a>
       <a href="#science">Mineral Science</a>
       <a href="#blog">Clinical Studies</a>
       <a href="#downloads">Downloads</a>
@@ -45,7 +45,7 @@
     <div class="nav-actions">
       <!-- Theme Switcher -->
       <button class="icon-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
-        🌙 Obsidian
+        <span class="mono" id="themeText" style="font-size:11px; font-weight:700; letter-spacing:1px;">OBSIDIAN</span>
       </button>
 
       <!-- Currency Selector -->
@@ -63,7 +63,7 @@
 
       <!-- Mobile Hamburger Button -->
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
-        ☰
+        [MENU]
       </button>
     </div>
   </header>
@@ -72,7 +72,7 @@
   <div class="mobile-nav-drawer" id="mobileNavDrawer">
     <div style="font-family:'Cinzel', serif; font-size:22px; font-weight:700; margin-bottom:12px; color:var(--gold-primary);">ANCHIALO</div>
     <a href="#products">Formulations</a>
-    <a href="#studio">Packaging Studio</a>
+    <a href="#studio">Packaging HUD Studio</a>
     <a href="#science">Mineral Science</a>
     <a href="#blog">Clinical Studies</a>
     <a href="#downloads">Enterprise Exports</a>
@@ -83,7 +83,7 @@
   <section class="hero-section">
     <div class="hero-text">
       <div class="crest-pill">
-        <span>◆</span> PURE POMORIE HYPERSALINE LAGOON <span>◆</span>
+        <span>[ORIGIN]</span> PURE POMORIE HYPERSALINE LAGOON <span>[BALNEOTHERAPY]</span>
       </div>
       <h1 class="hero-heading">
         Ancient Mineral Balneotherapy, <span class="gold-text">Re-Engineered</span>.
@@ -96,7 +96,7 @@
 
       <div class="hero-actions">
         <a href="#products" class="btn-primary">Explore Formulations &rarr;</a>
-        <a href="#studio" class="btn-secondary">Interactive Studio</a>
+        <a href="#studio" class="btn-secondary">Packaging HUD Studio</a>
       </div>
 
       <div class="hero-metrics">
@@ -121,27 +121,27 @@
 
     <div class="hero-gallery-view">
       <div class="mockup-frame">
-        <img src="assets/mockups/anchialo_luxury_jar_mockup.jpg" alt="Anchialo Dual Magnesium Luxury Packaging">
+        <img src="assets/images/products/06_file.png" alt="Anchialo Dual Magnesium Arnica Gel 300g Original" style="max-height: 460px; width: auto; object-fit: contain; filter: drop-shadow(0 25px 45px rgba(0,0,0,0.22));">
         <div class="float-seal">
-          <span style="color:var(--gold-primary); font-size:16px;">✦</span>
+          <span class="mono" style="color:var(--gold-primary); font-weight:700;">[VERIFIED]</span>
           <span>TGA Compliant 2025 • High-Bioavailability Ionic Formula</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== 3D INTERACTIVE PACKAGING STUDIO ==================== -->
+  <!-- ==================== INTERACTIVE PACKAGING HUD STUDIO ==================== -->
   <section id="studio" class="section-container">
     <div class="section-head">
-      <span class="mini-sub">PRODUCTION PRINT-READY ARTIFACTS</span>
-      <h2>Interactive 3D Label &amp; Packaging Studio</h2>
+      <span class="mini-sub">PRODUCTION PACKAGING &amp; PRINT SPECIFICATION HUD</span>
+      <h2>Interactive Packaging HUD &amp; Label Studio</h2>
       <p>
-        Explore the complete Australian Master 2025 packaging suite. Switch botanical variants to preview 
-        the exact circular top lid (Ø 8.6 cm) and side wrap label (28.0 cm × 3.8 cm) calibrated for high-precision printing.
+        Full-fidelity Australian Master 2025 packaging telemetry. Inspect the circular lid recess label (Ø 86.0 mm)
+        and side wrap label (28.0 × 3.8 cm) calibrated for ISO 12647 CMYK production printing with zero distortion.
       </p>
     </div>
 
-    <!-- Variant Tabs -->
+    <!-- Variant Tabs (No Emojis) -->
     <div class="blend-tabs">
       <button class="blend-tab active" data-blend="arnica">
         <span class="color-dot" style="background:#C69214;"></span>
@@ -165,124 +165,141 @@
       </button>
     </div>
 
-    <!-- Studio Showcase Wrapper -->
-    <div class="studio-wrapper">
-      <div class="studio-grid">
-        <!-- Left: 3D Turntable Jar Showcase -->
-        <div class="jar-turntable-card">
-          <div class="turntable-aura" id="studioTurntableAura"></div>
-          
-          <div class="turntable-stage-3d" id="turntableStage" title="Click & Drag to Rotate 360°">
-            <div class="tub-assembly-3d" id="tubAssembly">
-              <div class="tub-lid-disc" id="tubLidDisc">
+    <!-- Interactive HUD Container -->
+    <div class="packaging-hud-card" id="packagingHudCard">
+      <!-- HUD Top Telemetry Bar -->
+      <div class="hud-top-bar">
+        <div class="hud-status-group">
+          <span class="status-dot bg-emerald"></span>
+          <span class="mono hud-tag">SYSTEM: CALIBRATED</span>
+          <span class="hud-divider">/</span>
+          <span class="mono hud-tag" id="hudActiveVariantTag">VARIANT: ARNICA BLEND</span>
+          <span class="hud-divider">/</span>
+          <span class="mono hud-tag">STANDARDS: TGA 2025 • ISO 12647</span>
+        </div>
+        <div class="hud-controls-group">
+          <button class="hud-tool-btn" id="btnTogglePhiGrid" title="Toggle Golden Ratio Inspection Grid">
+            <span class="mono">Φ GRID</span>
+          </button>
+          <div class="hud-zoom-pills">
+            <button class="hud-pill-btn active" data-zoom="1x">100%</button>
+            <button class="hud-pill-btn" data-zoom="2x">200%</button>
+            <button class="hud-pill-btn" data-zoom="3x">320%</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HUD Main Grid Layout -->
+      <div class="hud-main-grid">
+        <!-- Column 1: Physical Visualizer & High-Res Inspection -->
+        <div class="hud-col-visual">
+          <!-- Top Row: Circular Lid & Technical Callouts -->
+          <div class="hud-lid-overview-row">
+            <div class="hud-lid-lens-frame">
+              <div class="hud-lens-glass">
                 <img id="studioLidImg" src="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" alt="Top Lid 300 DPI">
-                <div class="tub-lid-sheen"></div>
+                <div class="hud-lens-glare"></div>
               </div>
-              <div class="tub-cylinder-body" id="tubCylinderBody">
-                <div class="tub-label-strip-panoramic" id="tubLabelStrip">
-                  <img id="studioCylinderImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Wrap Label Cylinder">
-                </div>
-                <div class="cylinder-specular-overlay"></div>
+              <div class="hud-lens-ring"></div>
+            </div>
+
+            <div class="hud-lid-meta">
+              <div class="hud-meta-badge mono">[LID RECESS SPECIFICATION]</div>
+              <h4 id="hudLidTitle">TOP LID Ø 86.0 MM</h4>
+              <div class="hud-spec-lines mono">
+                <div><span>DIMENSIONS:</span> 86.0 × 86.0 mm</div>
+                <div><span>RESOLUTION:</span> 1016 × 1016 px @ 300 DPI</div>
+                <div><span>COLOR MATRIX:</span> CMYK ISO 12647-2</div>
+                <div><span>SUBSTRATE:</span> Waterproof PET / Matte Gold Ring</div>
               </div>
-              <div class="tub-shadow-base"></div>
             </div>
           </div>
 
-          <div class="turntable-ctrls">
-            <div style="font-family:'Montserrat', sans-serif; font-size:11px; font-weight:800; color:var(--text-muted); text-align:center; text-transform:uppercase; letter-spacing:1px;">
-              360° Interactive Turntable (Drag to Spin)
+          <!-- Bottom: Panoramic 280 x 38 mm Wrap Label with Pan & Zoom -->
+          <div class="hud-wrap-section">
+            <div class="hud-wrap-header">
+              <div class="mono hud-wrap-title" id="hudWrapTitle">
+                SIDE WRAP LABEL — 280.0 × 38.0 MM (3307 × 449 PX @ 300 DPI)
+              </div>
+              <div class="hud-drag-hint mono">[ DRAG HORIZONTALLY TO PAN ]</div>
             </div>
-            <div class="turntable-preset-row">
-              <button class="btn-angle-preset active" data-angle="0">🏷️ Front</button>
-              <button class="btn-angle-preset" data-angle="90">🌿 Purpose</button>
-              <button class="btn-angle-preset" data-angle="180">🧪 INCI</button>
-              <button class="btn-angle-preset" data-angle="270">⏱️ Usage</button>
+
+            <div class="side-label-img-box" id="sideLabelBox">
+              <div class="side-label-pan-wrap" id="sideLabelPanWrap">
+                <div class="phi-grid-overlay" id="phiGridOverlay">
+                  <div class="phi-line" style="left: 26.6%;"><span>P1: HERITAGE (880px)</span></div>
+                  <div class="phi-line" style="left: 51.4%;"><span>P2: PURPOSE (820px)</span></div>
+                  <div class="phi-line" style="left: 75.3%;"><span>P3: USAGE (790px)</span></div>
+                  <div class="phi-line" style="left: 100%;"><span>P4: BRAND (817px)</span></div>
+                </div>
+                <img id="studioSideImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Side Wrap Label 300 DPI">
+              </div>
             </div>
-            <button class="btn-auto-spin" id="btnAutoSpin">
-              <span>🔄</span> <span>Auto-Rotate 360°</span>
-            </button>
+          </div>
+
+          <!-- Export Bar -->
+          <div class="hud-export-bar">
+            <a id="dlSidePdf" href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Arnica_280x38mm_PRINT_READY.pdf" class="btn-hud-primary" download>
+              SIDE WRAP (PDF CMYK)
+            </a>
+            <a id="dlLidPdf" href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Arnica_86mm_PRINT_READY.pdf" class="btn-hud-primary" download>
+              TOP LID (PDF CMYK)
+            </a>
+            <a id="dlSidePng" href="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" class="btn-hud-ghost" download>
+              PNG 300 DPI (SIDE)
+            </a>
+            <a id="dlLidPng" href="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" class="btn-hud-ghost" download>
+              PNG 300 DPI (LID)
+            </a>
           </div>
         </div>
 
-        <!-- Right: Side Wrap Panoramic Pan-Zoom & Text Inspector -->
-        <div class="side-showcase">
-          <div class="side-label-header-bar">
-            <h3 id="studioBlendTitle" style="font-family:'Cinzel', serif; font-size:22px; font-weight:700; color:#C69214;">
-              ARNICA BLEND — DUAL MAGNESIUM COMPLEX
-            </h3>
-            <div class="label-zoom-ctrls">
-              <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:2px;">Text Zoom:</span>
-              <button class="btn-zoom active" data-zoom="1x">100% Fit</button>
-              <button class="btn-zoom" data-zoom="2x">200% Zoom</button>
-              <button class="btn-zoom" data-zoom="3x">320% Macro</button>
+        <!-- Column 2: Clinical Telemetry & Verbatim Master Text Inspector -->
+        <div class="hud-col-data">
+          <!-- Telemetry Stats Cards -->
+          <div class="hud-telemetry-grid">
+            <div class="hud-metric-card">
+              <div class="hud-metric-k mono">IONIC MAGNESIUM DENSITY</div>
+              <div class="hud-metric-v">340 g/L MgCl₂ + 98 g/L MgSO₄</div>
+              <div class="hud-metric-sub">Hypersaline Ionic Mineral Balance</div>
+            </div>
+            <div class="hud-metric-card">
+              <div class="hud-metric-k mono">EXTRACTION SOURCE</div>
+              <div class="hud-metric-v">Lake Pomorie Lagoon</div>
+              <div class="hud-metric-sub">Natural Solar Lagoon Evaporation (310‰)</div>
+            </div>
+            <div class="hud-metric-card">
+              <div class="hud-metric-k mono">REGULATORY &amp; QUALITY</div>
+              <div class="hud-metric-v">TGA 2025 ARTG / CPNP</div>
+              <div class="hud-metric-sub">EU (EC) 1223/2009 • ISO 22716 GMP</div>
+            </div>
+            <div class="hud-metric-card">
+              <div class="hud-metric-k mono">BOTANICAL ENRICHMENT</div>
+              <div class="hud-metric-v" id="hudBotanicalTitle">Arnica Montana Extract</div>
+              <div class="hud-metric-sub" id="hudBotanicalAction">Targeted Musculoskeletal Soothing</div>
             </div>
           </div>
 
-          <!-- Panoramic Label Viewer -->
-          <div class="side-label-img-box" id="sideLabelBox">
-            <div class="side-label-pan-wrap" id="sideLabelPanWrap">
-              <img id="studioSideImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Side Wrap Label 300 DPI">
+          <!-- Master Verbatim Text Inspector -->
+          <div class="hud-inspector-box">
+            <div class="hud-inspector-tabs">
+              <button class="btn-text-tab active" data-tab="purpose">PURPOSE</button>
+              <button class="btn-text-tab" data-tab="inci">INCI FORMULA</button>
+              <button class="btn-text-tab" data-tab="usage">USAGE &amp; RECOVERY</button>
+              <button class="btn-text-tab" data-tab="warning">SAFETY &amp; STORAGE</button>
+              <button class="btn-text-tab" data-tab="heritage">LYE HERITAGE</button>
+              <button class="btn-text-tab" data-tab="producer">PRODUCER</button>
             </div>
-          </div>
 
-          <!-- Verbatim Master Text Inspector (Big Readable Typography) -->
-          <div class="master-text-inspector">
-            <div class="text-inspector-tabs">
-              <button class="btn-text-tab active" data-tab="purpose">🌿 Purpose</button>
-              <button class="btn-text-tab" data-tab="inci">🧪 INCI Ingredients</button>
-              <button class="btn-text-tab" data-tab="usage">⏱️ Usage &amp; Overnight</button>
-              <button class="btn-text-tab" data-tab="warning">⚠️ Warnings &amp; Storage</button>
-              <button class="btn-text-tab" data-tab="heritage">🌊 What is Lye?</button>
-              <button class="btn-text-tab" data-tab="producer">🏭 Producer &amp; Batch</button>
-            </div>
-            <div class="text-inspector-card" id="textInspectorCard">
-              <h4 id="inspectorHeading">🌿 Purpose &amp; Formulation Benefits</h4>
+            <div class="hud-inspector-card" id="textInspectorCard">
+              <div class="hud-card-hdr">
+                <span class="mono hud-card-code" id="inspectorCode">SEC-01 // THERAPEUTIC PURPOSE</span>
+                <h4 id="inspectorHeading">Purpose &amp; Formulation Benefits</h4>
+              </div>
               <p id="inspectorBody">
                 This is a fast-absorbing topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. Enriched with Arnica extract, traditionally used to soothe and comfort the body.
               </p>
             </div>
-          </div>
-
-          <div class="studio-specs-row">
-            <div class="studio-spec-col">
-              <div class="k">Wrap Dimensions</div>
-              <div class="v">28.0 × 3.8 cm (300 DPI)</div>
-            </div>
-            <div class="studio-spec-col">
-              <div class="k">Botanical Extract</div>
-              <div class="v" id="studioBotanicalField">Arnica Montana extract</div>
-            </div>
-            <div class="studio-spec-col">
-              <div class="k">Olfactory Profile</div>
-              <div class="v" id="studioScentField">Warm herbal &amp; meadow</div>
-            </div>
-            <div class="studio-spec-col">
-              <div class="k">Color Palette</div>
-              <div class="v" id="studioColorField">Warm Goldenrod (#C69214)</div>
-            </div>
-            <div class="studio-spec-col">
-              <div class="k">Active Minerals</div>
-              <div class="v">Dual Mg (MgCl₂ + MgSO₄)</div>
-            </div>
-            <div class="studio-spec-col">
-              <div class="k">Standards &amp; PAO</div>
-              <div class="v">TGA 2025 • PAO 12M • ♳ PET 1</div>
-            </div>
-          </div>
-
-          <div class="studio-dl-actions">
-            <a id="dlSidePdf" href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Arnica_280x38mm_PRINT_READY.pdf" class="btn-print-dl" download>
-              Side Wrap (PDF CMYK) &darr;
-            </a>
-            <a id="dlLidPdf" href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Arnica_86mm_PRINT_READY.pdf" class="btn-print-dl" download>
-              Top Lid (PDF CMYK) &darr;
-            </a>
-            <a id="dlSidePng" href="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" class="btn-secondary" download style="padding:12px 18px; font-size:11px;">
-              PNG 300 DPI (Side)
-            </a>
-            <a id="dlLidPng" href="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" class="btn-secondary" download style="padding:12px 18px; font-size:11px;">
-              PNG 300 DPI (Lid)
-            </a>
           </div>
         </div>
       </div>
@@ -614,7 +631,7 @@
       <div class="qv-grid">
         <div>
           <div class="qv-gallery-main">
-            <img id="qvMainImg" src="assets/mockups/anchialo_luxury_jar_mockup.jpg" alt="Product Preview">
+            <img id="qvMainImg" src="assets/images/products/06_file.png" alt="Product Preview" style="max-height:360px; object-fit:contain;">
           </div>
           <div class="qv-thumbs-row" id="qvThumbs"></div>
         </div>

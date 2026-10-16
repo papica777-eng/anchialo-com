@@ -110,13 +110,9 @@
     }
   };
 
-  // Turntable and Inspector State
-  let turntableAngle = 0;
-  let isDraggingTurntable = false;
-  let dragStartX = 0;
-  let isAutoSpinning = false;
-  let autoSpinAnimationId = null;
+  // Packaging HUD State
   let activeTextTab = 'purpose';
+  let isPhiGridActive = false;
 
   // ==================== PRICE & CURRENCY UTILS ====================
   function formatPrice(usdAmount) {
@@ -144,7 +140,9 @@
     localStorage.setItem('anchialo_theme', theme);
     const themeBtn = document.getElementById('themeToggleBtn');
     if (themeBtn) {
-      themeBtn.innerHTML = theme === 'dark' ? '☀️ Porcelain' : '🌙 Obsidian';
+      themeBtn.innerHTML = theme === 'dark' 
+        ? '<span class="mono" id="themeText" style="font-size:11px; font-weight:700; letter-spacing:1px;">LIGHT</span>' 
+        : '<span class="mono" id="themeText" style="font-size:11px; font-weight:700; letter-spacing:1px;">OBSIDIAN</span>';
     }
   }
 
@@ -166,9 +164,9 @@
     const toast = document.createElement('div');
     toast.className = 'toast-item';
     toast.innerHTML = `
-      <div class="toast-icon">✓</div>
+      <div class="status-dot bg-emerald" style="margin-right:0;"></div>
       <div>
-        <div style="font-weight: 800; font-family:'Montserrat', sans-serif; font-size:12px; margin-bottom:2px; color:var(--gold-primary); text-transform:uppercase; letter-spacing:1px;">${title}</div>
+        <div style="font-weight: 800; font-family:'JetBrains Mono', monospace; font-size:11px; margin-bottom:2px; color:var(--gold-primary); text-transform:uppercase; letter-spacing:1px;">${title}</div>
         <div style="font-size:13px; color:#EAE5DD;">${message}</div>
       </div>
     `;
@@ -181,7 +179,7 @@
     }, 3200);
   }
 
-  // ==================== 3D INTERACTIVE TURNTABLE STUDIO ====================
+  // ==================== PACKAGING HUD STUDIO ====================
   function initStudio() {
     // 1. Variant tabs
     const tabs = document.querySelectorAll('.blend-tab');
@@ -192,66 +190,10 @@
       });
     });
 
-    // 2. Turntable drag interaction
-    const stage = document.getElementById('turntableStage');
-    if (stage) {
-      stage.addEventListener('mousedown', (e) => {
-        isDraggingTurntable = true;
-        dragStartX = e.clientX;
-        stopAutoSpin();
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!isDraggingTurntable) return;
-        const delta = e.clientX - dragStartX;
-        dragStartX = e.clientX;
-        setTurntableAngle(turntableAngle + delta * 0.7);
-      });
-
-      window.addEventListener('mouseup', () => {
-        isDraggingTurntable = false;
-      });
-
-      // Mobile Touch support
-      stage.addEventListener('touchstart', (e) => {
-        isDraggingTurntable = true;
-        dragStartX = e.touches[0].clientX;
-        stopAutoSpin();
-      }, { passive: true });
-
-      window.addEventListener('touchmove', (e) => {
-        if (!isDraggingTurntable) return;
-        const delta = e.touches[0].clientX - dragStartX;
-        dragStartX = e.touches[0].clientX;
-        setTurntableAngle(turntableAngle + delta * 0.7);
-      }, { passive: true });
-
-      window.addEventListener('touchend', () => {
-        isDraggingTurntable = false;
-      });
-    }
-
-    // 3. Auto-spin button
-    const autoSpinBtn = document.getElementById('btnAutoSpin');
-    if (autoSpinBtn) {
-      autoSpinBtn.addEventListener('click', toggleAutoSpin);
-    }
-
-    // 4. Angle presets
-    document.querySelectorAll('.btn-angle-preset').forEach(btn => {
+    // 2. Zoom controls for Side Wrap
+    document.querySelectorAll('.hud-pill-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-angle-preset').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const angle = parseInt(btn.getAttribute('data-angle')) || 0;
-        stopAutoSpin();
-        setTurntableAngle(angle, true);
-      });
-    });
-
-    // 5. Zoom controls for Side Wrap
-    document.querySelectorAll('.btn-zoom').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-zoom').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.hud-pill-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const zoom = btn.getAttribute('data-zoom');
         const wrap = document.getElementById('sideLabelPanWrap');
@@ -259,11 +201,23 @@
         wrap.className = 'side-label-pan-wrap';
         if (zoom === '2x') wrap.classList.add('zoomed-2x');
         if (zoom === '3x') wrap.classList.add('zoomed-3x');
-        showToast(`Label text magnification: ${zoom.toUpperCase()}`, 'Text Zoom');
+        showToast(`Label magnification: ${zoom.toUpperCase()}`, 'Packaging Loupe');
       });
     });
 
-    // 6. Horizontal drag-to-pan on side label container
+    // 3. Golden Ratio Grid toggle
+    const phiBtn = document.getElementById('btnTogglePhiGrid');
+    const phiOverlay = document.getElementById('phiGridOverlay');
+    if (phiBtn && phiOverlay) {
+      phiBtn.addEventListener('click', () => {
+        isPhiGridActive = !isPhiGridActive;
+        phiOverlay.classList.toggle('active', isPhiGridActive);
+        phiBtn.classList.toggle('active', isPhiGridActive);
+        showToast(isPhiGridActive ? 'Golden Ratio (Φ = 1.618) Grid Overlay Enabled' : 'Golden Ratio Grid Disabled', 'HUD Grid');
+      });
+    }
+
+    // 4. Horizontal drag-to-pan on side label container
     const sideBox = document.getElementById('sideLabelBox');
     if (sideBox) {
       let isDown = false;
@@ -296,8 +250,8 @@
       });
     }
 
-    // 7. Master text inspector tabs
-    document.querySelectorAll('.btn-text-tab').forEach(btn => {
+    // 5. Master text inspector tabs
+    document.querySelectorAll('.hud-inspector-tabs .btn-text-tab').forEach(btn => {
       btn.addEventListener('click', () => {
         const tabKey = btn.getAttribute('data-tab');
         updateMasterTextInspector(tabKey);
@@ -307,54 +261,6 @@
     // Initial variant load
     switchBlend('arnica');
     updateMasterTextInspector('purpose');
-    startAutoSpin();
-  }
-
-  function setTurntableAngle(angle, smooth = false) {
-    turntableAngle = (angle % 360 + 360) % 360;
-    const tubAssembly = document.getElementById('tubAssembly');
-    const tubLabelStrip = document.getElementById('tubLabelStrip');
-
-    if (tubAssembly) {
-      if (smooth) tubAssembly.classList.add('smooth-spin');
-      else tubAssembly.classList.remove('smooth-spin');
-      // Subtle 3D tilt perspective
-      tubAssembly.style.transform = `rotateY(${turntableAngle}deg)`;
-    }
-
-    if (tubLabelStrip) {
-      // 1200px represents 360 degree revolution
-      const pxOffset = -((turntableAngle / 360) * 1200);
-      tubLabelStrip.style.transform = `translateX(${pxOffset}px)`;
-    }
-  }
-
-  function toggleAutoSpin() {
-    if (isAutoSpinning) {
-      stopAutoSpin();
-    } else {
-      startAutoSpin();
-    }
-  }
-
-  function startAutoSpin() {
-    isAutoSpinning = true;
-    const btn = document.getElementById('btnAutoSpin');
-    if (btn) btn.innerHTML = '<span>⏸</span> <span>Pause Auto-Spin</span>';
-
-    function spin() {
-      if (!isAutoSpinning) return;
-      setTurntableAngle(turntableAngle + 0.45);
-      autoSpinAnimationId = requestAnimationFrame(spin);
-    }
-    autoSpinAnimationId = requestAnimationFrame(spin);
-  }
-
-  function stopAutoSpin() {
-    isAutoSpinning = false;
-    if (autoSpinAnimationId) cancelAnimationFrame(autoSpinAnimationId);
-    const btn = document.getElementById('btnAutoSpin');
-    if (btn) btn.innerHTML = '<span>🔄</span> <span>Auto-Rotate 360°</span>';
   }
 
   function switchBlend(blendKey) {
@@ -375,36 +281,31 @@
       }
     });
 
-    // Update 3D turntable images & aura
+    // Update images in HUD
     const lidImg = document.getElementById('studioLidImg');
-    const cylinderImg = document.getElementById('studioCylinderImg');
     const sideImg = document.getElementById('studioSideImg');
-    const aura = document.getElementById('studioTurntableAura');
 
     if (lidImg) lidImg.src = blend.lidImg;
-    if (cylinderImg) cylinderImg.src = blend.sideImg;
     if (sideImg) sideImg.src = blend.sideImg;
-    if (aura) {
-      aura.style.background = `radial-gradient(circle, ${blend.bgGlow} 0%, transparent 70%)`;
-    }
 
-    // Update textual fields
-    const blendTitle = document.getElementById('studioBlendTitle');
-    const botanicalField = document.getElementById('studioBotanicalField');
-    const scentField = document.getElementById('studioScentField');
-    const colorField = document.getElementById('studioColorField');
+    // Update Telemetry Bar & Headers
+    const hudActiveVariantTag = document.getElementById('hudActiveVariantTag');
+    const hudLidTitle = document.getElementById('hudLidTitle');
+    const hudWrapTitle = document.getElementById('hudWrapTitle');
+    const hudBotanicalTitle = document.getElementById('hudBotanicalTitle');
+    const hudBotanicalAction = document.getElementById('hudBotanicalAction');
+
+    if (hudActiveVariantTag) hudActiveVariantTag.textContent = `VARIANT: ${blend.name.split('—')[0].trim()}`;
+    if (hudLidTitle) hudLidTitle.textContent = `TOP LID Ø 86.0 MM — ${blend.name.split('—')[0].trim()}`;
+    if (hudWrapTitle) hudWrapTitle.textContent = `SIDE WRAP LABEL — ${blend.name.split('—')[0].trim()} (280.0 × 38.0 MM @ 300 DPI)`;
+    if (hudBotanicalTitle) hudBotanicalTitle.textContent = blend.botanical.split('(')[0].trim();
+    if (hudBotanicalAction) hudBotanicalAction.textContent = blend.scent;
+
+    // Update Download Links
     const dlLidPdf = document.getElementById('dlLidPdf');
     const dlSidePdf = document.getElementById('dlSidePdf');
     const dlLidPng = document.getElementById('dlLidPng');
     const dlSidePng = document.getElementById('dlSidePng');
-
-    if (blendTitle) {
-      blendTitle.textContent = blend.name;
-      blendTitle.style.color = blend.accentColor;
-    }
-    if (botanicalField) botanicalField.textContent = blend.botanical;
-    if (scentField) scentField.textContent = blend.scent;
-    if (colorField) colorField.textContent = blend.colorName;
 
     if (dlLidPdf) dlLidPdf.href = blend.lidPdf;
     if (dlSidePdf) dlSidePdf.href = blend.sidePdf;
@@ -420,41 +321,49 @@
     if (!blend) return;
 
     const heading = document.getElementById('inspectorHeading');
+    const code = document.getElementById('inspectorCode');
     const body = document.getElementById('inspectorBody');
     if (!heading || !body) return;
 
     const contentMap = {
       purpose: {
-        title: '🌿 Purpose &amp; Formulation Benefits',
+        code: 'SEC-01 // THERAPEUTIC PURPOSE',
+        title: 'Purpose &amp; Formulation Benefits',
         text: blend.purpose
       },
       inci: {
-        title: '🧪 Full INCI Ingredients (Australian TGA 2025 Standard)',
+        code: 'SEC-02 // INCI FORMULATION',
+        title: 'Full INCI Ingredients (Australian TGA 2025 Standard)',
         text: `<b>Ingredients List:</b><br>${blend.inci}`
       },
       usage: {
-        title: '⏱️ Directions for Usage &amp; Overnight Application',
+        code: 'SEC-03 // APPLICATION PROTOCOL',
+        title: 'Directions for Usage &amp; Overnight Recovery',
         text: SHARED_TEXTS.usage
       },
       warning: {
-        title: '⚠️ Precautions &amp; Recommended Storage',
+        code: 'SEC-04 // PRECAUTIONS & STORAGE',
+        title: 'Precautions &amp; Recommended Storage',
         text: SHARED_TEXTS.warning
       },
       heritage: {
-        title: '🌊 What is Pomorie Black Sea Lye?',
+        code: 'SEC-05 // MINERAL ORIGIN',
+        title: 'What is Pomorie Black Sea Lye?',
         text: SHARED_TEXTS.heritage
       },
       producer: {
-        title: '🏭 Manufacturer &amp; Batch Traceability',
+        code: 'SEC-06 // BATCH & PRODUCER',
+        title: 'Manufacturer &amp; Batch Traceability',
         text: SHARED_TEXTS.producer
       }
     };
 
     const item = contentMap[tabKey] || contentMap.purpose;
+    if (code) code.textContent = item.code;
     heading.innerHTML = item.title;
     body.innerHTML = item.text;
 
-    document.querySelectorAll('.btn-text-tab').forEach(btn => {
+    document.querySelectorAll('.hud-inspector-tabs .btn-text-tab').forEach(btn => {
       if (btn.getAttribute('data-tab') === tabKey) btn.classList.add('active');
       else btn.classList.remove('active');
     });
@@ -514,7 +423,7 @@
     }
 
     grid.innerHTML = filtered.map((prod, idx) => {
-      const mainImg = (prod.images && prod.images[0]) || 'assets/mockups/anchialo_luxury_jar_mockup.jpg';
+      const mainImg = (prod.images && prod.images[0]) || 'assets/images/products/06_file.png';
       const cleanDesc = (prod.description || '')
         .replace(/&#010;/g, ' ')
         .replace(/---.*---/g, '')
@@ -583,7 +492,7 @@
     const addBtn = document.getElementById('qvAddBtn');
     const qtyVal = document.getElementById('qvQtyVal');
 
-    const images = prod.images && prod.images.length > 0 ? prod.images : ['assets/mockups/anchialo_luxury_jar_mockup.jpg'];
+    const images = prod.images && prod.images.length > 0 ? prod.images : ['assets/images/products/06_file.png'];
     if (mainImgEl) mainImgEl.src = images[0];
 
     if (thumbsContainer) {
@@ -684,7 +593,7 @@
     if (STATE.cart.length === 0) {
       list.innerHTML = `
         <div style="text-align:center; padding: 48px 16px; color:var(--text-muted);">
-          <div style="font-size:36px; margin-bottom:12px;">🛍️</div>
+          <div class="mono" style="font-size:12px; font-weight:700; color:var(--text-light); margin-bottom:12px;">[EMPTY BAG]</div>
           <div style="font-family:'Cinzel', serif; font-size:18px; color:var(--text-main); margin-bottom:8px;">Your Bag is Empty</div>
           <p style="font-size:13px;">Explore our Pomorie Dual Magnesium mineral formulations.</p>
         </div>
@@ -729,7 +638,7 @@
     const remainingUSD = STATE.freeShippingThresholdUSD - subtotalUSD;
     if (remainingUSD <= 0) {
       if (progressBar) progressBar.style.width = '100%';
-      if (progressText) progressText.innerHTML = `🎉 <b>You unlocked FREE Global Air Express Shipping!</b>`;
+      if (progressText) progressText.innerHTML = `<b>QUALIFIED FOR FREE GLOBAL AIR EXPRESS SHIPPING</b>`;
       if (shippingEl) shippingEl.textContent = 'FREE';
     } else {
       const pct = Math.min(100, Math.round((subtotalUSD / STATE.freeShippingThresholdUSD) * 100));
@@ -813,7 +722,7 @@
     }
 
     grid.innerHTML = STATE.blogPosts.slice(0, 9).map((post, idx) => {
-      const img = (post.image && post.image.url) ? post.image.url : 'assets/mockups/anchialo_luxury_jar_mockup.jpg';
+      const img = (post.image && post.image.url) ? post.image.url : 'assets/images/products/06_file.png';
       const cleanSnippet = (post.description || '').slice(0, 140) + '...';
       const dateFormatted = post.datePublished ? new Date(post.datePublished).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Verified Study';
 

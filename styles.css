@@ -503,224 +503,490 @@ nav.nav-links a:hover::after {
   transform: translateY(-2px);
 }
 
-.studio-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: 48px;
-  align-items: start;
-}
-
-/* 3D Realistic Turntable Stage */
-.jar-turntable-card {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* ==================== HIGH-PRECISION INTERACTIVE PACKAGING HUD ==================== */
+.packaging-hud-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-gold);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: var(--card-hover-shadow);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--card-shadow);
+  transition: all 0.4s ease;
 }
 
-.turntable-aura {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 380px; height: 380px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--current-aura, rgba(198, 146, 20, 0.28)) 0%, transparent 70%);
-  pointer-events: none;
-  filter: blur(35px);
-  transition: all 0.6s ease;
-  z-index: 1;
-}
-
-.turntable-stage-3d {
-  width: 100%;
-  height: 380px;
-  perspective: 1200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
-  cursor: grab;
-}
-
-.turntable-stage-3d:active {
-  cursor: grabbing;
-}
-
-/* 3D Tub Model Assembly */
-.tub-assembly-3d {
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tub-assembly-3d.smooth-spin {
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-/* 3D Top Lid */
-.tub-lid-disc {
-  width: 250px;
-  height: 60px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 45% 30%, #FFFFFF 0%, #F5ECE0 60%, #C5A059 100%);
-  border: 3px solid var(--gold-primary);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25), inset 0 2px 8px rgba(255,255,255,0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 3;
-  margin-bottom: -15px;
-  transform: rotateX(25deg);
-  overflow: hidden;
-}
-
-.tub-lid-disc img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.tub-lid-sheen {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(105deg, rgba(255,255,255,0.6) 0%, transparent 45%, rgba(255,255,255,0.4) 100%);
-  pointer-events: none;
-}
-
-/* 3D Tub Body Cylinder */
-.tub-cylinder-body {
-  width: 260px;
-  height: 160px;
-  border-radius: 6px 6px 30px 30px;
-  background: #FFFFFF;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 -6px 15px rgba(0,0,0,0.12);
+[data-theme="dark"] .packaging-hud-card {
+  background: #080C14;
   border: 1px solid rgba(197, 160, 89, 0.3);
-  z-index: 2;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-.tub-label-strip-panoramic {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 1915px; /* Represents panoramic wrap around the cylinder */
-  display: flex;
-  will-change: transform;
+.mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.tub-label-strip-panoramic img {
-  height: 100%;
-  width: 100%;
-  object-fit: fill;
-}
-
-/* Cylinder 3D Specular Highlight & Shadow Overlay */
-.cylinder-specular-overlay {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(90deg, 
-    rgba(0,0,0,0.45) 0%, 
-    rgba(0,0,0,0.1) 15%, 
-    transparent 35%, 
-    rgba(255,255,255,0.5) 45%, 
-    rgba(255,255,255,0.7) 50%, 
-    rgba(255,255,255,0.3) 55%, 
-    transparent 70%, 
-    rgba(0,0,0,0.15) 85%, 
-    rgba(0,0,0,0.5) 100%
-  );
-  pointer-events: none;
-  z-index: 5;
-}
-
-.tub-shadow-base {
-  width: 240px;
-  height: 25px;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 75%);
-  margin-top: 10px;
+/* Pulsing Status Dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  filter: blur(4px);
+  display: inline-block;
+  margin-right: 8px;
+  position: relative;
+  flex-shrink: 0;
 }
 
-/* Turntable Control Bar */
-.turntable-ctrls {
-  width: 100%;
-  margin-top: 20px;
+.status-dot::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: hudRipple 1.8s infinite ease-out;
+}
+
+@keyframes hudRipple {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.status-dot.bg-emerald {
+  background-color: #00ffaa;
+  color: #00ffaa;
+  box-shadow: 0 0 10px rgba(0, 255, 170, 0.5);
+}
+
+/* HUD Top Telemetry Bar */
+.hud-top-bar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-.turntable-preset-row {
+.hud-status-group {
   display: flex;
-  justify-content: center;
-  gap: 8px;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 6px;
 }
 
-.btn-angle-preset {
-  background: var(--bg-secondary);
+.hud-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.hud-divider {
+  color: var(--border-subtle);
+  opacity: 0.6;
+}
+
+.hud-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-tool-btn {
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle);
   color: var(--text-main);
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
-  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.hud-tool-btn:hover, .hud-tool-btn.active {
+  background: var(--gold-primary);
+  color: #141312;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 15px var(--gold-glow);
+}
+
+.hud-zoom-pills {
+  display: flex;
+  background: var(--bg-tertiary);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.hud-pill-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.btn-angle-preset:hover, .btn-angle-preset.active {
-  background: var(--gold-primary);
-  color: #141312;
-  border-color: var(--gold-primary);
-}
-
-.btn-auto-spin {
+.hud-pill-btn.active, .hud-pill-btn:hover {
   background: var(--text-main);
   color: var(--bg-secondary);
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.2s;
 }
 
-.btn-auto-spin:hover {
-  background: var(--gold-primary);
-  color: #141312;
+/* HUD Main Layout Grid */
+.hud-main-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 32px;
+  align-items: start;
 }
 
-/* Right Side Wrap Showcase */
-.side-showcase {
+@media (max-width: 1024px) {
+  .hud-main-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Column 1: Physical Visualizer */
+.hud-col-visual {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.hud-lid-overview-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  padding: 20px 24px;
+  border-radius: 12px;
+}
+
+.hud-lid-lens-frame {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 3px solid var(--gold-primary);
+  position: relative;
+  overflow: hidden;
+  background: #FFF;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+  flex-shrink: 0;
+}
+
+.hud-lens-glass {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.hud-lens-glass img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.hud-lid-lens-frame:hover .hud-lens-glass img {
+  transform: scale(1.08);
+}
+
+.hud-lens-glare {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hud-lid-meta {
+  flex: 1;
+}
+
+.hud-meta-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--gold-dark);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+[data-theme="dark"] .hud-meta-badge {
+  color: var(--gold-light);
+}
+
+.hud-lid-meta h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.hud-spec-lines {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.hud-spec-lines span {
+  color: var(--text-light);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+/* Side Wrap Section */
+.hud-wrap-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hud-wrap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hud-wrap-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.hud-drag-hint {
+  font-size: 10px;
+  color: var(--gold-primary);
+  letter-spacing: 1px;
+}
+
+/* Phi Grid Overlay */
+.phi-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: none;
+  z-index: 10;
+}
+
+.phi-grid-overlay.active {
+  display: block;
+}
+
+.phi-line {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-right: 1.5px dashed var(--gold-primary);
+  background: rgba(197, 160, 89, 0.05);
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 6px;
+}
+
+.phi-line span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--gold-dark);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .phi-line span {
+  background: rgba(10, 10, 10, 0.85);
+  color: var(--gold-light);
+}
+
+/* Export Bar */
+.hud-export-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.btn-hud-primary {
+  background: var(--gold-primary);
+  color: #141312;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.btn-hud-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px var(--gold-glow);
+}
+
+.btn-hud-ghost {
+  background: var(--bg-tertiary);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-hud-ghost:hover {
+  border-color: var(--gold-primary);
+  color: var(--gold-primary);
+}
+
+/* Column 2: Clinical Telemetry & Master Text Inspector */
+.hud-col-data {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hud-telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .hud-telemetry-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hud-metric-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: all 0.2s;
+}
+
+.hud-metric-card:hover {
+  border-color: var(--border-gold);
+}
+
+.hud-metric-k {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-light);
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.hud-metric-v {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.hud-metric-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Inspector Tabs & Card */
+.hud-inspector-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hud-inspector-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.hud-inspector-tabs .btn-text-tab {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.hud-inspector-tabs .btn-text-tab.active,
+.hud-inspector-tabs .btn-text-tab:hover {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border-color: var(--gold-primary);
+  box-shadow: 0 2px 10px var(--gold-glow);
+}
+
+.hud-inspector-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 22px 24px;
+  box-shadow: var(--card-shadow);
+}
+
+.hud-card-hdr {
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.hud-card-code {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold-dark);
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+[data-theme="dark"] .hud-card-code {
+  color: var(--gold-light);
+}
+
+.hud-inspector-card h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.hud-inspector-card p {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--text-main);
+  font-weight: 500;
 }
 
 .side-label-header-bar {
