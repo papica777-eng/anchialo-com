@@ -1,650 +1,656 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANCHIALO — Pomorie Black Sea Minerals | Official Archive &amp; Sovereign Web Platform</title>
+  <title>ANCHIALO — Pomorie Black Sea Minerals | Sovereign Web Platform &amp; Australian TGA Master Packaging</title>
+  <meta name="description" content="Discover Anchialo: Ancient Black Sea mineral balneotherapy re-engineered. High-potency transdermal Dual Magnesium complexes harvested from Pomorie Lake, Bulgaria, engineered to Australian TGA 2025 specifications.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --gold-primary: #C5A059;
-      --gold-light: #E5C77C;
-      --gold-dark: #9C7A32;
-      --obsidian: #141312;
-      --charcoal: #22201E;
-      --cream-bg: #FAF8F5;
-      --white-card: #FFFFFF;
-      --text-main: #2C2926;
-      --text-muted: #6E685F;
-      --border-soft: #E8E3DA;
-      --shadow-sm: 0 4px 15px rgba(0,0,0,0.04);
-      --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
-      --shadow-lg: 0 20px 50px rgba(0,0,0,0.12);
-      --radius: 8px;
-      --phi: 1.618;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--cream-bg);
-      color: var(--text-main);
-      font-family: 'Inter', -apple-system, sans-serif;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Top Sovereign Announcement */
-    .sovereign-banner {
-      background: var(--obsidian);
-      color: var(--gold-light);
-      padding: 10px 24px;
-      font-size: 13px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--gold-dark);
-    }
-
-    /* Navigation Header */
-    header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid var(--border-soft);
-      padding: 18px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .brand-group {
-      display: flex;
-      flex-direction: column;
-    }
-    .brand-title {
-      font-family: 'Cinzel', serif;
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: 10px;
-      color: var(--obsidian);
-      line-height: 1;
-    }
-    .brand-sub {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: var(--gold-dark);
-      font-weight: 600;
-      margin-top: 4px;
-    }
-
-    nav {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-    nav a {
-      text-decoration: none;
-      color: var(--charcoal);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    nav a:hover, nav a.active {
-      color: var(--gold-primary);
-    }
-    .cta-btn {
-      background: var(--obsidian);
-      color: var(--gold-light) !important;
-      padding: 10px 22px;
-      border-radius: var(--radius);
-      border: 1px solid var(--gold-primary);
-      transition: all 0.3s;
-    }
-    .cta-btn:hover {
-      background: var(--gold-primary);
-      color: var(--obsidian) !important;
-    }
-
-    /* Hero Section */
-    .hero {
-      position: relative;
-      padding: 90px 48px;
-      background: linear-gradient(180deg, #FFFFFF 0%, var(--cream-bg) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 60px;
-      border-bottom: 1px solid var(--border-soft);
-      overflow: hidden;
-    }
-    .hero-content {
-      max-width: 620px;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(197, 160, 89, 0.12);
-      border: 1px solid var(--gold-primary);
-      color: var(--gold-dark);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      padding: 6px 14px;
-      border-radius: 50px;
-      margin-bottom: 24px;
-    }
-    .hero h1 {
-      font-family: 'Cinzel', serif;
-      font-size: 52px;
-      line-height: 1.15;
-      font-weight: 700;
-      color: var(--obsidian);
-      margin-bottom: 20px;
-      letter-spacing: 2px;
-    }
-    .hero p {
-      font-size: 16px;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-      line-height: 1.7;
-    }
-    .hero-stats {
-      display: flex;
-      gap: 36px;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-soft);
-    }
-    .stat-num {
-      font-family: 'Cinzel', serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--obsidian);
-    }
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .hero-visual {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      position: relative;
-    }
-    .hero-visual img {
-      max-width: 100%;
-      border-radius: 12px;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border-soft);
-    }
-
-    /* Section Styling */
-    .section-wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 80px 48px;
-    }
-    .section-header {
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 54px auto;
-    }
-    .section-header h2 {
-      font-family: 'Cinzel', serif;
-      font-size: 38px;
-      color: var(--obsidian);
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-    }
-    .section-header p {
-      color: var(--text-muted);
-      font-size: 15px;
-    }
-
-    /* Products Grid */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 32px;
-    }
-    .product-card {
-      background: var(--white-card);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.3s;
-    }
-    .product-card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-4px);
-      border-color: var(--gold-primary);
-    }
-    .product-img {
-      width: 100%;
-      height: 260px;
-      object-fit: contain;
-      background: #FAF8F5;
-      border-radius: 6px;
-      margin-bottom: 18px;
-    }
-    .product-title {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--obsidian);
-      margin-bottom: 8px;
-      line-height: 1.35;
-    }
-    .product-price {
-      font-family: 'Cinzel', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--gold-dark);
-      margin-bottom: 14px;
-    }
-    .product-desc {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      line-height: 1.55;
-      margin-bottom: 20px;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-soft);
-    }
-    .in-stock {
-      font-size: 12px;
-      font-weight: 700;
-      color: #2E7D32;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Labels & Print Studio Section */
-    .labels-studio {
-      background: #FFFFFF;
-      border-top: 1px solid var(--border-soft);
-      border-bottom: 1px solid var(--border-soft);
-    }
-    .specs-badge-box {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 40px;
-    }
-    .spec-item {
-      background: var(--cream-bg);
-      border: 1px solid var(--border-soft);
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .spec-item b {
-      color: var(--gold-dark);
-    }
-
-    .label-preview-card {
-      background: var(--white-card);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-bottom: 36px;
-      box-shadow: var(--shadow-sm);
-    }
-    .label-preview-hdr {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-soft);
-    }
-    .variant-name {
-      font-family: 'Cinzel', serif;
-      font-size: 22px;
-      font-weight: 700;
-    }
-    .download-btns {
-      display: flex;
-      gap: 12px;
-    }
-    .btn-dl {
-      background: var(--obsidian);
-      color: #FFFFFF;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      padding: 8px 16px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      border: 1px solid var(--gold-primary);
-      transition: background 0.2s;
-    }
-    .btn-dl:hover {
-      background: var(--gold-primary);
-      color: var(--obsidian);
-    }
-    .img-wrap-side {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid var(--border-soft);
-      border-radius: 4px;
-      background: #FDFDFD;
-      padding: 8px;
-    }
-    .img-wrap-side img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Footer */
-    footer {
-      background: var(--obsidian);
-      color: #FFFFFF;
-      padding: 60px 48px 30px 48px;
-    }
-    .footer-grid {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1.5fr;
-      gap: 48px;
-      padding-bottom: 48px;
-      border-bottom: 1px solid #333;
-    }
-    .footer-brand {
-      font-family: 'Cinzel', serif;
-      font-size: 26px;
-      letter-spacing: 6px;
-      color: var(--gold-light);
-      margin-bottom: 14px;
-    }
-    .footer-desc {
-      font-size: 13.5px;
-      color: #A09D96;
-      line-height: 1.7;
-    }
-    .footer-hdr {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #FFFFFF;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-    .footer-links {
-      list-style: none;
-    }
-    .footer-links li {
-      margin-bottom: 10px;
-    }
-    .footer-links a {
-      color: #A09D96;
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover {
-      color: var(--gold-light);
-    }
-    .copy-bottom {
-      text-align: center;
-      padding-top: 24px;
-      font-size: 12px;
-      color: #777;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <div class="sovereign-banner">
-    <div>🔱 AETERNA SOVEREIGN REPOSITORY // ANCHIALO.COM ENTERPRISE WEB ARCHIVE</div>
-    <div>TGA-COMPLIANT 2025 MASTER PACKAGING SUITE (Φ = 1.618)</div>
+  <!-- ==================== TOP ANNOUNCEMENT BAR ==================== -->
+  <div class="announcement-bar">
+    <div>
+      <span class="pulse-dot"></span>
+      🔱 AETERNA SOVEREIGN PLATFORM // ANCHIALO.COM ENTERPRISE WEB ARCHIVE
+    </div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+      <span>AUSTRALIAN TGA 2025 MASTER SUITE (Φ = 1.618)</span>
+      <span style="opacity: 0.5;">|</span>
+      <span>POMORIE LABS, BULGARIA</span>
+    </div>
   </div>
 
-  <header>
-    <div class="brand-group">
-      <div class="brand-title">ANCHIALO</div>
-      <div class="brand-sub">POMORIE BLACK SEA BALNEOLOGY LABS</div>
-    </div>
-    <nav>
-      <a href="#products">Products</a>
-      <a href="#labels">Packaging Studio</a>
-      <a href="#blog">Research &amp; Lye</a>
-      <a href="data/products.csv" download class="cta-btn">Export Catalog (CSV)</a>
+  <!-- ==================== STICKY NAVIGATION ==================== -->
+  <header class="main-header">
+    <a href="#" class="brand-wrapper">
+      <div class="brand-name">ANCHIALO</div>
+      <div class="brand-tagline">POMORIE BLACK SEA BALNEOLOGY LABS</div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#products">Formulations</a>
+      <a href="#studio">3D Packaging Studio</a>
+      <a href="#science">Mineral Science</a>
+      <a href="#blog">Clinical Studies</a>
+      <a href="#downloads">Downloads</a>
     </nav>
+
+    <div class="nav-actions">
+      <!-- Theme Switcher -->
+      <button class="icon-btn" id="themeToggleBtn" title="Toggle Light / Dark Mode">
+        🌙 Obsidian
+      </button>
+
+      <!-- Currency Selector -->
+      <select class="currency-select" id="currencySelector" title="Select Currency">
+        <option value="USD">USD ($)</option>
+        <option value="EUR">EUR (€)</option>
+        <option value="BGN">BGN (лв)</option>
+      </select>
+
+      <!-- Cart Button -->
+      <button class="cart-btn btn-cart-toggle" title="View Shopping Bag">
+        <span>Bag</span>
+        <span class="cart-count-badge">0</span>
+      </button>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+        ☰
+      </button>
+    </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">◆ PURE POMORIE HYPERSALINE LAGOON ◆</div>
-      <h1>Ancient Mineral Balneotherapy, Re-Engineered.</h1>
-      <p>
-        The complete, verified digital archive and sovereign web infrastructure for Anchialo.
-        Featuring 100% natural transdermal Dual Magnesium complexes harvested from the Black Sea lye 
-        at Pomorie Lake, Bulgaria, engineered to exact Australian TGA standards.
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <div style="font-family:'Cinzel', serif; font-size:22px; font-weight:700; margin-bottom:12px; color:var(--gold-primary);">ANCHIALO</div>
+    <a href="#products">Formulations</a>
+    <a href="#studio">Packaging Studio</a>
+    <a href="#science">Mineral Science</a>
+    <a href="#blog">Clinical Studies</a>
+    <a href="#downloads">Enterprise Exports</a>
+    <a href="data/products.csv" download style="color:var(--gold-dark); font-weight:800;">Download Catalog (CSV)</a>
+  </div>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section class="hero-section">
+    <div class="hero-text">
+      <div class="crest-pill">
+        <span>◆</span> PURE POMORIE HYPERSALINE LAGOON <span>◆</span>
+      </div>
+      <h1 class="hero-heading">
+        Ancient Mineral Balneotherapy, <span class="gold-text">Re-Engineered</span>.
+      </h1>
+      <p class="hero-description">
+        Harvested from the hyper-saline Black Sea lye of Pomorie Lake, Bulgaria. 
+        High-potency transdermal Dual Magnesium complexes (Magnesium Chloride + Magnesium Sulfate) 
+        engineered to exact Australian TGA and European CPNP pharmaceutical standards.
       </p>
-      <div class="hero-stats">
-        <div>
-          <div class="stat-num">9</div>
-          <div class="stat-label">Active Formulations</div>
+
+      <div class="hero-actions">
+        <a href="#products" class="btn-primary">Explore Formulations &rarr;</a>
+        <a href="#studio" class="btn-secondary">Interactive Studio</a>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <div class="val">9</div>
+          <div class="lbl">Formulations</div>
         </div>
-        <div>
-          <div class="stat-num">16</div>
-          <div class="stat-label">Published Studies</div>
+        <div class="metric-item">
+          <div class="val">16</div>
+          <div class="lbl">Clinical Studies</div>
         </div>
-        <div>
-          <div class="stat-num">300g</div>
-          <div class="stat-label">Nominal Tub Size</div>
+        <div class="metric-item">
+          <div class="val">300g</div>
+          <div class="lbl">Nominal Tub Size</div>
         </div>
-        <div>
-          <div class="stat-num">Φ 1.618</div>
-          <div class="stat-label">Golden Ratio Design</div>
+        <div class="metric-item">
+          <div class="val">Φ 1.618</div>
+          <div class="lbl">Golden Ratio</div>
         </div>
       </div>
     </div>
-    <div class="hero-visual">
-      <img src="assets/mockups/anchialo_luxury_jar_mockup.jpg" alt="Anchialo Luxury Packaging Mockup">
+
+    <div class="hero-gallery-view">
+      <div class="mockup-frame">
+        <img src="assets/mockups/anchialo_luxury_jar_mockup.jpg" alt="Anchialo Dual Magnesium Luxury Packaging">
+        <div class="float-seal">
+          <span style="color:var(--gold-primary); font-size:16px;">✦</span>
+          <span>TGA Compliant 2025 • High-Bioavailability Ionic Formula</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- PRODUCTS CATALOG -->
-  <section id="products" class="section-wrap">
-    <div class="section-header">
-      <h2>Curated Product Formulations</h2>
-      <p>Extracted high-potency topical magnesium complexes enriched with pure botanical extracts.</p>
+  <!-- ==================== 3D INTERACTIVE PACKAGING STUDIO ==================== -->
+  <section id="studio" class="section-container">
+    <div class="section-head">
+      <span class="mini-sub">PRODUCTION PRINT-READY ARTIFACTS</span>
+      <h2>Interactive 3D Label &amp; Packaging Studio</h2>
+      <p>
+        Explore the complete Australian Master 2025 packaging suite. Switch botanical variants to preview 
+        the exact circular top lid (Ø 8.6 cm) and side wrap label (28.0 cm × 3.8 cm) calibrated for high-precision printing.
+      </p>
     </div>
 
-    <div class="product-grid" id="productGrid">
+    <!-- Variant Tabs -->
+    <div class="blend-tabs">
+      <button class="blend-tab active" data-blend="arnica">
+        <span class="color-dot" style="background:#C69214;"></span>
+        Arnica Blend
+      </button>
+      <button class="blend-tab" data-blend="lavender">
+        <span class="color-dot" style="background:#6B5B95;"></span>
+        Lavender Blend
+      </button>
+      <button class="blend-tab" data-blend="rosemary">
+        <span class="color-dot" style="background:#4B6B38;"></span>
+        Rosemary Blend
+      </button>
+      <button class="blend-tab" data-blend="juniper">
+        <span class="color-dot" style="background:#285844;"></span>
+        Juniper Blend
+      </button>
+      <button class="blend-tab" data-blend="grape">
+        <span class="color-dot" style="background:#7E2A3C;"></span>
+        Grape Blend
+      </button>
+    </div>
+
+    <!-- Studio Showcase Wrapper -->
+    <div class="studio-wrapper">
+      <div class="studio-grid">
+        <!-- Left: Circular Lid Showcase -->
+        <div class="lid-showcase">
+          <div class="lid-circle-img-wrap">
+            <img id="studioLidImg" src="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" alt="Top Lid 300 DPI">
+          </div>
+          <div class="lid-info-badge">TOP LID RECESS: Ø 8.6 CM (1016 × 1016 PX @ 300 DPI)</div>
+        </div>
+
+        <!-- Right: Side Wrap & Engineering Specs -->
+        <div class="side-showcase">
+          <h3 id="studioBlendTitle" style="font-family:'Cinzel', serif; font-size:24px; font-weight:700; color:#C69214;">
+            ARNICA BLEND — DUAL MAGNESIUM COMPLEX
+          </h3>
+
+          <div class="side-label-img-box">
+            <img id="studioSideImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Side Wrap Label 300 DPI">
+          </div>
+
+          <div class="studio-specs-row">
+            <div class="studio-spec-col">
+              <div class="k">Wrap Dimensions</div>
+              <div class="v">28.0 × 3.8 cm (300 DPI)</div>
+            </div>
+            <div class="studio-spec-col">
+              <div class="k">Botanical Extract</div>
+              <div class="v" id="studioBotanicalField">Arnica Montana extract</div>
+            </div>
+            <div class="studio-spec-col">
+              <div class="k">Olfactory Profile</div>
+              <div class="v" id="studioScentField">Warm herbal & meadow</div>
+            </div>
+            <div class="studio-spec-col">
+              <div class="k">Color Palette</div>
+              <div class="v" id="studioColorField">Warm Goldenrod (#C69214)</div>
+            </div>
+            <div class="studio-spec-col">
+              <div class="k">Active Minerals</div>
+              <div class="v">Dual Mg (MgCl₂ + MgSO₄)</div>
+            </div>
+            <div class="studio-spec-col">
+              <div class="k">Standards &amp; PAO</div>
+              <div class="v">TGA 2025 • PAO 12M • ♳ PET 1</div>
+            </div>
+          </div>
+
+          <div class="studio-dl-actions">
+            <a id="dlSidePdf" href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Arnica_280x38mm_PRINT_READY.pdf" class="btn-print-dl" download>
+              Side Wrap (PDF CMYK) &darr;
+            </a>
+            <a id="dlLidPdf" href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Arnica_86mm_PRINT_READY.pdf" class="btn-print-dl" download>
+              Top Lid (PDF CMYK) &darr;
+            </a>
+            <a id="dlSidePng" href="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" class="btn-secondary" download style="padding:12px 18px; font-size:11px;">
+              PNG 300 DPI (Side)
+            </a>
+            <a id="dlLidPng" href="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" class="btn-secondary" download style="padding:12px 18px; font-size:11px;">
+              PNG 300 DPI (Lid)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CURATED PRODUCT CATALOG ==================== -->
+  <section id="products" class="section-container">
+    <div class="section-head">
+      <span class="mini-sub">PHARMACEUTICAL-GRADE TOPICAL CARE</span>
+      <h2>Curated Mineral Formulations</h2>
+      <p>
+        Bioavailable topical Dual Magnesium gels and oils derived from pristine Pomorie Black Sea lye.
+        Formulated to provide fast-acting relief for muscle cramps, joint stiffness, and physical recovery.
+      </p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar-wrap">
+      <svg class="search-icon-svg" viewBox="0 0 24 24">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      </svg>
+      <input type="text" id="catalogSearchInput" class="search-input" placeholder="Search formulations by name, botanical, or symptom (e.g. Arnica, Sleep, Oil)...">
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="catalog-filters">
+      <button class="filter-btn active" data-cat="all">All Formulations</button>
+      <button class="filter-btn" data-cat="gels">Dual Magnesium Gels</button>
+      <button class="filter-btn" data-cat="oils">Topical Oils</button>
+      <button class="filter-btn" data-cat="combos">Value Combos &amp; Sets</button>
+    </div>
+
+    <!-- Dynamic Product Grid -->
+    <div class="products-grid" id="productGrid">
       <!-- Injected via JavaScript from data/products.json -->
     </div>
   </section>
 
-  <!-- PACKAGING & PRODUCTION PRINT READY SUITE -->
-  <section id="labels" class="section-wrap labels-studio">
-    <div class="section-header">
-      <h2>Australian Master 2025 Label Suite</h2>
-      <p>Precision-engineered production files matching exact physical tub dimensions.</p>
+  <!-- ==================== BALNEOTHERAPY SCIENCE EXPLORER ==================== -->
+  <section id="science" class="section-container">
+    <div class="section-head">
+      <span class="mini-sub">THE GEOLOGICAL PHENOMENON OF POMORIE LAKE</span>
+      <h2>Balneotherapy &amp; Mineral Science</h2>
+      <p>
+        Formed over millennia along the Bulgarian Black Sea coast, Pomorie hypersaline lye is an ultra-concentrated 
+        mineral elixir possessing an unmatched elemental density of over 77 active micro- and macro-elements.
+      </p>
     </div>
 
-    <div class="specs-badge-box">
-      <div class="spec-item">Wrap Label Dimensions: <b>28.0 cm × 3.8 cm (3307 × 449 px @ 300 DPI)</b></div>
-      <div class="spec-item">Lid Label Diameter: <b>8.6 cm (1016 × 1016 px @ 300 DPI)</b></div>
-      <div class="spec-item">Color Profile: <b>CMYK ISO 12647 Print-Ready</b></div>
-      <div class="spec-item">Compliance: <b>Australian TGA &amp; EU Regulation 1223/2009</b></div>
-    </div>
+    <div class="science-container">
+      <div class="science-grid">
+        <!-- Science Narrative & Comparison -->
+        <div class="science-content">
+          <h3>Why Transdermal Dual Magnesium?</h3>
+          <p style="font-size:14.5px; color:var(--text-muted); line-height:1.75; margin-bottom:18px;">
+            Oral magnesium supplements suffer from poor gastrointestinal absorption and laxative side effects. 
+            Transdermal application allows ionic <b>Magnesium Chloride (MgCl₂)</b> and <b>Magnesium Sulfate (MgSO₄)</b> 
+            to saturate directly into cutaneous and muscular tissues within minutes, restoring intracellular mineral balance 
+            without passing through the digestive barrier.
+          </p>
 
-    <div style="text-align: center; margin-bottom: 40px;">
-      <img src="assets/mockups/anchialo_lineup_mockup.jpg" style="max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-md);" alt="Anchialo 5-Variant Lineup">
-    </div>
-
-    <!-- Arnica -->
-    <div class="label-preview-card">
-      <div class="label-preview-hdr">
-        <div class="variant-name" style="color: #C69214;">ARNICA BLEND — DUAL MAGNESIUM COMPLEX</div>
-        <div class="download-btns">
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Arnica_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Arnica_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Bio-Metric</th>
+                <th>Pomorie Lye (Anchialo)</th>
+                <th>Dead Sea Salt</th>
+                <th>Synthetic Epsom</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Mineral Diversity</b></td>
+                <td class="advantage">77+ Active Elements</td>
+                <td>21 Elements</td>
+                <td>1 Element (MgSO₄)</td>
+              </tr>
+              <tr>
+                <td><b>Transdermal Speed</b></td>
+                <td class="advantage">&lt; 3 Minutes (Ionic)</td>
+                <td>15 - 20 Minutes</td>
+                <td>Slow Diffusion</td>
+              </tr>
+              <tr>
+                <td><b>Dual Magnesium</b></td>
+                <td class="advantage">MgCl₂ + MgSO₄ Synergized</td>
+                <td>MgCl₂ Predominant</td>
+                <td>Sulfate Only</td>
+              </tr>
+              <tr>
+                <td><b>Anti-Inflammatory</b></td>
+                <td class="advantage">Clinical Max (Black Sea Lye)</td>
+                <td>Moderate</td>
+                <td>Mild</td>
+              </tr>
+              <tr>
+                <td><b>Skin Barrier Tolerance</b></td>
+                <td class="advantage">Soothing &amp; Hydrating</td>
+                <td>Can Be Drying</td>
+                <td>Astringent</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-      <div class="img-wrap-side">
-        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Arnica Side Label">
-      </div>
-    </div>
 
-    <!-- Lavender -->
-    <div class="label-preview-card">
-      <div class="label-preview-hdr">
-        <div class="variant-name" style="color: #6B5B95;">LAVENDER BLEND — DUAL MAGNESIUM COMPLEX</div>
-        <div class="download-btns">
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Lavender_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Lavender_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
+        <!-- Mineral Spectrum Chips -->
+        <div class="mineral-chips-grid">
+          <div class="mineral-chip">
+            <div class="sym">Mg</div>
+            <div class="nm">Magnesium (Chloride &amp; Sulfate)</div>
+            <div class="fx">Neuromuscular relaxation, rapid relief from cramps and spasms, cellular ATP synthesis.</div>
+          </div>
+          <div class="mineral-chip">
+            <div class="sym">Ca</div>
+            <div class="nm">Calcium Ions</div>
+            <div class="fx">Stabilizes cellular membranes, activates cellular regeneration, and reinforces skin barrier.</div>
+          </div>
+          <div class="mineral-chip">
+            <div class="sym">K</div>
+            <div class="nm">Potassium</div>
+            <div class="fx">Regulates intracellular osmotic pressure, prevents muscle twitching, and enhances hydration.</div>
+          </div>
+          <div class="mineral-chip">
+            <div class="sym">Br</div>
+            <div class="nm">Bromine</div>
+            <div class="fx">Natural nervous system pacifier; reduces cutaneous stress, tension, and promotes restful sleep.</div>
+          </div>
+          <div class="mineral-chip">
+            <div class="sym">I</div>
+            <div class="nm">Iodine Trace</div>
+            <div class="fx">Stimulates peripheral micro-circulation, accelerates tissue detoxification and repair.</div>
+          </div>
+          <div class="mineral-chip">
+            <div class="sym">Zn</div>
+            <div class="nm">Zinc &amp; Trace Elements</div>
+            <div class="fx">Enzymatic collagen synthesis, anti-inflammatory modulation, and cellular restoration.</div>
+          </div>
         </div>
-      </div>
-      <div class="img-wrap-side">
-        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Lavender_280x38mm_300dpi.png" alt="Lavender Side Label">
-      </div>
-    </div>
-
-    <!-- Rosemary -->
-    <div class="label-preview-card">
-      <div class="label-preview-hdr">
-        <div class="variant-name" style="color: #4B6B38;">ROSEMARY BLEND — DUAL MAGNESIUM COMPLEX</div>
-        <div class="download-btns">
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Rosemary_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Rosemary_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
-        </div>
-      </div>
-      <div class="img-wrap-side">
-        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Rosemary_280x38mm_300dpi.png" alt="Rosemary Side Label">
-      </div>
-    </div>
-
-    <!-- Juniper -->
-    <div class="label-preview-card">
-      <div class="label-preview-hdr">
-        <div class="variant-name" style="color: #285844;">JUNIPER BLEND — DUAL MAGNESIUM COMPLEX</div>
-        <div class="download-btns">
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Juniper_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Juniper_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
-        </div>
-      </div>
-      <div class="img-wrap-side">
-        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Juniper_280x38mm_300dpi.png" alt="Juniper Side Label">
-      </div>
-    </div>
-
-    <!-- Grape -->
-    <div class="label-preview-card">
-      <div class="label-preview-hdr">
-        <div class="variant-name" style="color: #7E2A3C;">GRAPE BLEND — DUAL MAGNESIUM COMPLEX</div>
-        <div class="download-btns">
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Side_Label_Grape_280x38mm_PRINT_READY.pdf" class="btn-dl">Side Wrap (PDF)</a>
-          <a href="labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Grape_86mm_PRINT_READY.pdf" class="btn-dl">Top Lid (PDF)</a>
-        </div>
-      </div>
-      <div class="img-wrap-side">
-        <img src="labels/production_ready/high_res_png_300dpi/Side_Label_Grape_280x38mm_300dpi.png" alt="Grape Side Label">
       </div>
     </div>
   </section>
 
-  <footer>
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand">ANCHIALO</div>
-        <div class="footer-desc">
-          Official production archive, digital asset register, and brand repository.
-          Manufactured by AZIMUT 6000 Ltd, Ivan Vazov 18 str., 8200 Pomorie, Bulgaria.
-          Tel: +359 887 470 548 | E-mail: grudev_g@abv.bg
+  <!-- ==================== CLINICAL RESEARCH & BLOG ==================== -->
+  <section id="blog" class="section-container">
+    <div class="section-head">
+      <span class="mini-sub">EVIDENCE-BASED BALNEOLOGY</span>
+      <h2>Clinical Studies &amp; Research Archive</h2>
+      <p>
+        Explore 16 in-depth clinical studies and research papers authored by Sotir Kichukov and the Anchialo laboratory team 
+        documenting the therapeutic benefits of Pomorie lye for chronic pain, arthritis, sleep quality, and dermatological vitality.
+      </p>
+    </div>
+
+    <div class="blog-grid" id="blogGrid">
+      <!-- Injected via JavaScript from data/blog_posts.json -->
+    </div>
+  </section>
+
+  <!-- ==================== ENTERPRISE EXPORTS & DOWNLOADS ==================== -->
+  <section id="downloads" class="section-container" style="background:var(--bg-secondary); border:1px solid var(--border-gold); border-radius:16px; margin-bottom:80px; box-shadow:var(--card-shadow);">
+    <div class="section-head" style="margin-bottom:40px;">
+      <span class="mini-sub">ENTERPRISE INTEGRATION ARCHIVE</span>
+      <h2>Data &amp; Production Export Registry</h2>
+      <p>
+        Pre-packaged catalog files and schemas ready for immediate 1-click import into Shopify, WooCommerce, 
+        or high-volume retail systems, along with the full print-ready label suites.
+      </p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+      <div style="background:var(--bg-tertiary); padding:24px; border-radius:8px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-family:'Montserrat', sans-serif; font-size:12px; font-weight:800; color:var(--gold-dark); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">E-Commerce Catalog</div>
+          <div style="font-family:'Cinzel', serif; font-size:18px; font-weight:700; margin-bottom:8px;">Products Catalog (CSV)</div>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:18px;">
+            Shopify and WooCommerce compatible CSV containing product titles, descriptions, USD prices, and image URLs.
+          </p>
         </div>
+        <a href="data/products.csv" download class="btn-primary" style="text-align:center; padding:12px; font-size:11px;">
+          Download CSV Catalog &darr;
+        </a>
       </div>
-      <div>
-        <div class="footer-hdr">Exports</div>
+
+      <div style="background:var(--bg-tertiary); padding:24px; border-radius:8px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-family:'Montserrat', sans-serif; font-size:12px; font-weight:800; color:var(--gold-dark); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Developer Schema</div>
+          <div style="font-family:'Cinzel', serif; font-size:18px; font-weight:700; margin-bottom:8px;">Structured Schema (JSON)</div>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:18px;">
+            Complete JSON API payload with high-resolution image galleries, availability status, and variant schemas.
+          </p>
+        </div>
+        <a href="data/products.json" download class="btn-secondary" style="text-align:center; padding:12px; font-size:11px;">
+          Download JSON Schema &darr;
+        </a>
+      </div>
+
+      <div style="background:var(--bg-tertiary); padding:24px; border-radius:8px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-family:'Montserrat', sans-serif; font-size:12px; font-weight:800; color:var(--gold-dark); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Clinical Database</div>
+          <div style="font-family:'Cinzel', serif; font-size:18px; font-weight:700; margin-bottom:8px;">Research Archive (JSON)</div>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:18px;">
+            Full unabridged text of 16 published clinical balneotherapy studies with timestamps, authorship, and images.
+          </p>
+        </div>
+        <a href="data/blog_posts.json" download class="btn-secondary" style="text-align:center; padding:12px; font-size:11px;">
+          Download Research (JSON) &darr;
+        </a>
+      </div>
+
+      <div style="background:var(--bg-tertiary); padding:24px; border-radius:8px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="font-family:'Montserrat', sans-serif; font-size:12px; font-weight:800; color:var(--gold-dark); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Wix Core Model</div>
+          <div style="font-family:'Cinzel', serif; font-size:18px; font-weight:700; margin-bottom:8px;">Wix Warmup Model</div>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:18px;">
+            Original Wix viewer data state capturing full site topology, media records, and metadata tokens.
+          </p>
+        </div>
+        <a href="data/wix_viewer_model.json" download class="btn-secondary" style="text-align:center; padding:12px; font-size:11px;">
+          Download Wix Model &darr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN FOOTER ==================== -->
+  <footer class="main-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="brand-f">ANCHIALO</div>
+        <p style="margin-bottom:14px;">
+          Official production archive, digital asset register, and sovereign web platform.
+          Harvested and formulated from Pomorie hypersaline lake lye, Black Sea coast, Bulgaria.
+        </p>
+        <p style="font-size:12.5px; color:#7E7970;">
+          <b>Manufacturer:</b> AZIMUT 6000 Ltd<br>
+          Ivan Vazov 18 str., 8200 Pomorie, Bulgaria<br>
+          Tel: +359 887 470 548 | E-mail: grudev_g@abv.bg
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-hdr">Formulations</div>
         <ul class="footer-links">
-          <li><a href="data/products.csv">Products Catalog (CSV)</a></li>
-          <li><a href="data/products.json">Products Schema (JSON)</a></li>
-          <li><a href="data/blog_posts.json">Blog Articles (JSON)</a></li>
-          <li><a href="data/wix_viewer_model.json">Wix Viewer Model (JSON)</a></li>
+          <li><a href="#products">Dual Magnesium Arnica</a></li>
+          <li><a href="#products">Dual Magnesium Lavender</a></li>
+          <li><a href="#products">Dual Magnesium Rosemary</a></li>
+          <li><a href="#products">Dual Magnesium Juniper</a></li>
+          <li><a href="#products">Dual Magnesium Grape</a></li>
+          <li><a href="#products">Pure Transdermal Oil</a></li>
         </ul>
       </div>
-      <div>
-        <div class="footer-hdr">Label Specs</div>
+
+      <div class="footer-col">
+        <div class="footer-hdr">Packaging Specs</div>
         <ul class="footer-links">
-          <li><a href="#labels">Side Wrap 28×3.8cm</a></li>
-          <li><a href="#labels">Top Lid Ø 8.6cm</a></li>
-          <li><a href="#labels">Azimut Logo Vector</a></li>
-          <li><a href="#labels">Pomorie Aerial Spit</a></li>
+          <li><a href="#studio">Side Wrap (28.0 × 3.8 cm)</a></li>
+          <li><a href="#studio">Top Lid Recess (Ø 8.6 cm)</a></li>
+          <li><a href="#studio">CMYK ISO 12647 Print PDFs</a></li>
+          <li><a href="#studio">Golden Ratio (Φ = 1.618) Grid</a></li>
+          <li><a href="#studio">Pomorie Aerial Spit Vector</a></li>
         </ul>
       </div>
-      <div>
-        <div class="footer-hdr">Compliance</div>
-        <div class="footer-desc">
-          TGA Compliant 2025 Master Master text.<br>
-          PAO 12M | ♳ PET 1 Recyclable.<br>
-          ISO 22716 Good Manufacturing Practice.
+
+      <div class="footer-col">
+        <div class="footer-hdr">Compliance &amp; Quality</div>
+        <p style="margin-bottom:12px;">
+          Australian TGA 2025 Master Compliant.<br>
+          EU Regulation (EC) No 1223/2009.<br>
+          Good Manufacturing Practice ISO 22716.<br>
+          PAO 12M | ♳ PET 1 Recyclable.
+        </p>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <span style="border:1px solid #444; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">TGA 2025</span>
+          <span style="border:1px solid #444; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">ISO 22716</span>
+          <span style="border:1px solid #444; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">CPNP REGISTERED</span>
         </div>
       </div>
     </div>
-    <div class="copy-bottom">
-      &copy; 2026 ANCHIALO. Preserved &amp; Orchestrated by AETERNA Sovereign Systems for Dimitar Prodromov &amp; Sotir Kichukov.
+
+    <div class="bottom-copyright-bar">
+      <div>&copy; 2026 ANCHIALO. Orchestrated by AETERNA Sovereign Systems for Dimitar Prodromov &amp; Sotir Kichukov.</div>
+      <div style="display:flex; gap:20px;">
+        <a href="#products" style="color:#6E685F; text-decoration:none;">Shop</a>
+        <a href="#studio" style="color:#6E685F; text-decoration:none;">Studio</a>
+        <a href="#blog" style="color:#6E685F; text-decoration:none;">Clinical Research</a>
+      </div>
     </div>
   </footer>
 
-  <script>
-    fetch('data/products.json')
-      .then(res => res.json())
-      .then(products => {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = products.map(p => `
-          <div class="product-card">
-            <div>
-              <img class="product-img" src="${p.images[0] || 'assets/mockups/anchialo_luxury_jar_mockup.jpg'}" alt="${p.name}">
-              <div class="product-title">${p.name}</div>
-              <div class="product-price">$${p.price || '49.00'} <span style="font-size:13px; color:#888;">USD</span></div>
-              <div class="product-desc">${p.description ? p.description.replace(/&#010;/g, ' ') : ''}</div>
-            </div>
-            <div class="card-footer">
-              <span class="in-stock">● In Stock</span>
-              <a href="${p.url}" target="_blank" style="font-size:12px; font-weight:700; color:var(--gold-dark); text-decoration:none;">Original Page &rarr;</a>
-            </div>
+  <!-- ==================== CART DRAWER & OVERLAY ==================== -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3>Your Mineral Bag</h3>
+      <button class="cart-close-btn" id="cartCloseBtn">&times;</button>
+    </div>
+
+    <div class="shipping-progress-box">
+      <div id="shippingProgressText">Add more for <b>FREE Global Air Express</b></div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="shippingProgressBar"></div>
+      </div>
+    </div>
+
+    <div class="cart-items-list" id="cartItemsList">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <div class="cart-footer">
+      <div class="subtotal-row">
+        <span>Subtotal</span>
+        <span class="num" id="cartSubtotal">$0.00</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+        <span>Express Delivery</span>
+        <span id="cartShipping">Calculated</span>
+      </div>
+      <button class="btn-checkout" id="cartCheckoutBtn">
+        Proceed to Sovereign Checkout &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== QUICK VIEW PRODUCT MODAL ==================== -->
+  <div class="modal-overlay" id="quickViewModal">
+    <div class="modal-window qv-window">
+      <button class="modal-close">&times;</button>
+      <div class="qv-grid">
+        <div>
+          <div class="qv-gallery-main">
+            <img id="qvMainImg" src="assets/mockups/anchialo_luxury_jar_mockup.jpg" alt="Product Preview">
           </div>
-        `).join('');
-      })
-      .catch(err => console.error('Error loading products:', err));
-  </script>
+          <div class="qv-thumbs-row" id="qvThumbs"></div>
+        </div>
+
+        <div>
+          <span class="qv-badge" id="qvBadge">Dual Magnesium Formula</span>
+          <h2 class="qv-title" id="qvTitle">Product Name</h2>
+          <div class="qv-price-row">
+            <span class="qv-price" id="qvPrice">$49.00</span>
+          </div>
+
+          <div class="qv-desc" id="qvDesc">
+            Anchialo Dual Magnesium formulation description.
+          </div>
+
+          <ul class="qv-specs-list">
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span>Derived from authentic Pomorie hypersaline Black Sea lye</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span>Dual Magnesium action: Magnesium Chloride + Magnesium Sulfate</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span>300g nominal net weight in recyclable PET container</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              <span>Australian TGA 2025 &amp; EU Regulation (EC) No 1223/2009 compliant</span>
+            </li>
+          </ul>
+
+          <div class="qv-action-bar">
+            <div class="qv-qty-input">
+              <button class="qv-qty-btn" id="qvQtyDec">-</button>
+              <div class="qv-qty-val" id="qvQtyVal">1</div>
+              <button class="qv-qty-btn" id="qvQtyInc">+</button>
+            </div>
+            <button class="btn-primary" id="qvAddBtn" style="flex:1; justify-content:center; padding:14px;">
+              Add to Bag &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CLINICAL ARTICLE READER MODAL ==================== -->
+  <div class="modal-overlay" id="articleModal">
+    <div class="modal-window">
+      <button class="modal-close">&times;</button>
+      <div style="font-family:'Montserrat', sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; color:var(--gold-primary); text-transform:uppercase; margin-bottom:8px;">
+        PEER-REVIEWED CLINICAL ARCHIVE
+      </div>
+      <h2 id="articleModalTitle" style="font-family:'Cinzel', serif; font-size:30px; font-weight:700; color:var(--text-main); margin-bottom:12px; line-height:1.25;">
+        Article Title
+      </h2>
+      <div id="articleModalMeta" style="font-size:13px; color:var(--text-muted); margin-bottom:28px; padding-bottom:16px; border-bottom:1px solid var(--border-subtle);">
+        Author &bull; Date
+      </div>
+      <div id="articleModalBody">
+        <!-- Body content injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SIMULATED CHECKOUT CONFIRMATION MODAL ==================== -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal-window" style="max-width:550px;">
+      <button class="modal-close">&times;</button>
+      <div class="checkout-confirm-box">
+        <div class="checkout-check-icon">✓</div>
+        <h2 class="checkout-title">Order Protocol Confirmed</h2>
+        <div class="checkout-order-num" id="checkoutOrderNum">Order Protocol Ref: #ANC-2026-0000</div>
+        
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px; line-height:1.6;">
+          Thank you for choosing Anchialo Pomorie balneotherapy. Your mineral order has been securely registered 
+          in the sovereign dispatch registry and is queued for pharmaceutical packaging at our Pomorie facility.
+        </p>
+
+        <div class="checkout-summary-card" id="checkoutSummaryCard">
+          <!-- Itemized summary injected via JavaScript -->
+        </div>
+
+        <button class="btn-primary" onclick="document.getElementById('checkoutModal').classList.remove('open')" style="width:100%; justify-content:center; padding:14px;">
+          Return to Platform
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+  <script src="data/dataset.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
