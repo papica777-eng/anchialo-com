@@ -1,7 +1,7 @@
 /**
- * ANCHIALO SOVEREIGN PLATFORM — CORE CLIENT ENGINE
- * Architect: Dimitar Prodromov & Sotir Kichukov | Pomorie HQ
- * High-End Apothecary Balneotherapy Interactive Experience
+ * ANCHIALO — OFFICIAL PLATFORM CLIENT ENGINE
+ * Pure Pomorie Black Sea Mineral Balneotherapy
+ * High-End Apothecary Interactive Experience
  */
 
 (function () {
@@ -25,73 +25,98 @@
     freeShippingThresholdUSD: 100
   };
 
+  const SHARED_TEXTS = {
+    usage: "Apply topically to the desired area and massage thoroughly into the skin. Leave it on for 30 minutes to several hours, then rinse off with water. For best results, leave it on overnight to support deeper relaxation and recovery. Do not apply to open wounds, as the salts may cause stinging or irritation.",
+    warning: "For external use only. Keep out of reach of children. Avoid contact with eyes. This product is not a substitute for medical treatment. Storage: Store at 5°C – 25°C / 41.0°F – 77.0°F. Note: Black Sea lye may be stored at higher temperatures, as long as it is not exposed to direct sunlight.",
+    heritage: "Black Sea lye is a mineral-rich liquid that forms naturally during the evaporation of seawater in salt lakes along the Bulgarian Black Sea coast. As the water evaporates, salt settles at the bottom, and a dense, dark, non-crystallised liquid called lye forms on top. This lye contains high levels of natural minerals like magnesium sulfate, magnesium chloride, and sodium chloride. Traditionally used to support skin health, ease muscle and joint discomfort, and help the body recover after physical activity.",
+    producer: "Produced by: AZIMUT 6000 Ltd, Bulgaria, Pomorie 8200, Ivan Vazov 18 str. Tel: +359887470548 | E-mail: grudev_g@abv.bg. GTIN-13 Barcode: 3 800230 111746. Batch / Expiry: Lot № 07 / 25.12.2027. Net volume: 300 g ℮. PAO 12M | ♳ PET 1 Recyclable. ISO 22716 GMP Certified."
+  };
+
   const BLENDS = {
     arnica: {
       id: 'arnica',
       name: 'ARNICA BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#C69214',
-      bgGlow: 'rgba(198, 146, 20, 0.25)',
+      bgGlow: 'rgba(198, 146, 20, 0.35)',
       lidImg: 'labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png',
       sideImg: 'labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png',
       sidePdf: 'labels/production_ready/pdf_print_ready_cmyk/Side_Label_Arnica_280x38mm_PRINT_READY.pdf',
       lidPdf: 'labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Arnica_86mm_PRINT_READY.pdf',
       botanical: 'Arnica Montana flower extract (sesquiterpene lactones for micro-circulation)',
       scent: 'Warm herbal & fresh mountain meadow',
-      colorName: 'Warm Goldenrod (#C69214)'
+      colorName: 'Warm Goldenrod (#C69214)',
+      purpose: "This is a fast-absorbing topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. Enriched with Arnica extract, traditionally used to soothe and comfort the body.",
+      inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ARNICA MONTANA FLOWER EXTRACT."
     },
     lavender: {
       id: 'lavender',
       name: 'LAVENDER BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#6B5B95',
-      bgGlow: 'rgba(107, 91, 149, 0.25)',
+      bgGlow: 'rgba(107, 91, 149, 0.35)',
       lidImg: 'labels/production_ready/high_res_png_300dpi/Top_Lid_Lavender_86mm_300dpi.png',
       sideImg: 'labels/production_ready/high_res_png_300dpi/Side_Label_Lavender_280x38mm_300dpi.png',
       sidePdf: 'labels/production_ready/pdf_print_ready_cmyk/Side_Label_Lavender_280x38mm_PRINT_READY.pdf',
       lidPdf: 'labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Lavender_86mm_PRINT_READY.pdf',
       botanical: 'Lavandula Angustifolia pure essential oil (linalool & linalyl acetate)',
       scent: 'Calming Mediterranean twilight lavender',
-      colorName: 'Royal Lavender (#6B5B95)'
+      colorName: 'Royal Lavender (#6B5B95)',
+      purpose: "This is a topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. With Lavender extract, known for its calming and relaxing properties.",
+      inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, LAVANDULA ANGUSTIFOLIA FLOWER EXTRACT."
     },
     rosemary: {
       id: 'rosemary',
       name: 'ROSEMARY BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#4B6B38',
-      bgGlow: 'rgba(75, 107, 56, 0.25)',
+      bgGlow: 'rgba(75, 107, 56, 0.35)',
       lidImg: 'labels/production_ready/high_res_png_300dpi/Top_Lid_Rosemary_86mm_300dpi.png',
       sideImg: 'labels/production_ready/high_res_png_300dpi/Side_Label_Rosemary_280x38mm_300dpi.png',
       sidePdf: 'labels/production_ready/pdf_print_ready_cmyk/Side_Label_Rosemary_280x38mm_PRINT_READY.pdf',
       lidPdf: 'labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Rosemary_86mm_PRINT_READY.pdf',
       botanical: 'Rosmarinus Officinalis leaf oil (rosmarinic acid & cineole)',
       scent: 'Invigorating pine-camphor herbal tone',
-      colorName: 'Forest Rosemary (#4B6B38)'
+      colorName: 'Forest Rosemary (#4B6B38)',
+      purpose: "This is a topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. Enhanced with Rosemary extract, traditionally used to support circulation and invigorate the skin.",
+      inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ROSMARINUS OFFICINALIS LEAF POWDER EXTRACT."
     },
     juniper: {
       id: 'juniper',
       name: 'JUNIPER BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#285844',
-      bgGlow: 'rgba(40, 88, 68, 0.25)',
+      bgGlow: 'rgba(40, 88, 68, 0.35)',
       lidImg: 'labels/production_ready/high_res_png_300dpi/Top_Lid_Juniper_86mm_300dpi.png',
       sideImg: 'labels/production_ready/high_res_png_300dpi/Side_Label_Juniper_280x38mm_300dpi.png',
       sidePdf: 'labels/production_ready/pdf_print_ready_cmyk/Side_Label_Juniper_280x38mm_PRINT_READY.pdf',
       lidPdf: 'labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Juniper_86mm_PRINT_READY.pdf',
       botanical: 'Juniperus Communis fruit oil (alpha-pinene warming complex)',
       scent: 'Crisp alpine coniferous wood notes',
-      colorName: 'Deep Pine Juniper (#285844)'
+      colorName: 'Deep Pine Juniper (#285844)',
+      purpose: "This is a topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. Infused with Juniper extract, valued for its refreshing and revitalising qualities.",
+      inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE, JUNIPERUS CHINENSIS LEAF EXTRACT."
     },
     grape: {
       id: 'grape',
       name: 'GRAPE BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#7E2A3C',
-      bgGlow: 'rgba(126, 42, 60, 0.25)',
+      bgGlow: 'rgba(126, 42, 60, 0.35)',
       lidImg: 'labels/production_ready/high_res_png_300dpi/Top_Lid_Grape_86mm_300dpi.png',
       sideImg: 'labels/production_ready/high_res_png_300dpi/Side_Label_Grape_280x38mm_300dpi.png',
       sidePdf: 'labels/production_ready/pdf_print_ready_cmyk/Side_Label_Grape_280x38mm_PRINT_READY.pdf',
       lidPdf: 'labels/production_ready/pdf_print_ready_cmyk/Top_Lid_Grape_86mm_PRINT_READY.pdf',
       botanical: 'Vitis Vinifera (Grape) seed extract (potent proanthocyanidins & resveratrol)',
       scent: 'Sun-drenched Black Sea vineyard bouquet',
-      colorName: 'Burgundy Grape (#7E2A3C)'
+      colorName: 'Burgundy Grape (#7E2A3C)',
+      purpose: "This is a topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. Lightly fragranced with a pleasant Grape aroma for a fresh and enjoyable experience.",
+      inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE."
     }
   };
+
+  // Turntable and Inspector State
+  let turntableAngle = 0;
+  let isDraggingTurntable = false;
+  let dragStartX = 0;
+  let isAutoSpinning = false;
+  let autoSpinAnimationId = null;
+  let activeTextTab = 'purpose';
 
   // ==================== PRICE & CURRENCY UTILS ====================
   function formatPrice(usdAmount) {
@@ -156,8 +181,9 @@
     }, 3200);
   }
 
-  // ==================== 3D INTERACTIVE STUDIO ====================
+  // ==================== 3D INTERACTIVE TURNTABLE STUDIO ====================
   function initStudio() {
+    // 1. Variant tabs
     const tabs = document.querySelectorAll('.blend-tab');
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
@@ -166,7 +192,169 @@
       });
     });
 
+    // 2. Turntable drag interaction
+    const stage = document.getElementById('turntableStage');
+    if (stage) {
+      stage.addEventListener('mousedown', (e) => {
+        isDraggingTurntable = true;
+        dragStartX = e.clientX;
+        stopAutoSpin();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDraggingTurntable) return;
+        const delta = e.clientX - dragStartX;
+        dragStartX = e.clientX;
+        setTurntableAngle(turntableAngle + delta * 0.7);
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDraggingTurntable = false;
+      });
+
+      // Mobile Touch support
+      stage.addEventListener('touchstart', (e) => {
+        isDraggingTurntable = true;
+        dragStartX = e.touches[0].clientX;
+        stopAutoSpin();
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDraggingTurntable) return;
+        const delta = e.touches[0].clientX - dragStartX;
+        dragStartX = e.touches[0].clientX;
+        setTurntableAngle(turntableAngle + delta * 0.7);
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        isDraggingTurntable = false;
+      });
+    }
+
+    // 3. Auto-spin button
+    const autoSpinBtn = document.getElementById('btnAutoSpin');
+    if (autoSpinBtn) {
+      autoSpinBtn.addEventListener('click', toggleAutoSpin);
+    }
+
+    // 4. Angle presets
+    document.querySelectorAll('.btn-angle-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-angle-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const angle = parseInt(btn.getAttribute('data-angle')) || 0;
+        stopAutoSpin();
+        setTurntableAngle(angle, true);
+      });
+    });
+
+    // 5. Zoom controls for Side Wrap
+    document.querySelectorAll('.btn-zoom').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-zoom').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const zoom = btn.getAttribute('data-zoom');
+        const wrap = document.getElementById('sideLabelPanWrap');
+        if (!wrap) return;
+        wrap.className = 'side-label-pan-wrap';
+        if (zoom === '2x') wrap.classList.add('zoomed-2x');
+        if (zoom === '3x') wrap.classList.add('zoomed-3x');
+        showToast(`Label text magnification: ${zoom.toUpperCase()}`, 'Text Zoom');
+      });
+    });
+
+    // 6. Horizontal drag-to-pan on side label container
+    const sideBox = document.getElementById('sideLabelBox');
+    if (sideBox) {
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      sideBox.addEventListener('mousedown', (e) => {
+        isDown = true;
+        sideBox.style.cursor = 'grabbing';
+        startX = e.pageX - sideBox.offsetLeft;
+        scrollLeft = sideBox.scrollLeft;
+      });
+
+      sideBox.addEventListener('mouseleave', () => {
+        isDown = false;
+        sideBox.style.cursor = 'grab';
+      });
+
+      sideBox.addEventListener('mouseup', () => {
+        isDown = false;
+        sideBox.style.cursor = 'grab';
+      });
+
+      sideBox.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - sideBox.offsetLeft;
+        const walk = (x - startX) * 1.6;
+        sideBox.scrollLeft = scrollLeft - walk;
+      });
+    }
+
+    // 7. Master text inspector tabs
+    document.querySelectorAll('.btn-text-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabKey = btn.getAttribute('data-tab');
+        updateMasterTextInspector(tabKey);
+      });
+    });
+
+    // Initial variant load
     switchBlend('arnica');
+    updateMasterTextInspector('purpose');
+    startAutoSpin();
+  }
+
+  function setTurntableAngle(angle, smooth = false) {
+    turntableAngle = (angle % 360 + 360) % 360;
+    const tubAssembly = document.getElementById('tubAssembly');
+    const tubLabelStrip = document.getElementById('tubLabelStrip');
+
+    if (tubAssembly) {
+      if (smooth) tubAssembly.classList.add('smooth-spin');
+      else tubAssembly.classList.remove('smooth-spin');
+      // Subtle 3D tilt perspective
+      tubAssembly.style.transform = `rotateY(${turntableAngle}deg)`;
+    }
+
+    if (tubLabelStrip) {
+      // 1200px represents 360 degree revolution
+      const pxOffset = -((turntableAngle / 360) * 1200);
+      tubLabelStrip.style.transform = `translateX(${pxOffset}px)`;
+    }
+  }
+
+  function toggleAutoSpin() {
+    if (isAutoSpinning) {
+      stopAutoSpin();
+    } else {
+      startAutoSpin();
+    }
+  }
+
+  function startAutoSpin() {
+    isAutoSpinning = true;
+    const btn = document.getElementById('btnAutoSpin');
+    if (btn) btn.innerHTML = '<span>⏸</span> <span>Pause Auto-Spin</span>';
+
+    function spin() {
+      if (!isAutoSpinning) return;
+      setTurntableAngle(turntableAngle + 0.45);
+      autoSpinAnimationId = requestAnimationFrame(spin);
+    }
+    autoSpinAnimationId = requestAnimationFrame(spin);
+  }
+
+  function stopAutoSpin() {
+    isAutoSpinning = false;
+    if (autoSpinAnimationId) cancelAnimationFrame(autoSpinAnimationId);
+    const btn = document.getElementById('btnAutoSpin');
+    if (btn) btn.innerHTML = '<span>🔄</span> <span>Auto-Rotate 360°</span>';
   }
 
   function switchBlend(blendKey) {
@@ -174,7 +362,7 @@
     if (!blend) return;
     STATE.selectedBlend = blendKey;
 
-    // Update active tab styles
+    // Update active tab buttons
     document.querySelectorAll('.blend-tab').forEach(tab => {
       if (tab.getAttribute('data-blend') === blendKey) {
         tab.classList.add('active');
@@ -187,9 +375,20 @@
       }
     });
 
-    // Update Lid & Side Wrap views
+    // Update 3D turntable images & aura
     const lidImg = document.getElementById('studioLidImg');
+    const cylinderImg = document.getElementById('studioCylinderImg');
     const sideImg = document.getElementById('studioSideImg');
+    const aura = document.getElementById('studioTurntableAura');
+
+    if (lidImg) lidImg.src = blend.lidImg;
+    if (cylinderImg) cylinderImg.src = blend.sideImg;
+    if (sideImg) sideImg.src = blend.sideImg;
+    if (aura) {
+      aura.style.background = `radial-gradient(circle, ${blend.bgGlow} 0%, transparent 70%)`;
+    }
+
+    // Update textual fields
     const blendTitle = document.getElementById('studioBlendTitle');
     const botanicalField = document.getElementById('studioBotanicalField');
     const scentField = document.getElementById('studioScentField');
@@ -199,8 +398,6 @@
     const dlLidPng = document.getElementById('dlLidPng');
     const dlSidePng = document.getElementById('dlSidePng');
 
-    if (lidImg) lidImg.src = blend.lidImg;
-    if (sideImg) sideImg.src = blend.sideImg;
     if (blendTitle) {
       blendTitle.textContent = blend.name;
       blendTitle.style.color = blend.accentColor;
@@ -213,6 +410,54 @@
     if (dlSidePdf) dlSidePdf.href = blend.sidePdf;
     if (dlLidPng) dlLidPng.href = blend.lidImg;
     if (dlSidePng) dlSidePng.href = blend.sideImg;
+
+    updateMasterTextInspector(activeTextTab);
+  }
+
+  function updateMasterTextInspector(tabKey = activeTextTab) {
+    activeTextTab = tabKey;
+    const blend = BLENDS[STATE.selectedBlend];
+    if (!blend) return;
+
+    const heading = document.getElementById('inspectorHeading');
+    const body = document.getElementById('inspectorBody');
+    if (!heading || !body) return;
+
+    const contentMap = {
+      purpose: {
+        title: '🌿 Purpose &amp; Formulation Benefits',
+        text: blend.purpose
+      },
+      inci: {
+        title: '🧪 Full INCI Ingredients (Australian TGA 2025 Standard)',
+        text: `<b>Ingredients List:</b><br>${blend.inci}`
+      },
+      usage: {
+        title: '⏱️ Directions for Usage &amp; Overnight Application',
+        text: SHARED_TEXTS.usage
+      },
+      warning: {
+        title: '⚠️ Precautions &amp; Recommended Storage',
+        text: SHARED_TEXTS.warning
+      },
+      heritage: {
+        title: '🌊 What is Pomorie Black Sea Lye?',
+        text: SHARED_TEXTS.heritage
+      },
+      producer: {
+        title: '🏭 Manufacturer &amp; Batch Traceability',
+        text: SHARED_TEXTS.producer
+      }
+    };
+
+    const item = contentMap[tabKey] || contentMap.purpose;
+    heading.innerHTML = item.title;
+    body.innerHTML = item.text;
+
+    document.querySelectorAll('.btn-text-tab').forEach(btn => {
+      if (btn.getAttribute('data-tab') === tabKey) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
   }
 
   // ==================== PRODUCTS ENGINE ====================
@@ -527,7 +772,7 @@
     const orderNumEl = document.getElementById('checkoutOrderNum');
     const summaryCard = document.getElementById('checkoutSummaryCard');
 
-    if (orderNumEl) orderNumEl.textContent = `Order Protocol Ref: #${orderNum}`;
+    if (orderNumEl) orderNumEl.textContent = `Order Reference: #${orderNum}`;
     if (summaryCard) {
       summaryCard.innerHTML = `
         <div class="checkout-summary-row">
@@ -535,7 +780,7 @@
           <span>${formatPrice(subtotalUSD)}</span>
         </div>
         <div class="checkout-summary-row">
-          <span>Courier Shipping (Black Sea Express):</span>
+          <span>Express Delivery (Black Sea Express):</span>
           <span>${shippingUSD === 0 ? 'FREE' : formatPrice(shippingUSD)}</span>
         </div>
         <div class="checkout-summary-row">
@@ -550,11 +795,11 @@
     }
 
     modal.classList.add('open');
-    // Clear cart upon successful order protocol
+    // Clear cart upon order
     STATE.cart = [];
     saveCart();
     updateCartDrawer();
-    showToast(`Order #${orderNum} registered successfully!`, 'Sovereign Order Confirmed');
+    showToast(`Order #${orderNum} registered successfully!`, 'Order Confirmed');
   }
 
   // ==================== CLINICAL ARTICLES ENGINE ====================

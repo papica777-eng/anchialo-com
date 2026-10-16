@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANCHIALO — Pomorie Black Sea Minerals | Sovereign Web Platform &amp; Australian TGA Master Packaging</title>
-  <meta name="description" content="Discover Anchialo: Ancient Black Sea mineral balneotherapy re-engineered. High-potency transdermal Dual Magnesium complexes harvested from Pomorie Lake, Bulgaria, engineered to Australian TGA 2025 specifications.">
+  <title>ANCHIALO — Pomorie Black Sea Minerals | Official Store &amp; Australian TGA Master Packaging</title>
+  <meta name="description" content="Discover Anchialo: Ancient Black Sea mineral balneotherapy. 100% natural Dual Magnesium complexes harvested from Pomorie Lake, Bulgaria, engineered to Australian TGA 2025 specifications.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -16,12 +16,14 @@
   <div class="announcement-bar">
     <div>
       <span class="pulse-dot"></span>
-      🔱 AETERNA SOVEREIGN PLATFORM // ANCHIALO.COM ENTERPRISE WEB ARCHIVE
+      ✨ 100% PURE BULGARIAN BLACK SEA LYE • HARVESTED IN LAKE POMORIE
     </div>
     <div style="display: flex; gap: 20px; align-items: center;">
-      <span>AUSTRALIAN TGA 2025 MASTER SUITE (Φ = 1.618)</span>
+      <span>FREE WORLDWIDE SHIPPING OVER $100</span>
       <span style="opacity: 0.5;">|</span>
-      <span>POMORIE LABS, BULGARIA</span>
+      <span>TGA 2025 MASTER SUITE</span>
+      <span style="opacity: 0.5;">|</span>
+      <span>POMORIE, BULGARIA</span>
     </div>
   </div>
 
@@ -166,22 +168,79 @@
     <!-- Studio Showcase Wrapper -->
     <div class="studio-wrapper">
       <div class="studio-grid">
-        <!-- Left: Circular Lid Showcase -->
-        <div class="lid-showcase">
-          <div class="lid-circle-img-wrap">
-            <img id="studioLidImg" src="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" alt="Top Lid 300 DPI">
+        <!-- Left: 3D Turntable Jar Showcase -->
+        <div class="jar-turntable-card">
+          <div class="turntable-aura" id="studioTurntableAura"></div>
+          
+          <div class="turntable-stage-3d" id="turntableStage" title="Click & Drag to Rotate 360°">
+            <div class="tub-assembly-3d" id="tubAssembly">
+              <div class="tub-lid-disc" id="tubLidDisc">
+                <img id="studioLidImg" src="labels/production_ready/high_res_png_300dpi/Top_Lid_Arnica_86mm_300dpi.png" alt="Top Lid 300 DPI">
+                <div class="tub-lid-sheen"></div>
+              </div>
+              <div class="tub-cylinder-body" id="tubCylinderBody">
+                <div class="tub-label-strip-panoramic" id="tubLabelStrip">
+                  <img id="studioCylinderImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Wrap Label Cylinder">
+                </div>
+                <div class="cylinder-specular-overlay"></div>
+              </div>
+              <div class="tub-shadow-base"></div>
+            </div>
           </div>
-          <div class="lid-info-badge">TOP LID RECESS: Ø 8.6 CM (1016 × 1016 PX @ 300 DPI)</div>
+
+          <div class="turntable-ctrls">
+            <div style="font-family:'Montserrat', sans-serif; font-size:11px; font-weight:800; color:var(--text-muted); text-align:center; text-transform:uppercase; letter-spacing:1px;">
+              360° Interactive Turntable (Drag to Spin)
+            </div>
+            <div class="turntable-preset-row">
+              <button class="btn-angle-preset active" data-angle="0">🏷️ Front</button>
+              <button class="btn-angle-preset" data-angle="90">🌿 Purpose</button>
+              <button class="btn-angle-preset" data-angle="180">🧪 INCI</button>
+              <button class="btn-angle-preset" data-angle="270">⏱️ Usage</button>
+            </div>
+            <button class="btn-auto-spin" id="btnAutoSpin">
+              <span>🔄</span> <span>Auto-Rotate 360°</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Right: Side Wrap & Engineering Specs -->
+        <!-- Right: Side Wrap Panoramic Pan-Zoom & Text Inspector -->
         <div class="side-showcase">
-          <h3 id="studioBlendTitle" style="font-family:'Cinzel', serif; font-size:24px; font-weight:700; color:#C69214;">
-            ARNICA BLEND — DUAL MAGNESIUM COMPLEX
-          </h3>
+          <div class="side-label-header-bar">
+            <h3 id="studioBlendTitle" style="font-family:'Cinzel', serif; font-size:22px; font-weight:700; color:#C69214;">
+              ARNICA BLEND — DUAL MAGNESIUM COMPLEX
+            </h3>
+            <div class="label-zoom-ctrls">
+              <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:2px;">Text Zoom:</span>
+              <button class="btn-zoom active" data-zoom="1x">100% Fit</button>
+              <button class="btn-zoom" data-zoom="2x">200% Zoom</button>
+              <button class="btn-zoom" data-zoom="3x">320% Macro</button>
+            </div>
+          </div>
 
-          <div class="side-label-img-box">
-            <img id="studioSideImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Side Wrap Label 300 DPI">
+          <!-- Panoramic Label Viewer -->
+          <div class="side-label-img-box" id="sideLabelBox">
+            <div class="side-label-pan-wrap" id="sideLabelPanWrap">
+              <img id="studioSideImg" src="labels/production_ready/high_res_png_300dpi/Side_Label_Arnica_280x38mm_300dpi.png" alt="Side Wrap Label 300 DPI">
+            </div>
+          </div>
+
+          <!-- Verbatim Master Text Inspector (Big Readable Typography) -->
+          <div class="master-text-inspector">
+            <div class="text-inspector-tabs">
+              <button class="btn-text-tab active" data-tab="purpose">🌿 Purpose</button>
+              <button class="btn-text-tab" data-tab="inci">🧪 INCI Ingredients</button>
+              <button class="btn-text-tab" data-tab="usage">⏱️ Usage &amp; Overnight</button>
+              <button class="btn-text-tab" data-tab="warning">⚠️ Warnings &amp; Storage</button>
+              <button class="btn-text-tab" data-tab="heritage">🌊 What is Lye?</button>
+              <button class="btn-text-tab" data-tab="producer">🏭 Producer &amp; Batch</button>
+            </div>
+            <div class="text-inspector-card" id="textInspectorCard">
+              <h4 id="inspectorHeading">🌿 Purpose &amp; Formulation Benefits</h4>
+              <p id="inspectorBody">
+                This is a fast-absorbing topical body gel formulated to provide the natural benefits of magnesium sulfate and magnesium chloride, absorbed through the skin to help relax and nourish the body. It supports hydration and contributes to a feeling of refreshment and revitalisation. The high magnesium content may assist in maintaining healthy skin and supporting overall well-being. Enriched with Arnica extract, traditionally used to soothe and comfort the body.
+              </p>
+            </div>
           </div>
 
           <div class="studio-specs-row">
@@ -195,7 +254,7 @@
             </div>
             <div class="studio-spec-col">
               <div class="k">Olfactory Profile</div>
-              <div class="v" id="studioScentField">Warm herbal & meadow</div>
+              <div class="v" id="studioScentField">Warm herbal &amp; meadow</div>
             </div>
             <div class="studio-spec-col">
               <div class="k">Color Palette</div>
@@ -505,10 +564,10 @@
     </div>
 
     <div class="bottom-copyright-bar">
-      <div>&copy; 2026 ANCHIALO. Orchestrated by AETERNA Sovereign Systems for Dimitar Prodromov &amp; Sotir Kichukov.</div>
+      <div>&copy; 2026 ANCHIALO. Produced by AZIMUT 6000 Ltd, Ivan Vazov 18 str., Pomorie 8200, Bulgaria. All rights reserved.</div>
       <div style="display:flex; gap:20px;">
         <a href="#products" style="color:#6E685F; text-decoration:none;">Shop</a>
-        <a href="#studio" style="color:#6E685F; text-decoration:none;">Studio</a>
+        <a href="#studio" style="color:#6E685F; text-decoration:none;">Packaging Studio</a>
         <a href="#blog" style="color:#6E685F; text-decoration:none;">Clinical Research</a>
       </div>
     </div>
@@ -543,7 +602,7 @@
         <span id="cartShipping">Calculated</span>
       </div>
       <button class="btn-checkout" id="cartCheckoutBtn">
-        Proceed to Sovereign Checkout &rarr;
+        Proceed to Secure Checkout &rarr;
       </button>
     </div>
   </div>
@@ -630,12 +689,12 @@
       <button class="modal-close">&times;</button>
       <div class="checkout-confirm-box">
         <div class="checkout-check-icon">✓</div>
-        <h2 class="checkout-title">Order Protocol Confirmed</h2>
-        <div class="checkout-order-num" id="checkoutOrderNum">Order Protocol Ref: #ANC-2026-0000</div>
+        <h2 class="checkout-title">Order Confirmed</h2>
+        <div class="checkout-order-num" id="checkoutOrderNum">Order Reference: #ANC-2026-0000</div>
         
         <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px; line-height:1.6;">
           Thank you for choosing Anchialo Pomorie balneotherapy. Your mineral order has been securely registered 
-          in the sovereign dispatch registry and is queued for pharmaceutical packaging at our Pomorie facility.
+          in the dispatch registry and is queued for packaging at our Pomorie facility.
         </p>
 
         <div class="checkout-summary-card" id="checkoutSummaryCard">
@@ -643,7 +702,7 @@
         </div>
 
         <button class="btn-primary" onclick="document.getElementById('checkoutModal').classList.remove('open')" style="width:100%; justify-content:center; padding:14px;">
-          Return to Platform
+          Return to Store
         </button>
       </div>
     </div>

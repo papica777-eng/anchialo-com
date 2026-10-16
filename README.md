@@ -115,5 +115,6 @@ python -m http.server 8080
 
 ---
 
-**Architect:** Dimitar Prodromov (Pomorie HQ) & Sotir Kichukov  
-**Sovereign Engine:** AETERNA Technologies / OMNI-VIVISECTOR
+**Brand:** ANCHIALO — Pomorie Black Sea Balneology  
+**Manufacturer:** AZIMUT 6000 Ltd, Ivan Vazov 18 str., 8200 Pomorie, Bulgaria  
+**Founder:** Sotir Kichukov

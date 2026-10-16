@@ -131,7 +131,7 @@ def build_side_wrap_html(var_key, v):
     width: 880px;
     height: 100%;
     position: relative;
-    padding: 20px 26px 16px 26px;
+    padding: 16px 24px 14px 24px;
     border-right: 1px solid #E8E3DA;
     display: flex;
     flex-direction: column;
@@ -141,7 +141,7 @@ def build_side_wrap_html(var_key, v):
   .aerial-watermark {{
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0.16;
+    opacity: 0.14;
     overflow: hidden;
     z-index: 1;
     pointer-events: none;
@@ -161,32 +161,33 @@ def build_side_wrap_html(var_key, v):
   }}
   .sect-hdr {{
     font-family: 'Montserrat', sans-serif;
-    font-size: 11px;
+    font-size: 16px;
     font-weight: 800;
-    letter-spacing: 2.2px;
+    letter-spacing: 2px;
     color: {accent};
     text-transform: uppercase;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     gap: 6px;
   }}
   .sect-hdr::before {{
     content: "◆";
-    font-size: 7px;
+    font-size: 8px;
     color: {gold};
   }}
   .body-copy {{
-    font-size: 11.5px;
-    line-height: 1.48;
-    color: #2D2B28;
+    font-size: 16px;
+    line-height: 1.42;
+    color: #1F1D1B;
+    font-weight: 500;
   }}
 
   /* PANEL 2: PURPOSE & INGREDIENTS (Width: 820px) */
   .panel-2 {{
     width: 820px;
     height: 100%;
-    padding: 20px 26px 16px 26px;
+    padding: 16px 24px 14px 24px;
     border-right: 1px solid #E8E3DA;
     display: flex;
     flex-direction: column;
@@ -196,22 +197,23 @@ def build_side_wrap_html(var_key, v):
   .inci-container {{
     background: #FFFFFF;
     border: 1px solid #E8E3DA;
-    border-left: 3px solid {accent};
-    padding: 8px 12px;
+    border-left: 3.5px solid {accent};
+    padding: 10px 14px;
     border-radius: 0 4px 4px 0;
   }}
   .inci-copy {{
-    font-size: 10.5px;
-    line-height: 1.45;
-    color: #383531;
-    letter-spacing: 0.4px;
+    font-size: 14.5px;
+    line-height: 1.4;
+    color: #262422;
+    font-weight: 600;
+    letter-spacing: 0.3px;
   }}
 
   /* PANEL 3: USAGE, WARNING, STORAGE, PRODUCER (Width: 790px) */
   .panel-3 {{
     width: 790px;
     height: 100%;
-    padding: 20px 24px 16px 24px;
+    padding: 16px 22px 14px 22px;
     border-right: 2px solid {gold};
     display: flex;
     flex-direction: column;
@@ -220,7 +222,7 @@ def build_side_wrap_html(var_key, v):
   }}
   .warn-storage-row {{
     display: flex;
-    gap: 18px;
+    gap: 16px;
   }}
   .producer-card {{
     display: flex;
@@ -228,17 +230,18 @@ def build_side_wrap_html(var_key, v):
     justify-content: space-between;
     background: #FAF8F5;
     border: 1px solid #EAE5DC;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 4px;
     margin-top: 4px;
   }}
   .producer-text {{
-    font-size: 10.5px;
-    line-height: 1.4;
-    color: #333333;
+    font-size: 14px;
+    line-height: 1.38;
+    color: #222222;
+    font-weight: 500;
   }}
   .az-logo {{
-    height: 38px;
+    height: 42px;
     width: auto;
     object-fit: contain;
   }}
@@ -247,7 +250,7 @@ def build_side_wrap_html(var_key, v):
   .panel-4 {{
     width: 817px;
     height: 100%;
-    padding: 20px 28px 16px 28px;
+    padding: 16px 26px 14px 26px;
     background: #FCFBF9;
     display: flex;
     flex-direction: column;
@@ -258,11 +261,11 @@ def build_side_wrap_html(var_key, v):
     align-items: baseline;
     justify-content: space-between;
     border-bottom: 1.5px solid {gold};
-    padding-bottom: 8px;
+    padding-bottom: 6px;
   }}
   .brand-cinzel {{
     font-family: 'Cinzel', serif;
-    font-size: 46px;
+    font-size: 50px;
     font-weight: 700;
     letter-spacing: 12px;
     color: #1A1918;
@@ -270,17 +273,17 @@ def build_side_wrap_html(var_key, v):
   }}
   .site-url {{
     font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
     letter-spacing: 3px;
     color: {gold};
   }}
   .hero-titles {{
-    margin: 6px 0;
+    margin: 4px 0;
   }}
   .complex-txt {{
     font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     letter-spacing: 3.5px;
     color: #1A1918;
@@ -291,12 +294,12 @@ def build_side_wrap_html(var_key, v):
     background: {accent};
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 800;
     letter-spacing: 4px;
-    padding: 4px 16px;
+    padding: 5px 18px;
     border-radius: 3px;
-    margin-top: 5px;
+    margin-top: 4px;
     text-transform: uppercase;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }}
