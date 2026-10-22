@@ -13,7 +13,7 @@
       AUD: { symbol: 'A$', rate: 1.55, fixedJar: 49.00, suffix: ' AUD' },
       USD: { symbol: '$', rate: 1.00, fixedJar: 32.00, suffix: ' USD' },
       EUR: { symbol: '€', rate: 0.92, fixedJar: 28.00, suffix: ' EUR' },
-      BGN: { symbol: '', rate: 1.80, fixedJar: 45.00, suffix: ' лв.' }
+      BGN: { symbol: '', rate: 1.80, fixedJar: 45.00, suffix: ' BGN' }
     },
     cart: JSON.parse(localStorage.getItem('anchialov2_cart') || '[]'),
     activeCategory: 'all',
@@ -246,7 +246,7 @@
     }
     if (STATE.currency === 'BGN') {
       const val = (audAmount / 1.55) * 1.80;
-      return `${val.toFixed(2)} лв.`;
+      return `${val.toFixed(2)} BGN`;
     }
     return `A$ ${audAmount.toFixed(2)}`;
   }
