@@ -1,0 +1,22 @@
+{
+  "name": "ANCHIALO — Pure Black Sea Balneology & Certified Dual Magnesium",
+  "short_name": "ANCHIALO",
+  "description": "Authentic Bulgarian Black Sea natural balneotherapy. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 & 70.36 g/L MgSO4) and pure topical oils harvested from Lake Pomorie. Official Australian Store ($49 AUD).",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#1E3A2F",
+  "lang": "en-AU",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32 48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/assets/images/products/06_file_transp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

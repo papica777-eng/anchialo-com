@@ -1,0 +1,65 @@
+User-agent: *
+Allow: /
+
+# Google Search & Shopping Crawlers
+User-agent: Googlebot
+Allow: /
+User-agent: Googlebot-Image
+Allow: /
+User-agent: Storebot-Google
+Allow: /
+User-agent: Google-InspectionTool
+Allow: /
+
+# AI / LLM Search Crawlers — Full 2026 Set
+# OpenAI / SearchGPT
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+# Google AI Overviews / Gemini
+User-agent: Google-Extended
+Allow: /
+User-agent: GoogleOther
+Allow: /
+# Apple Intelligence
+User-agent: Applebot
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+# Microsoft Bing / Copilot
+User-agent: Bingbot
+Allow: /
+# Meta / Others
+User-agent: Amazonbot
+Allow: /
+User-agent: meta-externalagent
+Allow: /
+User-agent: CCBot
+Allow: /
+User-agent: cohere-ai
+Allow: /
+User-agent: YouBot
+Allow: /
+User-agent: DuckAssistBot
+Allow: /
+
+Sitemap: https://anchialo.com/sitemap.xml

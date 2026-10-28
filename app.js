@@ -141,6 +141,7 @@
   const CATALOG_PRODUCTS = [
     {
       id: 'gel-arnica',
+      slug: 'anchialo-dual-magnesium-gel-arnica-blend',
       name: 'Dual Magnesium Gel | Arnica Blend',
       category: 'gel',
       priceAUD: 49.00,
@@ -151,6 +152,7 @@
     },
     {
       id: 'gel-lavender',
+      slug: 'anchialo-dual-magnesium-gel-lavander-blend',
       name: 'Dual Magnesium Gel | Lavender Blend',
       category: 'gel',
       priceAUD: 49.00,
@@ -161,6 +163,7 @@
     },
     {
       id: 'gel-rosemary',
+      slug: 'anchialo-dual-magnesium-gel-rosemary-blend',
       name: 'Dual Magnesium Gel | Rosemary Blend',
       category: 'gel',
       priceAUD: 49.00,
@@ -171,6 +174,7 @@
     },
     {
       id: 'gel-juniper',
+      slug: 'anchialo-dual-magnesium-gel-juniper-blend',
       name: 'Dual Magnesium Gel | Juniper Blend',
       category: 'gel',
       priceAUD: 49.00,
@@ -181,6 +185,7 @@
     },
     {
       id: 'gel-grape',
+      slug: 'anchialo-dual-magnesium-gel-grape-blend',
       name: 'Dual Magnesium Gel | Grape Blend',
       category: 'gel',
       priceAUD: 49.00,
@@ -191,6 +196,7 @@
     },
     {
       id: 'oil-pure',
+      slug: 'anchialo-dual-magnesium-oil-natural-topical-oil',
       name: 'Dual Magnesium Oil | Natural Topical Brine',
       category: 'oil',
       priceAUD: 49.00,
@@ -201,6 +207,7 @@
     },
     {
       id: 'combo-gel-oil',
+      slug: 'special-offer-gel-oil-combo',
       name: 'Special Offer | Gel + Oil Combo',
       category: 'combo',
       priceAUD: 49.00,
@@ -211,6 +218,7 @@
     },
     {
       id: 'combo-starter',
+      slug: 'starter-combo-dual-magnesium-gel',
       name: 'Starter Combo | Dual Magnesium Gel (2-Pack)',
       category: 'combo',
       priceAUD: 89.00,
@@ -221,6 +229,7 @@
     },
     {
       id: 'combo-best-value',
+      slug: 'best-value-combo-dual-magnesium-gel',
       name: 'Best Value Combo | Dual Magnesium Gel (3-Pack)',
       category: 'combo',
       priceAUD: 129.00,
@@ -548,7 +557,7 @@
             <img src="${prod.image}" alt="${prod.name}" loading="lazy">
           </div>
           <div class="product-body">
-            <h3 class="product-name">${prod.name}</h3>
+            <h3 class="product-name"><a href="product-page/${prod.slug || ''}" style="color:inherit;text-decoration:none;">${prod.name}</a></h3>
             <div class="product-price-row">
               <span class="price-main">${priceFormatted}</span>
               <span class="price-unit">/ 300g Net</span>
@@ -609,7 +618,7 @@
           </div>
           <div class="blog-card-body">
             <span class="blog-card-meta">BALNEOLOGY REPORT · ${author}</span>
-            <h3 class="blog-card-title">${post.title}</h3>
+            <h3 class="blog-card-title"><a href="post/${post.slug || ''}" style="color:inherit;text-decoration:none;">${post.title}</a></h3>
             <p class="blog-card-excerpt">${desc}</p>
             <button class="btn-read-article" data-idx="${idx}">
               <span>Read Full Article</span>
