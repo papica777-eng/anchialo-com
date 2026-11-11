@@ -1204,7 +1204,7 @@
 
     if (meterText) {
       if (totals.finalSubtotalAUD >= threshold) {
-        meterText.textContent = '🎉 Qualified for FREE Australia-wide Express delivery!';
+        meterText.textContent = 'Complimentary Australia-wide Express delivery unlocked.';
       } else {
         const remaining = threshold - totals.finalSubtotalAUD;
         meterText.textContent = `Add A$ ${remaining.toFixed(2)} AUD for FREE Express delivery`;
@@ -1482,6 +1482,19 @@
         if (certImg) {
           certImg.src = `assets/official_labels_rendered/quality_certificate_page_${page}.png`;
         }
+      });
+    });
+
+    document.querySelectorAll('[data-cert-open]').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const page = thumb.getAttribute('data-cert-open') || '1';
+        pageBtns.forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-page') === page);
+        });
+        if (certImg) {
+          certImg.src = `assets/official_labels_rendered/quality_certificate_page_${page}.png`;
+        }
+        if (certModal) certModal.classList.add('active');
       });
     });
 

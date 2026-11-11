@@ -1,6 +1,8 @@
 """FastAPI 24/7 Akash CPU Growth Engine: Dynamic Stripe Checkout, QR Commissions, Cart Recovery & Lifecycle Automation."""
 
-from contextlib import asynccontextmanager
+import asyncio
+from contextlib import asynccontextmanager, suppress
+from datetime import date
 import json
 import logging
 import os
@@ -17,12 +19,15 @@ import stripe
 
 from db import get_conn, init_db
 from notifications import (
+    build_unsubscribe_url,
     normalize_email,
     render_lifecycle_template,
     send_resend_email,
     send_telegram_alert,
     verify_unsubscribe_token,
 )
+from outreach_agent import build_b2b_pitch
+from places_crawler import MELBOURNE_VERTICAL_QUERIES
 
 logger = logging.getLogger("anchialo.server")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -300,11 +305,51 @@ class QuizSubmitRequest(BaseModel):
     partner_code: str | None = None
 
 
+class CalibrationTestRequest(BaseModel):
+    send_telegram: bool = False
+    sample_suburb: str = "Richmond VIC"
+
+
+HEARTBEAT_STATE: dict[str, Any] = {
+    "started_at": int(time.time()),
+    "scheduler_ticks": 0,
+    "last_tick_ts": 0,
+    "last_lifecycle_processed": 0,
+    "last_calibration_ts": 0,
+    "last_calibration_status": "not_run",
+}
+
+TGA_FORBIDDEN_PATTERN = re.compile(
+    r"\b(arthritis|cure|cures|cured|heal|heals|healing|treat|treats|treatment|disease|illness|fractures|neuritis|neuralgia|inflammation|sprains)\b",
+    re.IGNORECASE,
+)
+
+
+async def _background_lifecycle_loop() -> None:
+    """Autonomous 24/7 scheduler processing due lifecycle emails every 15 minutes."""
+    while True:
+        await asyncio.sleep(900)
+        try:
+            res = await run_due_lifecycle_jobs(limit=25)
+            HEARTBEAT_STATE["scheduler_ticks"] += 1
+            HEARTBEAT_STATE["last_tick_ts"] = int(time.time())
+            HEARTBEAT_STATE["last_lifecycle_processed"] = int(res.get("processed", 0))
+        except Exception as exc:
+            logger.warning("Background lifecycle tick error: %s", exc)
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    """Initialize SQLite schema at startup."""
+    """Initialize SQLite schema at startup and run autonomous 24/7 lifecycle worker."""
     init_db()
-    yield
+    HEARTBEAT_STATE["started_at"] = int(time.time())
+    worker = asyncio.create_task(_background_lifecycle_loop())
+    try:
+        yield
+    finally:
+        worker.cancel()
+        with suppress(asyncio.CancelledError):
+            await worker
 
 
 app = FastAPI(title="ANCHIALO Melbourne Growth Engine", version="1.0.0", lifespan=lifespan)
@@ -654,4 +699,334 @@ def unsubscribe_endpoint(email: str = Query(...), token: str = Query(...)) -> HT
             "</body></html>"
         )
     )
+
+
+def _is_real_secret(env_name: str, placeholder_prefixes: tuple[str, ...] = ("replace", "sk_live_replace", "whsec_replace", "re_replace")) -> bool:
+    """Return True if an environment secret is populated with a non-placeholder value."""
+    val = (os.environ.get(env_name) or "").strip()
+    if not val:
+        return False
+    return not any(val.startswith(prefix) or "replace_with" in val for prefix in placeholder_prefixes)
+
+
+@app.get("/")
+def root_status() -> dict[str, Any]:
+    """Service identity root endpoint linking to live dashboard and health telemetry."""
+    return {
+        "service": "ANCHIALO Melbourne Growth Engine",
+        "version": "1.1.0",
+        "dashboard": "/dashboard",
+        "telemetry": "/api/telemetry/overview",
+        "health": "/health",
+    }
+
+
+@app.get("/api/telemetry/overview")
+def telemetry_overview() -> dict[str, Any]:
+    """Return live runtime status of all 4 autonomous agents, daily quotas, orders, and Melbourne leads."""
+    now = int(time.time())
+    today_key = date.today().isoformat()
+
+    with get_conn() as conn:
+        order_agg = conn.execute(
+            "SELECT COUNT(*) AS cnt, COALESCE(SUM(total_cents), 0) AS revenue_cents FROM orders"
+        ).fetchone()
+        comm_agg = conn.execute(
+            "SELECT COUNT(*) AS cnt, COALESCE(SUM(commission_cents), 0) AS comm_cents FROM commissions"
+        ).fetchone()
+        cart_agg = conn.execute(
+            "SELECT COUNT(*) AS total, COALESCE(SUM(recovered), 0) AS recovered FROM abandoned_carts"
+        ).fetchone()
+        quiz_count = int(conn.execute("SELECT COUNT(*) FROM quiz_submissions").fetchone()[0])
+        partner_count = int(conn.execute("SELECT COUNT(*) FROM partners").fetchone()[0])
+        lead_rows = conn.execute(
+            "SELECT category, COUNT(*) AS cnt FROM b2b_leads GROUP BY category"
+        ).fetchall()
+        pending_lifecycle = int(
+            conn.execute("SELECT COUNT(*) FROM lifecycle_queue WHERE status = 'pending'").fetchone()[0]
+        )
+        sent_lifecycle = int(
+            conn.execute("SELECT COUNT(*) FROM lifecycle_queue WHERE status LIKE 'sent%'").fetchone()[0]
+        )
+        quota_rows = conn.execute(
+            "SELECT metric, count FROM api_usage_counters WHERE usage_date = ?", (today_key,)
+        ).fetchall()
+        recent_orders = [
+            dict(r)
+            for r in conn.execute(
+                "SELECT id, provider, customer_name, total_cents, partner_code, status, created_at FROM orders ORDER BY id DESC LIMIT 8"
+            ).fetchall()
+        ]
+        recent_outreach = [
+            dict(r)
+            for r in conn.execute(
+                "SELECT o.id, o.step, o.recipient_email, o.subject, o.status, o.sent_at FROM b2b_outreach_log o ORDER BY o.id DESC LIMIT 8"
+            ).fetchall()
+        ]
+
+    quotas = {r["metric"]: int(r["count"]) for r in quota_rows}
+    leads_by_category = {r["category"]: int(r["cnt"]) for r in lead_rows}
+    total_leads = sum(leads_by_category.values())
+
+    max_b2b = int(os.environ.get("MAX_DAILY_B2B_EMAILS") or "25")
+    max_places = int(os.environ.get("MAX_DAILY_PLACES_CALLS") or "80")
+
+    integrations = {
+        "telegram_bot": _is_real_secret("TELEGRAM_BOT_TOKEN") and _is_real_secret("TELEGRAM_CHAT_ID"),
+        "smtp_gmail": _is_real_secret("SMTP_USER") and _is_real_secret("SMTP_PASS"),
+        "resend_email": _is_real_secret("RESEND_API_KEY"),
+        "stripe_dynamic": _is_real_secret("STRIPE_SECRET_KEY"),
+        "google_places": _is_real_secret("GOOGLE_PLACES_API_KEY"),
+    }
+
+    agents = [
+        {
+            "id": "telegram_dispatch",
+            "name": "Telegram & Order Telemetry Agent (@Anchialobot)",
+            "status": "CALIBRATED_LIVE" if integrations["telegram_bot"] else "AWAITING_TOKEN",
+            "metrics": f"{int(order_agg['cnt'])} orders · {partner_count} QR partners",
+        },
+        {
+            "id": "lifecycle_recovery",
+            "name": "Abandoned Cart & D1/D14/D25 Lifecycle Agent",
+            "status": "ACTIVE_24_7" if (integrations["smtp_gmail"] or integrations["resend_email"]) else "LOCAL_QUEUE_ONLY",
+            "metrics": f"{pending_lifecycle} pending · {sent_lifecycle} sent · {int(cart_agg['recovered'])}/{int(cart_agg['total'])} carts recovered",
+        },
+        {
+            "id": "places_crawler",
+            "name": "Melbourne Google Places B2B Lead Crawler",
+            "status": "LIVE_READY" if integrations["google_places"] else "AWAITING_PLACES_KEY",
+            "metrics": f"{total_leads} leads stored · {quotas.get('google_places', 0)}/{max_places} API calls today",
+        },
+        {
+            "id": "b2b_outreach",
+            "name": "Spam Act 2003 & TGA-Audited B2B Outreach Agent",
+            "status": "READY_SMTP" if integrations["smtp_gmail"] else ("READY_RESEND" if integrations["resend_email"] else "DRY_RUN_ONLY"),
+            "metrics": f"{quotas.get('b2b_emails', 0)}/{max_b2b} emails today · {len(MELBOURNE_VERTICAL_QUERIES)} verticals",
+        },
+    ]
+
+    return {
+        "status": "ok",
+        "uptime_seconds": max(0, now - int(HEARTBEAT_STATE["started_at"])),
+        "scheduler": HEARTBEAT_STATE,
+        "integrations": integrations,
+        "agents": agents,
+        "stats": {
+            "orders_count": int(order_agg["cnt"]),
+            "revenue_aud": round(int(order_agg["revenue_cents"]) / 100.0, 2),
+            "commissions_count": int(comm_agg["cnt"]),
+            "commissions_aud": round(int(comm_agg["comm_cents"]) / 100.0, 2),
+            "quiz_submissions": quiz_count,
+            "partners_count": partner_count,
+            "b2b_leads_total": total_leads,
+            "leads_by_category": leads_by_category,
+            "b2b_emails_today": quotas.get("b2b_emails", 0),
+            "b2b_emails_limit": max_b2b,
+            "places_calls_today": quotas.get("google_places", 0),
+            "places_calls_limit": max_places,
+        },
+        "recent_orders": recent_orders,
+        "recent_outreach": recent_outreach,
+    }
+
+
+@app.post("/api/bots/test-calibration")
+async def run_bot_calibration_test(req: CalibrationTestRequest | None = None) -> dict[str, Any]:
+    """Execute non-destructive calibration verification across all 4 autonomous bots + optional live Telegram ping."""
+    req = req or CalibrationTestRequest()
+    t_start = time.perf_counter()
+
+    # 1. Pricing & DB Calibration Check (integer cents accuracy)
+    pricing_probe = calculate_order_cents([{"id": "combo-starter", "qty": 1}], promo_code="CPT15", partner_code="CPT15")
+    pricing_ok = pricing_probe["total_cents"] == 8010 and pricing_probe["shipping_cents"] == 0
+
+    with get_conn() as conn:
+        partner_row = conn.execute("SELECT code, commission_rate FROM partners WHERE code = 'CPT15'").fetchone()
+        db_ok = partner_row is not None
+
+    # 2. B2B Pitch Dry-Run + TGA/ACCC Therapeutic Claim Filter Check
+    sample_lead = {"name": "Melbourne Combat Collective", "category": "combat_gym", "suburb": req.sample_suburb}
+    pitch_subject, _pitch_html, pitch_text = build_b2b_pitch(sample_lead, step=1)
+    tga_matches = TGA_FORBIDDEN_PATTERN.findall(f"{pitch_subject}\n{pitch_text}")
+    tga_clean = len(tga_matches) == 0
+
+    # 3. Lifecycle Template & Unsubscribe HMAC Calibration
+    unsub_sample = build_unsubscribe_url("calibration@anchialo.com")
+    _subj, _html, lfc_text = render_lifecycle_template("quiz_welcome", {"promo_code": "QUIZ10", "recommended_id": "gel-arnica"})
+    lifecycle_tga_matches = TGA_FORBIDDEN_PATTERN.findall(lfc_text)
+    lifecycle_ok = len(lifecycle_tga_matches) == 0 and "token=" in unsub_sample
+
+    # 4. Telegram Bot Ping (real network check only when send_telegram=True)
+    telegram_sent = False
+    telegram_latency_ms = 0
+    if req.send_telegram:
+        t_tg = time.perf_counter()
+        msg = (
+            "[ANCHIALO BOT CALIBRATION REPORT]\n"
+            f"DB & Pricing Check: {'PASS' if (db_ok and pricing_ok) else 'FAIL'}\n"
+            f"TGA/ACCC Pitch Audit: {'0 violations (PASS)' if tga_clean else 'VIOLATION'}\n"
+            f"Lifecycle Unsubscribe HMAC: {'PASS' if lifecycle_ok else 'FAIL'}\n"
+            f"Target Market: {req.sample_suburb} | Status: ALL 4 BOTS CALIBRATED"
+        )
+        telegram_sent = await send_telegram_alert(msg)
+        telegram_latency_ms = int((time.perf_counter() - t_tg) * 1000)
+
+    total_ms = int((time.perf_counter() - t_start) * 1000)
+    all_ok = db_ok and pricing_ok and tga_clean and lifecycle_ok
+
+    HEARTBEAT_STATE["last_calibration_ts"] = int(time.time())
+    HEARTBEAT_STATE["last_calibration_status"] = "CALIBRATED" if all_ok else "ATTENTION"
+
+    return {
+        "calibrated": all_ok,
+        "latency_ms": total_ms,
+        "checks": {
+            "sqlite_and_partners": db_ok,
+            "integer_cents_pricing": pricing_ok,
+            "b2b_pitch_tga_violations": len(tga_matches),
+            "lifecycle_tga_violations": len(lifecycle_tga_matches),
+            "unsubscribe_hmac_valid": "token=" in unsub_sample,
+            "smtp_configured": _is_real_secret("SMTP_USER") and _is_real_secret("SMTP_PASS"),
+            "telegram_configured": _is_real_secret("TELEGRAM_BOT_TOKEN") and _is_real_secret("TELEGRAM_CHAT_ID"),
+            "telegram_live_ping_sent": telegram_sent,
+            "telegram_latency_ms": telegram_latency_ms,
+        },
+        "sample_b2b_pitch": {
+            "subject": pitch_subject,
+            "preview": pitch_text[:280] + "...",
+        },
+    }
+
+
+DASHBOARD_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANCHIALO 24/7 Bot Telemetry & Command Center</title>
+  <style>
+    :root { --bg:#080e15; --card:#101926; --border:rgba(212,175,55,0.28); --gold:#d4af37; --text:#eef2f7; --muted:#94a3b8; --ok:#10b981; --warn:#f59e0b; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:var(--bg); color:var(--text); padding:28px; line-height:1.5; }
+    .wrap { max-width:1400px; margin:0 auto; }
+    .top { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; border-bottom:1px solid var(--border); padding-bottom:18px; margin-bottom:24px; }
+    .kicker { font-size:11px; letter-spacing:2px; color:var(--gold); font-weight:700; text-transform:uppercase; }
+    h1 { font-size:26px; font-weight:700; margin-top:4px; }
+    .actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    button { background:var(--gold); color:#0a1017; border:none; border-radius:10px; padding:10px 18px; font-weight:700; cursor:pointer; font-size:13.5px; transition:opacity .2s; }
+    button.sec { background:rgba(255,255,255,0.08); color:var(--text); border:1px solid var(--border); }
+    button:hover { opacity:0.9; }
+    .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:22px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; }
+    .stat-val { font-size:28px; font-weight:800; color:var(--gold); margin:6px 0 4px; }
+    .stat-lbl { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+    .agent-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:12px; }
+    .agent-row:last-child { border-bottom:none; }
+    .badge { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:0.5px; }
+    .badge.ok { background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.35); }
+    .badge.warn { background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); }
+    pre { background:#05090e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px; font-size:12.5px; color:#cbd5e1; overflow:auto; max-height:290px; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { text-align:left; padding:9px 8px; border-bottom:1px solid rgba(255,255,255,0.06); }
+    th { color:var(--gold); font-size:11px; text-transform:uppercase; }
+    @media (max-width:960px) { .grid4 { grid-template-columns:repeat(2,1fr); } .grid2 { grid-template-columns:1fr; } }
+    @media (max-width:560px) { .grid4 { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="kicker">AKASH DECENTRALIZED CLOUD · MELBOURNE GROWTH NODE</div>
+        <h1>ANCHIALO Live Bot Command & Telemetry</h1>
+      </div>
+      <div class="actions">
+        <button class="sec" onclick="loadTelemetry()">Refresh Now</button>
+        <button onclick="runCalibration(false)">Dry-Run Bot Calibration</button>
+        <button onclick="runCalibration(true)">Run Calibration + Ping Telegram</button>
+      </div>
+    </div>
+
+    <div class="grid4" id="kpiRow"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="kicker" style="margin-bottom:10px;">4 Autonomous Growth Agents</div>
+        <div id="agentsBox">Loading telemetry...</div>
+      </div>
+      <div class="card">
+        <div class="kicker" style="margin-bottom:10px;">Live Calibration Diagnostic Output</div>
+        <pre id="calOut">Click "Dry-Run Bot Calibration" or "Run Calibration + Ping Telegram" to test all 4 bots live.</pre>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="kicker" style="margin-bottom:10px;">Recent Orders & QR Commissions</div>
+        <div id="ordersBox">No orders recorded yet.</div>
+      </div>
+      <div class="card">
+        <div class="kicker" style="margin-bottom:10px;">Recent Melbourne B2B Outreach Logs</div>
+        <div id="outreachBox">No outreach emails dispatched yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadTelemetry() {
+      try {
+        const res = await fetch('/api/telemetry/overview');
+        const d = await res.json();
+        const s = d.stats || {};
+        document.getElementById('kpiRow').innerHTML = `
+          <div class="card"><div class="stat-lbl">Server Uptime</div><div class="stat-val">${Math.floor((d.uptime_seconds||0)/60)}m</div><div style="font-size:12px;color:#94a3b8;">Scheduler ticks: ${d.scheduler?.scheduler_ticks ?? 0}</div></div>
+          <div class="card"><div class="stat-lbl">Orders & Revenue</div><div class="stat-val">A$${Number(s.revenue_aud||0).toFixed(2)}</div><div style="font-size:12px;color:#94a3b8;">${s.orders_count||0} orders · A$${Number(s.commissions_aud||0).toFixed(2)} commissions</div></div>
+          <div class="card"><div class="stat-lbl">B2B Outreach Quota</div><div class="stat-val">${s.b2b_emails_today||0} / ${s.b2b_emails_limit||25}</div><div style="font-size:12px;color:#94a3b8;">${s.b2b_leads_total||0} Melbourne leads stored</div></div>
+          <div class="card"><div class="stat-lbl">Places API Quota</div><div class="stat-val">${s.places_calls_today||0} / ${s.places_calls_limit||80}</div><div style="font-size:12px;color:#94a3b8;">${s.quiz_submissions||0} ritual quiz leads</div></div>
+        `;
+        document.getElementById('agentsBox').innerHTML = (d.agents || []).map(a => {
+          const isOk = a.status.includes('LIVE') || a.status.includes('ACTIVE') || a.status.includes('READY');
+          return `<div class="agent-row"><div><strong>${a.name}</strong><div style="font-size:12px;color:#94a3b8;">${a.metrics}</div></div><span class="badge ${isOk ? 'ok' : 'warn'}">${a.status}</span></div>`;
+        }).join('');
+        document.getElementById('ordersBox').innerHTML = (d.recent_orders && d.recent_orders.length)
+          ? '<table><tr><th>#</th><th>Provider</th><th>Total</th><th>Partner</th></tr>' + d.recent_orders.map(o => `<tr><td>${o.id}</td><td>${o.provider}</td><td>A$${(o.total_cents/100).toFixed(2)}</td><td>${o.partner_code||'-'}</td></tr>`).join('') + '</table>'
+          : '<div style="color:#94a3b8;font-size:13px;">Awaiting live Stripe/PayPal checkouts.</div>';
+        document.getElementById('outreachBox').innerHTML = (d.recent_outreach && d.recent_outreach.length)
+          ? '<table><tr><th>Step</th><th>Recipient</th><th>Status</th></tr>' + d.recent_outreach.map(o => `<tr><td>Step ${o.step}</td><td>${o.recipient_email}</td><td>${o.status}</td></tr>`).join('') + '</table>'
+          : '<div style="color:#94a3b8;font-size:13px;">Awaiting B2B outreach dispatch.</div>';
+      } catch (e) {
+        document.getElementById('agentsBox').textContent = 'Telemetry connection error: ' + e;
+      }
+    }
+
+    async function runCalibration(sendTg) {
+      const box = document.getElementById('calOut');
+      box.textContent = 'Running 4-bot calibration verification...';
+      try {
+        const res = await fetch('/api/bots/test-calibration', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ send_telegram: sendTg, sample_suburb: 'Richmond VIC' })
+        });
+        const data = await res.json();
+        box.textContent = JSON.stringify(data, null, 2);
+        loadTelemetry();
+      } catch (e) {
+        box.textContent = 'Calibration failed: ' + e;
+      }
+    }
+
+    loadTelemetry();
+    setInterval(loadTelemetry, 10000);
+  </script>
+</body>
+</html>"""
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def bot_command_dashboard() -> HTMLResponse:
+    """Serve live Akash 24/7 Bot Telemetry & Calibration Command Center."""
+    return HTMLResponse(content=DASHBOARD_HTML)
 

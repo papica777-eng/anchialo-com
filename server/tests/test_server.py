@@ -277,3 +277,32 @@ async def test_smtp_fallback_when_resend_unset(tmp_path, monkeypatch):
     assert "sotirkichukov@cptmma.com" in msg["From"]
     assert "List-Unsubscribe" in msg
     assert "Unsubscribe" in msg.get_body(preferencelist=("plain",)).get_content()
+
+
+def test_telemetry_dashboard_and_bot_calibration(test_client):
+    """Verify telemetry overview, live HTML command center, and zero-violation 4-bot calibration probe."""
+    client, _db_file = test_client
+
+    res_dash = client.get("/dashboard")
+    assert res_dash.status_code == 200
+    assert "ANCHIALO Live Bot Command" in res_dash.text
+
+    res_tel = client.get("/api/telemetry/overview")
+    assert res_tel.status_code == 200
+    tel = res_tel.json()
+    assert tel["status"] == "ok"
+    assert len(tel["agents"]) == 4
+    assert tel["stats"]["partners_count"] >= 7
+
+    res_cal = client.post(
+        "/api/bots/test-calibration",
+        json={"send_telegram": False, "sample_suburb": "South Yarra VIC"},
+    )
+    assert res_cal.status_code == 200
+    cal = res_cal.json()
+    assert cal["calibrated"] is True
+    assert cal["checks"]["sqlite_and_partners"] is True
+    assert cal["checks"]["integer_cents_pricing"] is True
+    assert cal["checks"]["b2b_pitch_tga_violations"] == 0
+    assert cal["checks"]["lifecycle_tga_violations"] == 0
+    assert cal["checks"]["unsubscribe_hmac_valid"] is True
