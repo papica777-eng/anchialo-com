@@ -2104,4 +2104,84 @@
     if (invGrandTotalEl) invGrandTotalEl.textContent = `A$ ${grandTotal.toFixed(2)} AUD`;
   }
 
+  // ==================== PRINT FLYER & COMBAT GUIDE CAROUSEL ====================
+  function initFlyerCarousel() {
+    const track = document.getElementById('flyer-carousel-track');
+    if (!track) return;
+
+    const slides = track.querySelectorAll('.flyer-slide');
+    const prevBtn = document.getElementById('flyer-prev-btn');
+    const nextBtn = document.getElementById('flyer-next-btn');
+    const dots = document.querySelectorAll('#flyer-carousel-dots .flyer-dot');
+    if (!slides.length) return;
+
+    let currentIndex = 0;
+    let autoPlayTimer = null;
+
+    function updateCarousel(index) {
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+      currentIndex = index;
+
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+      dots.forEach((dot, idx) => {
+        if (idx === currentIndex) {
+          dot.style.background = '#d4af37';
+          dot.classList.add('active');
+        } else {
+          dot.style.background = 'rgba(255,255,255,0.25)';
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayTimer = setInterval(() => {
+        updateCarousel(currentIndex + 1);
+      }, 5000);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) clearInterval(autoPlayTimer);
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        updateCarousel(currentIndex - 1);
+        startAutoPlay();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        updateCarousel(currentIndex + 1);
+        startAutoPlay();
+      });
+    }
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', (e) => {
+        const targetIdx = parseInt(e.currentTarget.getAttribute('data-index') || '0', 10);
+        updateCarousel(targetIdx);
+        startAutoPlay();
+      });
+    });
+
+    track.addEventListener('mouseenter', stopAutoPlay);
+    track.addEventListener('mouseleave', startAutoPlay);
+
+    // Initial setup
+    updateCarousel(0);
+    startAutoPlay();
+  }
+
+  // Hook into document load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFlyerCarousel);
+  } else {
+    initFlyerCarousel();
+  }
+
 })();
