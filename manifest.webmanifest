@@ -8,11 +8,11 @@
   "theme_color": "#1E3A2F",
   "lang": "en-AU",
   "icons": [
-    {
-      "src": "/favicon.ico",
-      "sizes": "32x32 48x48",
-      "type": "image/x-icon"
-    },
+{
+  "src": "/favicon.svg",
+  "sizes": "any",
+  "type": "image/svg+xml"
+},
     {
       "src": "/assets/images/products/06_file_transp.png",
       "sizes": "512x512",
