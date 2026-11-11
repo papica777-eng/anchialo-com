@@ -102,9 +102,9 @@ button {
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 28px;
+  padding: 0 32px;
 }
 
 /* Typography Helpers */
@@ -297,8 +297,10 @@ button {
 /* ==================== HERO SECTION: SPA & BIO-COSMETICS ==================== */
 .hero-section {
   position: relative;
-  padding: 70px 0 90px;
-  background: linear-gradient(180deg, #ffffff 0%, var(--bg-canvas) 100%);
+  padding: 80px 0 100px;
+  background: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(247, 245, 240, 0.91) 45%, rgba(240, 237, 229, 0.95) 100%),
+    url('assets/images/pomorie-salterns-lake.jpg') center/cover no-repeat;
   overflow: hidden;
 }
 
@@ -1396,12 +1398,12 @@ button {
 
 .heritage-image-frame {
   position: relative;
-  background: url('assets/images/blog/01_blog.png') center/cover no-repeat, #283747;
+  background: url('assets/images/pomorie-salterns-lake.jpg') center/cover no-repeat, #283747;
   border-radius: 28px;
-  min-height: 420px;
+  min-height: 480px;
   display: flex;
   align-items: flex-end;
-  padding: 32px;
+  padding: 36px;
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
@@ -1410,7 +1412,7 @@ button {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(20, 25, 30, 0.8) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(10, 15, 22, 0.78) 100%);
 }
 
 .heritage-quote-box {
