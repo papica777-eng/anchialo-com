@@ -1,9 +1,11 @@
+import html
 import json
 import os
-import html
+import re
 import urllib.parse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+BUILD_DATE = "2026-11-11"
 
 PRODUCTS = [
     {
@@ -15,17 +17,18 @@ PRODUCTS = [
         "title": "Anchialo Dual Magnesium Gel — Arnica Montana Blend (300g) | $49 AUD",
         "category": "gel",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300g Net",
         "image": "assets/images/products/06_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
-        "badge": "Bestseller · Muscle Relief",
+        "badge": "Bestseller · Post-Training Ritual",
         "stripe": "https://buy.stripe.com/9B67sL4tmfBa9CD0eb5Ne0e",
         "botanical": "Arnica Montana Flower Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ARNICA MONTANA FLOWER EXTRACT.",
-        "description": "Fast-absorbing topical gel enriched with Arnica Montana and 253.14 g/L natural Black Sea magnesium chloride plus 70.36 g/L magnesium sulfate. Relieves acute muscle aches, bruises, joint inflammation, and spasms. 300g net. Dispatched from Melbourne, Australia.",
+        "description": "Fast-absorbing topical gel with 253.14 g/L Black Sea magnesium chloride, 70.36 g/L magnesium sulfate, and Arnica Montana extract to hydrate skin and refresh tired muscles. 300g net. Dispatched from Melbourne, Australia.",
         "benefits": [
-            "Rapid transdermal relief for muscle cramps, spasms, and post-combat or athletic soreness",
+            "Fast-absorbing topical body gel formulated to relax and nourish the skin after intense sessions",
             "253.14 g/L Magnesium Chloride & 70.36 g/L Magnesium Sulfate from Lake Pomorie, Bulgaria",
-            "Infused with genuine Arnica Montana flower extract to soothe bruised tissues and tendons",
+            "Enriched with Arnica Montana extract, traditionally used to soothe and comfort the body",
             "Certified zero heavy metals (BDS 8840:1971 & ISO 22716 GMP · Lot 04)"
         ]
     },
@@ -39,17 +42,18 @@ PRODUCTS = [
         "title": "Anchialo Dual Magnesium Gel — Bulgarian Lavender Blend (300g) | $49 AUD",
         "category": "gel",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300g Net",
         "image": "assets/images/products/01_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_lavender_top_fv17.png",
-        "badge": "Deep Sleep & Calming",
+        "badge": "Evening Calm & Wind-Down",
         "stripe": "https://buy.stripe.com/cNi14ncZS9cMeWX9OL5Ne0d",
         "botanical": "Lavandula Angustifolia Essential Flower Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, LAVANDULA ANGUSTIFOLIA FLOWER EXTRACT.",
-        "description": "Infused with authentic Bulgarian Lavender and Lake Pomorie Dual Magnesium (253.14 g/L MgCl2). Calms central nervous excitability, alleviates restless legs, and supports deep restorative night sleep. 300g net.",
+        "description": "Infused with authentic Bulgarian Lavender flower extract and Lake Pomorie Dual Magnesium (253.14 g/L MgCl2) to nourish dry skin and support a calming evening massage ritual. 300g net.",
         "benefits": [
-            "Calms neuromuscular excitability and overactive nervous system after evening training",
-            "Synergizes transdermal magnesium ions with soothing Bulgarian Lavandula Angustifolia",
-            "Supports deeper, uninterrupted REM and slow-wave sleep cycles without oral melatonin",
+            "Formulated with Lavender extract, valued for its calming and relaxing aroma before rest",
+            "Combines concentrated Black Sea magnesium salts with skin-hydrating glycerine",
+            "Non-drip smooth gel texture ideal for calves, shoulders, and evening wind-down routines",
             "Gentle physiological pH 6.9 — zero parabens, zero synthetic perfumes"
         ]
     },
@@ -62,18 +66,19 @@ PRODUCTS = [
         "title": "Anchialo Dual Magnesium Gel — Garden Rosemary Blend (300g) | $49 AUD",
         "category": "gel",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300g Net",
         "image": "assets/images/products/04_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_rosemary_top_fv17.png",
-        "badge": "Joint Mobility & Warm-Up",
+        "badge": "Invigorating Massage",
         "stripe": "https://buy.stripe.com/8x2dR9cZSbkUdST5yv5Ne0f",
         "botanical": "Rosmarinus Officinalis Leaf Powder Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ROSMARINUS OFFICINALIS LEAF POWDER EXTRACT.",
-        "description": "Invigorating rosemary extract stimulates thermal microcirculation and speeds tendon warm-up. Combined with 253.14 g/L Black Sea Magnesium Chloride for active athletes and post-workout recovery. 300g net.",
+        "description": "Enhanced with Garden Rosemary extract traditionally used to invigorate skin during massage. Paired with 253.14 g/L Black Sea Magnesium Chloride for active athletes and daily body care. 300g net.",
         "benefits": [
-            "Stimulates localized capillary blood flow and thermal microcirculation",
-            "Ideal for pre-fight / pre-training tendon warm-up and morning joint stiffness",
-            "Revives cold extremities and fatigued lower-back or shoulder musculature",
-            "Direct osmotic transdermal absorption — zero digestive upset"
+            "Invigorating herbal massage experience before training or after heavy workouts",
+            "Supports skin hydration and contributes to a feeling of refreshment and revitalisation",
+            "High magnesium content helps nourish skin across shoulders, lower back, and legs",
+            "Non-greasy leave-on or rinse-off cosmetic gel texture"
         ]
     },
     {
@@ -85,16 +90,17 @@ PRODUCTS = [
         "title": "Anchialo Dual Magnesium Gel — Alpine Juniper Blend (300g) | $49 AUD",
         "category": "gel",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300g Net",
         "image": "assets/images/products/07_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_juniper_top_fv17.png",
-        "badge": "Deep Tissue Detox",
+        "badge": "Crisp Refresh & Sauna Ritual",
         "stripe": "https://buy.stripe.com/14A3cv7Fy4Ww5mne515Ne0g",
         "botanical": "Juniperus Chinensis Leaf Extract & Fruit Oil",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE, JUNIPERUS CHINENSIS LEAF EXTRACT.",
-        "description": "Alpine juniper fruit terpenes assist lymphatic drainage and ease chronic morning joint stiffness, arthritis discomfort, and heavy congested limbs. 300g net.",
+        "description": "Alpine Juniper botanical blend crafted to hydrate skin and refresh weary legs, shoulders, and feet after showers, contrast therapy, or long shifts. 300g net.",
         "benefits": [
-            "Assists osmotic tissue drainage and flushing of metabolic lactic acid residues",
-            "Targeted relief for arthritic stiffness, sprains, and congested joints",
+            "Infused with Juniper extract, valued for its crisp, refreshing and revitalising qualities",
+            "Ideal post-sauna, post-shower, and after-work lower-body massage gel",
             "High-density Pomorie mineral brine (253.14 g/L MgCl2 + 70.36 g/L MgSO4)",
             "Handcrafted by Azimut 6000 Ltd under ISO 22716 GMP standards"
         ]
@@ -108,17 +114,18 @@ PRODUCTS = [
         "title": "Anchialo Dual Magnesium Gel — Red Grape Seed Blend (300g) | $49 AUD",
         "category": "gel",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300g Net",
         "image": "assets/images/products/03_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_grape_top_fv17.png",
-        "badge": "Antioxidant & Skin Tone",
+        "badge": "Skin Softness & Daily Care",
         "stripe": "https://buy.stripe.com/cNidR97FycoY0239OL5Ne0h",
         "botanical": "Vitis Vinifera (Grape) Seed Polyphenol Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE.",
-        "description": "Rich in grape seed polyphenols and resveratrol antioxidants. Promotes skin elasticity, shields dermal collagen, and feeds transdermal magnesium to tired muscles. 300g net.",
+        "description": "Lightly fragranced with a subtle vineyard grape aroma alongside pure Lake Pomorie dual magnesium salts to condition skin and leave a smooth, velvet finish. 300g net.",
         "benefits": [
-            "Rich in proanthocyanidins and resveratrol antioxidants for dermal elasticity",
-            "Replenishes cellular magnesium while hydrating and toning dry skin",
-            "Soothes muscle tension with a delicate, refreshing vineyard finish",
+            "Helps maintain soft, hydrated skin and overall body refreshment",
+            "Pleasant light grape fragrance ideal for everyday massage and evening routines",
+            "Non-greasy finish — absorbs cleanly or rinses smoothly with cool water",
             "100% natural Black Sea solar-evaporated lye base"
         ]
     },
@@ -131,17 +138,18 @@ PRODUCTS = [
         "title": "Anchialo Dual Magnesium Oil — 100% Pure Black Sea Topical Brine (300ml) | $49 AUD",
         "category": "oil",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300ml Net",
         "image": "assets/images/products/08_file_transp.png",
         "lidImg": "assets/images/products/08_file_transp.png",
         "badge": "100% Pure Liquid Brine",
         "stripe": "https://buy.stripe.com/aFaeVdgc4ex6cOP1if5Ne0i",
         "botanical": "100% Unscented Natural Lake Pomorie Mineral Brine (Luga)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM CHLORIDE 253.14 g/L, MAGNESIUM SULFATE 70.36 g/L, SODIUM CHLORIDE, TRACE BROMINE & IODINE).",
-        "description": "Unscented, highly bioavailable liquid Black Sea mineral brine oil. Silky transdermal glide for full-body sport massage, joint compresses, or mineral foot soak recovery. 300ml.",
+        "description": "Unscented, concentrated liquid Black Sea mineral brine (luga). Silky natural glide tailored for full-body studio massage or evening mineral foot soaks. 300ml.",
         "benefits": [
             "100% pure unfragranced fractional solar brine from Lake Pomorie",
-            "Maximum ionic concentration for full-body rubs, compresses, and foot baths",
-            "Rapid transdermal absorption with natural silky mineral glide",
+            "High mineral density ideal for remedial massage glide, wraps, and warm foot baths",
+            "Zero added synthetic fragrance, preservatives, or petroleum oils",
             "Certified under BDS 8840:1971 & ATA Translation #267262"
         ]
     },
@@ -154,16 +162,17 @@ PRODUCTS = [
         "title": "Anchialo Special Offer — Dual Magnesium Gel + Pure Magnesium Oil Combo | $49 AUD",
         "category": "combo",
         "priceAUD": "49.00",
+        "unitLabel": "/ 300g + 300ml",
         "image": "assets/images/products/02_file.png",
         "lidImg": "assets/images/products/02_file.png",
         "badge": "1+1 Free Value Deal",
-        "stripe": "https://buy.stripe.com/cNi14ncZS9cMeWX9OL5Ne0d",
+        "stripe": "https://buy.stripe.com/4gM28rgc44WwbKL3qn5Ne0l",
         "botanical": "Choice of Signature Botanical Gel (300g) + Pure Magnesium Brine Oil (300ml)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, BOTANICAL EXTRACT.",
-        "description": "Buy 1 Dual Magnesium Gel (any blend) and receive 1 Dual Magnesium Oil FREE. Double the balneotherapy recovery care for the price of one single jar ($49 AUD).",
+        "description": "Buy 1 Dual Magnesium Gel (300g) and receive 1 Pure Dual Magnesium Oil (300ml) FREE. Complete topical gel and bath/massage brine set for the price of one item ($49 AUD).",
         "benefits": [
             "Includes 1x 300g Dual Magnesium Botanical Gel + 1x 300ml Pure Magnesium Oil",
-            "Complete transdermal protocol: targeted gel massage + full-body liquid brine",
+            "Complete ritual set: targeted gel massage + full-body or foot-soak liquid brine",
             "Dispatched directly from Melbourne via Australia Post with tracking",
             "Same-day local pickup available at CPT MMA Melbourne"
         ]
@@ -177,18 +186,19 @@ PRODUCTS = [
         "title": "Anchialo Starter Combo — Dual Magnesium Gel 2-Pack (600g Total) | $89 AUD + Free Shipping",
         "category": "combo",
         "priceAUD": "89.00",
+        "unitLabel": "/ 600g (2 × 300g)",
         "image": "assets/images/products/05_file.png",
-        "lidImg": "assets/images/products/05_file.png",
+        "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
         "badge": "Save $9 · Day & Night Pair",
         "stripe": "https://buy.stripe.com/6oU4gzcZS60AeWX9OL5Ne0j",
-        "botanical": "Any 2 Signature Botanical Blends (e.g., Arnica Day Recovery + Lavender Night Sleep)",
+        "botanical": "Any 2 Signature Botanical Blends (e.g., Arnica Day Ritual + Lavender Night Wind-Down)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, BOTANICAL EXTRACTS.",
-        "description": "Pair Arnica for daytime athletic recovery with Bulgarian Lavender for evening sleep and nervous system reset. Total 600g pure Pomorie magnesium gels with FREE Australia-wide Express shipping.",
+        "description": "Pair Arnica for daytime post-training massage with Bulgarian Lavender for your calm evening wind-down ritual. Total 600g pure Pomorie magnesium gels with FREE Australia-wide Express shipping.",
         "benefits": [
             "Save $9 AUD instantly + qualifies for FREE Australia Post Express Delivery",
             "2x 300g jars (600g total) — choose any combination of the 5 botanical blends",
-            "Ideal 24-hour athletic recovery cycle: pre/post training + deep night sleep",
-            "Official ATO Tax Invoice provided on checkout"
+            "Ideal 24-hour routine: post-training body massage + relaxing evening care",
+            "Dispatched fast from Melbourne hub"
         ]
     },
     {
@@ -200,13 +210,14 @@ PRODUCTS = [
         "title": "Anchialo Best Value Combo — Dual Magnesium Gel 3-Pack (900g Total) | $129 AUD + Free Shipping",
         "category": "combo",
         "priceAUD": "129.00",
+        "unitLabel": "/ 900g (3 × 300g)",
         "image": "assets/images/products/09_file.png",
-        "lidImg": "assets/images/products/09_file.png",
+        "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
         "badge": "Save $18 · Combat Team Pack",
         "stripe": "https://buy.stripe.com/7sYeVdgc4dt28yzbWT5Ne0k",
         "botanical": "Any 3 Signature Botanical Blends (900g Total Net Weight)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, BOTANICAL EXTRACTS.",
-        "description": "Choose any three 300g jars. Maximum value package designed for active fighters, gyms, families, and balneotherapy enthusiasts. Includes FREE Australia Post Express shipping.",
+        "description": "Choose any three 300g jars. Maximum value package designed for active fighters, gyms, families, and mineral ritual enthusiasts. Includes FREE Australia Post Express shipping.",
         "benefits": [
             "Save $18 AUD + FREE Express Delivery across Australia",
             "3x 300g jars (900g total) of certified Lake Pomorie Dual Magnesium Gel",
@@ -214,6 +225,119 @@ PRODUCTS = [
             "Full batch traceability (Lot № 04 · Expiry 2027 · ISO 22716 GMP)"
         ]
     }
+]
+
+
+# 105 Melbourne Suburb, Community, B2B & AEO Comparison Landing Pages (Zero TGA therapeutic claims)
+MELBOURNE_SUBURBS = [
+    ("melbourne-cbd", "Melbourne CBD", "VIC 3000", "City Combat Gyms & Corporate Body Care", "Same-day / next-day dispatch across Melbourne 3000 for busy professionals, boxing gyms, and runners."),
+    ("richmond", "Richmond", "VIC 3121", "Combat Sports, Pilates & Swan St Wellness", "Fast local dispatch to Richmond gyms, Brazilian Jiu-Jitsu mats, and remedial massage clinics along Swan & Church St."),
+    ("collingwood", "Collingwood", "VIC 3066", "Strength Studios, Running Crews & Recovery", "Stocked in Melbourne for Collingwood strength facilities, boxers, and active creatives looking for non-drip magnesium gel."),
+    ("fitzroy", "Fitzroy", "VIC 3065", "Boutique Studios & Natural Body Care", "Pure Lake Pomorie mineral cosmetics delivered fast to Fitzroy yoga, Reformer Pilates, and natural body-care enthusiasts."),
+    ("south-yarra", "South Yarra", "VIC 3141", "The Tan Runners & Reformer Pilates Rituals", "Post-run magnesium massage rituals for athletes training around The Tan track and Chapel Street studios."),
+    ("prahran", "Prahran", "VIC 3181", "High-Performance Conditioning & Massage", "Australian-stocked Bulgarian Black Sea magnesium gels for Prahran gym members, runners, and massage therapists."),
+    ("st-kilda", "St Kilda", "VIC 3182", "Bayside Runners, Ocean Swimmers & Studios", "Hydrating Black Sea magnesium mineral gels delivered straight to St Kilda coastal athletes and bay swimmers."),
+    ("brunswick", "Brunswick", "VIC 3056", "Muay Thai Gyms, Myotherapy & Community", "Authentic Black Sea magnesium body care for Brunswick combat gyms, community clinics, and active households."),
+    ("oakleigh", "Oakleigh", "VIC 3166", "Greek-Australian Heritage & Eaton Mall", "From ancient Greek Anchialos on the Black Sea to Oakleigh's Eaton Mall — authentic 2,500-year coastal salt-lake heritage delivered locally."),
+    ("northcote", "Northcote", "VIC 3070", "High Street Clinics & Greek Community", "Fast Melbourne dispatch to Northcote families, High Street wellness practitioners, and local Greek-Australian households."),
+    ("thornbury", "Thornbury", "VIC 3071", "Pilates, Martial Arts & Evening Body Care", "Non-greasy Lake Pomorie magnesium gels for Thornbury athletes and massage studios."),
+    ("bentleigh", "Bentleigh", "VIC 3204", "Bayside Fitness, Families & Local Studios", "Certified Lot 04 Bulgarian magnesium gels stocked in Melbourne for quick delivery to Bentleigh and Bentleigh East."),
+    ("doncaster", "Doncaster", "VIC 3108", "Eastern Suburbs Gyms & Family Self-Care", "Quick Metro Melbourne shipping to Doncaster and Doncaster East for active families and fitness studios."),
+    ("port-melbourne", "Port Melbourne", "VIC 3207", "Bayfront Running, CrossFit & Contrast Studios", "Ideal after Bay Trail runs and cold-plunge contrast sessions in Port Melbourne."),
+    ("albert-park", "Albert Park", "VIC 3206", "Lake Runners, Rowing & Athletic Massage", "Post-run calf and shoulder massage rituals for Albert Park Lake track and rowing athletes."),
+    ("footscray", "Footscray", "VIC 3011", "Inner West Combat & Strength Hubs", "Pure 253.14 g/L MgCl2 topical gels dispatched directly from Melbourne to Footscray boxing and MMA gyms."),
+    ("preston", "Preston", "VIC 3072", "Northern Suburbs Martial Arts & Trades", "Easy-application 300g magnesium gel jars for Preston athletes and tradespeople finishing long physical shifts."),
+    ("hawthorn", "Hawthorn", "VIC 3122", "Glenferrie Studios, Footy & Pilates", "Fast Melbourne metro dispatch for Hawthorn athletes, rowing clubs, and myotherapy practitioners."),
+    ("kew", "Kew", "VIC 3101", "Boutique Wellness & Family Mineral Care", "Clean European ISO 22716 GMP mineral cosmetics delivered straight to Kew homes and clinics."),
+    ("camberwell", "Camberwell", "VIC 3124", "Remedial Clinics & Active Households", "Pure Black Sea magnesium gels and unscented brine oil for Camberwell massage studios and runners."),
+    ("brighton", "Brighton", "VIC 3186", "Bayside Coastal Running & Pilates", "Refreshing post-swim and post-Pilates skin hydration and massage gels delivered across Brighton 3186."),
+    ("glen-waverley", "Glen Waverley", "VIC 3150", "Monash Corridor Sports & Clinics", "1–2 day Melbourne metro delivery to Glen Waverley and Mount Waverley studios and families."),
+    ("rowville", "Rowville", "VIC 3178", "South-East Melbourne Combat & Pickup Access", "Ultra-fast local delivery across Rowville, Knoxfield, and Scoresby — plus direct Melbourne pickup via CPT MMA."),
+    ("dandenong", "Dandenong", "VIC 3175", "South-East Gyms, Trades & Wholesale", "High-volume 300g magnesium gels and 3-Packs delivered fast across Dandenong and Noble Park."),
+    ("frankston", "Frankston", "VIC 3199", "Peninsula Coast Athletes & Studios", "Fast Victorian delivery to Frankston, Seaford, and Mornington Peninsula wellness studios."),
+    ("south-melbourne", "South Melbourne", "VIC 3205", "Market Hub, Boxing & Pilates Studios", "Authentic Lake Pomorie Black Sea magnesium gels delivered fast to South Melbourne studios and households."),
+    ("windsor", "Windsor", "VIC 3181", "Chapel Precinct Training & Recovery", "Clean-label topical magnesium gels for Windsor conditioning coaches and busy hospitality workers."),
+    ("carlton", "Carlton", "VIC 3053", "Lygon Street, Uni Athletes & Track Runners", "Princes Park runners and Melbourne University athletes enjoy fast local delivery across Carlton 3053."),
+    ("abbotsford", "Abbotsford", "VIC 3067", "Yarra Trail Cyclists, Climbing & Studios", "Post-climb and post-ride forearm and calf massage gels for Abbotsford gyms and studios."),
+    ("essendon", "Essendon", "VIC 3040", "North-West Football, Boxing & Clinics", "Fast Melbourne delivery to Essendon and Moonee Ponds clubs, gyms, and remedial practices."),
+    ("moonee-ponds", "Moonee Ponds", "VIC 3039", "Puckle Street Fitness & Myotherapy", "Pure Lake Pomorie magnesium body care for Moonee Ponds runners, Pilates studios, and massage clinics."),
+    ("yarraville", "Yarraville", "VIC 3013", "Inner West Runners & Community Studios", "Sun-evaporated Black Sea mineral gels delivered locally to Yarraville and Seddon."),
+    ("williamstown", "Williamstown", "VIC 3016", "Coastal Sailing, Running & Body Care", "Post-sail and coastal running massage gel delivered straight from Melbourne to Williamstown."),
+    ("elwood", "Elwood", "VIC 3184", "Beach Running, Yoga & Evening Wind-Down", "Natural Lavender and Arnica Dual Magnesium gels for Elwood active coastal routines."),
+    ("elsternwick", "Elsternwick", "VIC 3185", "Pilates Studios & Evening Family Care", "Non-drip 300g magnesium gels for Elsternwick clinics and active households."),
+    ("sandringham", "Sandringham", "VIC 3191", "Bayside Cycling, Golf & Track Care", "Great post-round and post-ride massage gel for Sandringham and Hampton athletes."),
+    ("mentone", "Mentone", "VIC 3194", "Bayside Gyms, Swimming & Conditioning", "Certified European mineral cosmetics shipped quickly across Mentone, Mordialloc, and Parkdale."),
+    ("cheltenham", "Cheltenham", "VIC 3192", "Bayside Commercial Gyms & Studios", "Direct Melbourne stock for Cheltenham strength gyms, trainers, and massage clinics."),
+    ("malvern", "Malvern", "VIC 3144", "Boutique Pilates & Clinical Bodywork", "Luxury European-certified Lake Pomorie magnesium cosmetics for Malvern studios and homes."),
+    ("armadale", "Armadale", "VIC 3143", "High Street Wellness & Natural Apothecary", "Clean minimal-INCI Black Sea mineral body care stocked in Melbourne for fast Armadale delivery."),
+    ("toorak", "Toorak", "VIC 3142", "Private Training & Home Spa Rituals", "ISO 22716 GMP Bulgarian mineral gels and pure brine oil delivered discreetly across Toorak."),
+    ("caulfield", "Caulfield", "VIC 3162", "Track, Turf & Community Massage Clinics", "Post-training recovery rituals stocked locally in Melbourne for Caulfield and Carnegie."),
+    ("carnegie", "Carnegie", "VIC 3163", "Koornang Road Fitness & Family Care", "Authentic Lake Pomorie magnesium gels delivered fast to Carnegie gyms and households."),
+    ("box-hill", "Box Hill", "VIC 3128", "Eastern Hub Gyms & Practitioners", "Fast Melbourne metro dispatch to Box Hill fitness centers, clinics, and practitioners."),
+    ("blackburn", "Blackburn", "VIC 3130", "Bush-Trail Runners & Community Fitness", "Topical Dual Magnesium body gels for Blackburn runners, cyclists, and studios."),
+    ("ringwood", "Ringwood", "VIC 3134", "Outer East Gyms, Sports & Clinics", "Fast dispatch across Ringwood, Croydon, and Mitcham for athletes and busy families."),
+    ("croydon", "Croydon", "VIC 3136", "Maroondah Strength & Active Lifestyles", "Pure 253.14 g/L Black Sea magnesium gels shipped fast from Melbourne to Croydon."),
+    ("knoxfield", "Knoxfield", "VIC 3180", "Local Pickup Proximity & East Gyms", "Fast metro delivery and nearby CPT MMA Melbourne pickup access for Knoxfield and Wantirna."),
+    ("berwick", "Berwick", "VIC 3806", "Casey Sports Clubs & Conditioning Studios", "Certified Bulgarian magnesium gels and 3-Packs shipped direct from Melbourne to Berwick."),
+    ("narre-warren", "Narre Warren", "VIC 3805", "South-East Combat & Family Wellness", "1–2 day VIC parcel delivery to Narre Warren and Fountain Gate athletes."),
+    ("cranbourne", "Cranbourne", "VIC 3977", "South-East Trainers & Active Households", "Stocked in Victoria for fast delivery to Cranbourne gyms, trainers, and families."),
+    ("mornington", "Mornington", "VIC 3931", "Peninsula Hot Springs Corridor & Trails", "Coastal sea-mineral heritage from Lake Pomorie delivered to Mornington Peninsula studios and runners."),
+    ("heidelberg", "Heidelberg", "VIC 3084", "Banyule Trails, Cycling & Massage Care", "Fast metro delivery to Heidelberg, Ivanhoe, and Rosanna wellness practitioners."),
+    ("ivanhoe", "Ivanhoe", "VIC 3079", "Yarra Boulevard Cyclists & Pilates", "Ideal post-ride massage gel for Yarra Boulevard riders and Ivanhoe studios."),
+    ("coburg", "Coburg", "VIC 3058", "Merri Creek Runners & Combat Gyms", "Clean non-drip Dual Magnesium Gels delivered fast across Coburg and Pascoe Vale."),
+    ("reservoir", "Reservoir", "VIC 3073", "Northern Boxing, Fitness & Home Care", "300g magnesium gels and pure brine oil shipped fast from Melbourne to Reservoir."),
+    ("werribee", "Werribee", "VIC 3030", "Wyndham Gyms, Football & Martial Arts", "Fast VIC delivery to Werribee, Point Cook, and Hoppers Crossing clubs."),
+    ("point-cook", "Point Cook", "VIC 3030", "Bayside West Trainers & Families", "Australian-stocked Black Sea magnesium body care delivered quickly to Point Cook."),
+    ("geelong", "Geelong", "VIC 3220", "Regional VIC Surf Coast & Gyms", "Next-day regional Express Post from Melbourne to Geelong, Torquay, and Surf Coast athletes."),
+    ("ballarat", "Ballarat", "VIC 3350", "Regional VIC Track, Gym & Winter Baths", "Warm evening mineral massage rituals and Express dispatch from Melbourne to Ballarat."),
+]
+
+NICHE_AEO_PAGES = [
+    ("myotherapy-wholesale-melbourne", "Myotherapy Wholesale Melbourne", "Clinic & Practitioner Supply", "Bulk 300g Dual Magnesium Gels, 300ml Pure Brine Oil, and zero-risk QR Counter Partner stands for Victorian myotherapists — dispatched locally from Melbourne."),
+    ("remedial-massage-supplies-victoria", "Remedial Massage Supplies Victoria", "Smooth Non-Drip Mineral Glide", "Upgrade studio bodywork with 100% pure Lake Pomorie brine oil (300ml) and Arnica/Rosemary gels crafted under ISO 22716 GMP."),
+    ("mma-bjj-post-training-magnesium-gel", "MMA & BJJ Post-Training Magnesium Gel", "CPT MMA Tested Recovery Ritual", "Selected by ONE Championship veteran Sotir Kichukov for post-sparring forearm, calf, and shoulder massage without watery spray drip."),
+    ("muay-thai-boxing-recovery-melbourne", "Muay Thai & Boxing Recovery Gel Melbourne", "Shin, Calf & Shoulder Ritual", "Fast-absorbing Arnica and Rosemary Dual Magnesium Gels built for heavy bag rounds, pad work, and post-shower recovery rituals."),
+    ("reformer-pilates-recovery-melbourne", "Reformer Pilates Studio Partner Program", "Boutique Retail & QR Stand", "Offer clients clean European botanical magnesium cosmetics at your studio reception with zero upfront inventory via our QR partner program."),
+    ("contrast-therapy-sauna-magnesium-victoria", "Contrast Therapy & Sauna Magnesium Protocol", "Cold Plunge + Sauna Ritual", "Pair crisp Alpine Juniper or Pure Black Sea Brine with warm showers and contrast-therapy recovery across Melbourne bathhouses."),
+    ("float-centre-magnesium-brine-melbourne", "Float & Bathhouse Magnesium Retail Melbourne", "Take-Home Mineral Continuity", "Let float studio guests continue their magnesium ritual between visits with 300g Lake Pomorie gels and pure mineral brine."),
+    ("magnesium-gel-vs-magnesium-spray-no-sting", "Magnesium Gel vs Magnesium Spray (Why Gel Feels Smoother)", "Cosmetic Comparison Guide", "Compare traditional watery magnesium chloride sprays against Anchialo's buffered Dual Magnesium Gel with glycerine and botanical extracts."),
+    ("lake-pomorie-lye-vs-dead-sea-salt", "Lake Pomorie Black Sea Lye vs Dead Sea Salt", "Mineral Origin Comparison", "Explore how solar-concentrated Bulgarian Black Sea lye (253.14 g/L MgCl2 + 70.36 g/L MgSO4) differs from crystallized Dead Sea bath salts."),
+    ("transdermal-magnesium-vs-epsom-salt-melbourne", "Dual Magnesium Lye vs Standard Epsom Salt", "MgCl2 + MgSO4 Synergy", "Why combining both Magnesium Chloride and Magnesium Sulfate in one Lake Pomorie harvest delivers superior massage and soak comfort."),
+    ("greek-anchialos-black-sea-salt-melbourne", "Ancient Greek Anchialos to Melbourne", "2,500 Years of Black Sea Salt Heritage", "Discover the story of ancient Anchialos (modern Pomorie), its coastal salterns, and how its pure magnesium cosmetics reached Melbourne."),
+    ("bulgarian-black-sea-lye-australia", "Authentic Bulgarian Black Sea Lye in Australia", "Melbourne Stocked · No 6-Week Wait", "Order genuine Lake Pomorie black sea lye gels and oils stocked right in Melbourne with 1–3 day Australia Post delivery."),
+    ("the-tan-running-club-recovery-melbourne", "The Tan Running Club Post-Run Ritual", "3.8km Track Calf & Quad Care", "Built for Melbourne runners lapping The Tan — non-drip Arnica and Rosemary magnesium massage gels that go straight into your gym bag."),
+    ("marathon-training-magnesium-gel-melbourne", "Melbourne Marathon Training Body Ritual", "Long-Run Calf & Foot Care", "Support high-mileage Melbourne marathon blocks with evening lavender massage and warm pure magnesium foot soaks."),
+    ("crossfit-functional-fitness-recovery-vic", "CrossFit & Functional Fitness Magnesium Gel", "Post-WOD Forearm & Back Care", "Keep a 300g jar in your gym bag for fast post-WOD forearm, trap, and leg massage without greasy oil marks."),
+    ("jiu-jitsu-grappling-grip-recovery-melbourne", "BJJ & Grappling Forearm Recovery Ritual", "Gi Grip & Shoulder Massage", "Trusted across Melbourne BJJ academies for fast-absorbing post-roll forearm, shoulder, and lower-back massage."),
+    ("cycling-yarra-boulevard-recovery-gel", "Melbourne Cyclists & Yarra Boulevard Recovery", "Post-Ride Quad & Calf Care", "Light, fast-absorbing Dual Magnesium Gel formulated to refresh cycling legs and hydrate wind-exposed skin."),
+    ("ocean-swimming-bayside-skin-magnesium", "Port Phillip Bay Swimmers Skin & Body Ritual", "Post-Swim Mineral Hydration", "Nourish skin after chilly St Kilda and Brighton bay swims with glycerine-enriched Lake Pomorie magnesium gels."),
+    ("tennis-summer-recovery-melbourne", "Summer Court Training Body Care Melbourne", "Post-Match Calf & Shoulder Ritual", "Stay fresh through hot Melbourne court sessions with cooling Alpine Juniper and Arnica Dual Magnesium gels."),
+    ("tradies-physical-workers-evening-magnesium", "Melbourne Tradies Evening Body & Foot Ritual", "After-Work Massage & Soak", "Hard days on concrete call for simple comfort — massage Pure Magnesium Oil or Arnica Gel into calves, feet, and shoulders after your shower."),
+    ("desk-workers-neck-shoulder-magnesium-gel", "Desk & Tech Workers Neck & Shoulder Ritual", "5-Minute Evening Unwind", "Unwind tight upper shoulders after long screen hours with soothing Bulgarian Lavender or Rosemary Dual Magnesium Gel."),
+    ("shift-workers-sleep-ritual-lavender-magnesium", "Shift Workers Evening Lavender Wind-Down", "Calm Bedtime Cosmetic Routine", "Transition smoothly after late shifts with a calming lavender-infused Lake Pomorie magnesium body massage."),
+    ("hospitality-chefs-feet-leg-soak-melbourne", "Hospitality & Chefs Evening Foot Soak Ritual", "On-Your-Feet All Day Care", "Add concentrated Pure Magnesium Brine Oil to warm water after double shifts to refresh tired feet and lower legs."),
+    ("physiotherapy-clinic-retail-melbourne", "Physiotherapy Clinic Partner Program Melbourne", "No-Inventory QR Stand Option", "Add clean European GMP magnesium gels to your Melbourne clinic reception using our turnkey zero-inventory QR display."),
+    ("chiropractic-osteopathy-retail-victoria", "Osteopathy & Chiropractic Clinic Magnesium", "Practice Massage & Take-Home", "Support studio care with 100% pure unscented Lake Pomorie liquid brine and five clean botanical gel blends."),
+    ("yoga-studio-evening-relaxation-melbourne", "Melbourne Yoga & Breathwork Studio Magnesium", "Savasana & Evening Ritual", "Enhance restorative yoga workshops and studio retail shelves with Bulgarian Lavender Dual Magnesium Gel."),
+    ("strength-conditioning-gym-partner-vic", "Strength & Conditioning Gym Partner Melbourne", "15-20% QR Counter Commission", "Generate passive monthly margin from your front desk without buying upfront stock — automated Stripe tracking included."),
+    ("personal-trainers-melbourne-affiliate-kit", "Melbourne Personal Trainers Partner Kit", "Client Recovery + Commission", "Equip your training clients with authentic European magnesium recovery gels using a personalized trainer partner code."),
+    ("arnica-montana-magnesium-gel-guide", "Arnica Montana + Dual Magnesium Synergy Guide", "Our #1 Athletic Blend", "Why combining Lake Pomorie magnesium brine with Arnica Montana flower extract makes our top-selling post-training gel."),
+    ("bulgarian-lavender-magnesium-bedtime-guide", "Bulgarian Lavender + Magnesium Bedtime Guide", "Evening Rest Ritual", "How authentic Lavandula Angustifolia flower extract and natural magnesium salts complement a consistent sleep hygiene routine."),
+    ("rosemary-magnesium-massage-gel-guide", "Garden Rosemary + Magnesium Massage Guide", "Invigorating Botanical Blend", "Ideal for morning routines, pre-session activation massage, and revitalizing heavy legs."),
+    ("alpine-juniper-magnesium-detox-ritual", "Alpine Juniper + Magnesium Sauna & Shower Ritual", "Crisp Botanical Care", "Pair crisp juniper terpenes with mineral brine for an invigorating post-sauna or post-workout body ritual."),
+    ("red-grape-seed-polyphenol-magnesium-gel", "Red Grape Seed + Magnesium Skin Softness Guide", "Antioxidant Body Care", "Subtle vineyard aroma paired with glycerine and Pomorie sea minerals for smooth, nourished skin."),
+    ("pure-black-sea-magnesium-oil-foot-soak", "Pure Black Sea Magnesium Oil Foot Soak Guide", "100% Unscented Liquid Lye", "How to use concentrated 253.14 g/L liquid Lake Pomorie brine for warm evening foot baths and studio massage."),
+    ("post-workout-skin-hydration-magnesium", "Post-Workout Skin Hydration With Glycerine & Sea Salts", "No Sticky Residue", "Learn why plant glycerine and hydrocolloid gel texture prevent the dry salty tightness left by raw magnesium sprays."),
+    ("sotir-kichukov-cpt-mma-melbourne-pickup", "CPT MMA Melbourne Local Pickup & Consultation", "Meet Founder Sotir Kichukov", "Prefer local Melbourne pickup instead of waiting for post? Order online and pick up directly through CPT MMA Melbourne."),
+    ("iso-22716-gmp-tested-magnesium-australia", "ISO 22716 GMP & Zero Heavy Metals Magnesium", "Lab Certificate Lot 04", "Inspect the exact BDS 8840:1971 and European Pharmacopoeia assay (0.00 ppm Pb/Cd/As) behind every Anchialo jar."),
+    ("vegan-cruelty-free-magnesium-gel-melbourne", "Vegan, Paraben-Free & Cruelty-Free Magnesium Gel", "Minimal 5-Ingredient INCI", "Zero synthetic dyes, zero parabens, zero animal testing — packaged in recyclable PET 1 300g jars."),
+    ("gift-set-day-night-magnesium-duo-australia", "Day & Night Magnesium Gift Duo ($89 + Free Post)", "Starter 2-Pack Bundle", "The ideal active-lifestyle gift in Australia: daytime Arnica post-training gel + evening Bulgarian Lavender gel with free shipping."),
+    ("combat-team-3-pack-magnesium-melbourne", "Combat Team & Family 3-Pack ($129 + Free Express)", "900g Best Value Bundle", "Stock the gym bag, bathroom shelf, and work locker with any three 300g blends and save $18 AUD."),
+    ("gel-plus-oil-special-offer-melbourne", "1+1 Gel + Pure Oil Bundle ($49 AUD Melbourne)", "300g Gel + 300ml Oil", "Get both targeted botanical gel and full-body/foot-soak liquid mineral brine together for the price of a single jar."),
+    ("melbourne-winter-bath-magnesium-soak", "Melbourne Winter Bath & Soak Magnesium Ritual", "Cold-Weather Warmth", "Turn cold Melbourne winter evenings into a warming Black Sea mineral bath and massage experience."),
+    ("auspost-express-magnesium-delivery-australia", "1–3 Day Australia Post Magnesium Delivery", "Melbourne Metro & Interstate", "Dispatched directly from Melbourne — 1–2 business days across Victoria and 2–3 days Express to Sydney, Brisbane, Perth & Adelaide."),
+    ("parents-grandparents-evening-foot-ritual", "Simple Home Relaxation Rituals for Parents", "Gentle Massage & Foot Bath", "Thoughtful, gentle ways to help parents and older family members unwind at home with warm mineral foot soaks."),
+    ("how-to-avoid-magnesium-tingle-sensitive-skin", "Why High-Density Magnesium Tingles (And How To Use It Comfortably)", "Sensitive Skin Tips", "Practical tips on skin prep, timing, and cool-water rinsing so first-time users enjoy concentrated 253 g/L magnesium effortlessly."),
 ]
 
 
@@ -244,10 +368,7 @@ def build_product_html(prod, depth_prefix="../"):
                 "gtin13": prod["gtin13"],
                 "description": prod["description"],
                 "image": [img_abs, f"https://anchialo.com/{prod['lidImg']}"],
-                "brand": {
-                    "@type": "Brand",
-                    "name": "ANCHIALO"
-                },
+                "brand": {"@type": "Brand", "name": "ANCHIALO"},
                 "manufacturer": {
                     "@type": "Organization",
                     "name": "Azimut 6000 Ltd",
@@ -258,13 +379,6 @@ def build_product_html(prod, depth_prefix="../"):
                         "postalCode": "8200",
                         "addressCountry": "BG"
                     }
-                },
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "4.9",
-                    "bestRating": "5",
-                    "ratingCount": "420",
-                    "reviewCount": "420"
                 },
                 "offers": {
                     "@type": "Offer",
@@ -281,24 +395,11 @@ def build_product_html(prod, depth_prefix="../"):
                     },
                     "shippingDetails": {
                         "@type": "OfferShippingDetails",
-                        "shippingDestination": {
-                            "@type": "DefinedRegion",
-                            "addressCountry": "AU"
-                        },
+                        "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "AU"},
                         "deliveryTime": {
                             "@type": "ShippingDeliveryTime",
-                            "handlingTime": {
-                                "@type": "QuantitativeValue",
-                                "minValue": 0,
-                                "maxValue": 1,
-                                "unitCode": "DAY"
-                            },
-                            "transitTime": {
-                                "@type": "QuantitativeValue",
-                                "minValue": 1,
-                                "maxValue": 4,
-                                "unitCode": "DAY"
-                            }
+                            "handlingTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY"},
+                            "transitTime": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 4, "unitCode": "DAY"}
                         }
                     }
                 }
@@ -307,18 +408,8 @@ def build_product_html(prod, depth_prefix="../"):
                 "@type": "BreadcrumbList",
                 "@id": f"{canonical}#breadcrumb",
                 "itemListElement": [
-                    {
-                        "@type": "ListItem",
-                        "position": 1,
-                        "name": "ANCHIALO Store",
-                        "item": "https://anchialo.com/"
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 2,
-                        "name": prod["name"],
-                        "item": canonical
-                    }
+                    {"@type": "ListItem", "position": 1, "name": "ANCHIALO Store", "item": "https://anchialo.com/"},
+                    {"@type": "ListItem", "position": 2, "name": prod["name"], "item": canonical}
                 ]
             }
         ]
@@ -371,7 +462,7 @@ def build_product_html(prod, depth_prefix="../"):
   <div class="announcement-bar">
     <div class="container announcement-inner">
       <span class="announcement-badge">✦ 100% NATURAL SOLAR HARVEST</span>
-      <p class="announcement-text">Unique Dual Magnesium Formula (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · FREE Express Delivery Across Australia on Orders Over $80</p>
+      <p class="announcement-text">Dual Magnesium Formula (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · FREE Express Delivery Across Australia on Orders Over $80</p>
       <div class="announcement-contact">
         <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
       </div>
@@ -387,8 +478,8 @@ def build_product_html(prod, depth_prefix="../"):
       <nav class="nav-links">
         <a href="{depth_prefix}index.html#collection">Full Collection</a>
         <a href="{depth_prefix}index.html#blends">Botanical Blends</a>
-        <a href="{depth_prefix}index.html#purity">Clinical Purity</a>
-        <a href="{depth_prefix}index.html#journal">Wellness Journal</a>
+        <a href="{depth_prefix}index.html#purity">Lab Purity</a>
+        <a href="{depth_prefix}index.html#journal">Balneology Journal</a>
         <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
       </nav>
     </div>
@@ -415,7 +506,7 @@ def build_product_html(prod, depth_prefix="../"):
           <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 4vw, 44px); color: #162820; margin: 8px 0 14px; line-height: 1.15;">{html.escape(prod['name'])}</h1>
           <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px;">
             <span style="font-size: 32px; font-weight: 800; color: #1E3A2F;">A$ {prod['priceAUD']} AUD</span>
-            <span style="font-size: 14px; color: #5C6460;">· In Stock in Melbourne · Includes AU GST</span>
+            <span style="font-size: 14px; color: #5C6460;">{html.escape(prod['unitLabel'])} · Stocked in Melbourne</span>
           </div>
           <p style="font-size: 16px; line-height: 1.7; color: #2D3833; margin-bottom: 24px;">{html.escape(prod['description'])}</p>
 
@@ -431,7 +522,7 @@ def build_product_html(prod, depth_prefix="../"):
           <div style="background: #FAF7F2; padding: 18px 20px; border-radius: 14px; border: 1px solid #E6E0D6; font-size: 13px; color: #4A5550; line-height: 1.65;">
             <strong style="color: #162820; display: block; margin-bottom: 4px;">Full INCI Composition &amp; Traceability:</strong>
             {html.escape(prod['inci'])}<br>
-            <span style="display: inline-block; margin-top: 6px; color: #1E3A2F; font-weight: 600;">Producer: Azimut 6000 Ltd, Pomorie, Bulgaria · GTIN: {prod['gtin13']} · Lot № 04 · Distributed in Australia by Sotir Kichukov (<a href="https://cptmma.com/" style="color:#1E3A2F;">CPT MMA Melbourne</a>).</span>
+            <span style="display: inline-block; margin-top: 6px; color: #1E3A2F; font-weight: 600;">For external cosmetic use only · Producer: Azimut 6000 Ltd, Pomorie, Bulgaria · GTIN: {prod['gtin13']} · Lot № 04 · Distributed in Australia by Sotir Kichukov (<a href="https://cptmma.com/" style="color:#1E3A2F;">CPT MMA Melbourne</a>).</span>
           </div>
         </div>
       </div>
@@ -456,12 +547,31 @@ def build_product_html(prod, depth_prefix="../"):
 """
 
 
+def build_redirect_html(target_url, title):
+    safe_url = html.escape(target_url)
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <title>{html.escape(title)} | Redirecting</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="{safe_url}">
+  <meta http-equiv="refresh" content="0; url={safe_url}">
+  <script>location.replace({json.dumps(target_url)});</script>
+</head>
+<body>
+  <p>Redirecting to <a href="{safe_url}">{safe_url}</a>...</p>
+</body>
+</html>
+"""
+
+
 def build_post_html(post, all_posts, depth_prefix="../"):
     slug = post["slug"]
     canonical = f"https://anchialo.com/post/{slug}"
     title = post["title"]
     desc = post.get("description", title)
-    date_pub = post.get("datePublished", "2026-06-08T06:02:36.172Z")[:10]
+    date_pub = post.get("datePublished", f"{BUILD_DATE}T00:00:00Z")[:10]
     date_mod = post.get("dateModified", date_pub)[:10]
     img_url = post.get("image", {}).get("url", "https://anchialo.com/assets/images/products/06_file_transp.png")
 
@@ -491,48 +601,22 @@ def build_post_html(post, all_posts, depth_prefix="../"):
                 "image": img_url,
                 "datePublished": date_pub,
                 "dateModified": date_mod,
-                "author": {
-                    "@type": "Person",
-                    "@id": "https://cptmma.com/#sotir",
-                    "name": "Sotir Kichukov",
-                    "url": "https://cptmma.com/"
-                },
+                "author": {"@type": "Person", "@id": "https://cptmma.com/#sotir", "name": "Sotir Kichukov", "url": "https://cptmma.com/"},
                 "publisher": {
                     "@type": "Organization",
                     "@id": "https://anchialo.com/#business",
                     "name": "ANCHIALO Australia",
-                    "logo": {
-                        "@type": "ImageObject",
-                        "url": "https://anchialo.com/assets/images/products/06_file_transp.png"
-                    }
+                    "logo": {"@type": "ImageObject", "url": "https://anchialo.com/assets/images/products/06_file_transp.png"}
                 },
-                "mainEntityOfPage": {
-                    "@type": "WebPage",
-                    "@id": canonical
-                }
+                "mainEntityOfPage": {"@type": "WebPage", "@id": canonical}
             },
             {
                 "@type": "BreadcrumbList",
                 "@id": f"{canonical}#breadcrumb",
                 "itemListElement": [
-                    {
-                        "@type": "ListItem",
-                        "position": 1,
-                        "name": "ANCHIALO Store",
-                        "item": "https://anchialo.com/"
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 2,
-                        "name": "Clinical Journal",
-                        "item": "https://anchialo.com/#journal"
-                    },
-                    {
-                        "@type": "ListItem",
-                        "position": 3,
-                        "name": title,
-                        "item": canonical
-                    }
+                    {"@type": "ListItem", "position": 1, "name": "ANCHIALO Store", "item": "https://anchialo.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Balneology Journal", "item": "https://anchialo.com/#journal"},
+                    {"@type": "ListItem", "position": 3, "name": title, "item": canonical}
                 ]
             }
         ]
@@ -576,7 +660,7 @@ def build_post_html(post, all_posts, depth_prefix="../"):
 <body>
   <div class="announcement-bar">
     <div class="container announcement-inner">
-      <span class="announcement-badge">✦ POMORIE BALNEOLOGY RESEARCH</span>
+      <span class="announcement-badge">✦ POMORIE BALNEOLOGY JOURNAL</span>
       <p class="announcement-text">Certified Dual Magnesium (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · Official Australian Store ($49 AUD)</p>
       <div class="announcement-contact">
         <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
@@ -605,13 +689,13 @@ def build_post_html(post, all_posts, depth_prefix="../"):
       <nav aria-label="Breadcrumb" style="margin-bottom: 20px; font-size: 13.5px; color: #5C6460;">
         <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO</a>
         <span style="margin: 0 8px;">/</span>
-        <a href="{depth_prefix}index.html#journal" style="color: #1E3A2F; text-decoration: none;">Clinical Journal</a>
+        <a href="{depth_prefix}index.html#journal" style="color: #1E3A2F; text-decoration: none;">Balneology Journal</a>
       </nav>
 
-      <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">BALNEOTHERAPY &amp; ATHLETIC RECOVERY · PUBLISHED {date_pub}</span>
+      <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">BALNEOLOGY &amp; RECOVERY RITUAL · PUBLISHED {date_pub}</span>
       <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 4.5vw, 46px); color: #162820; margin: 10px 0 16px; line-height: 1.15;">{html.escape(title)}</h1>
       <div style="font-size: 14px; color: #5C6460; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #EAE4DA;">
-        By <a href="https://cptmma.com/" style="color: #1E3A2F; font-weight: 600; text-decoration: none;">Sotir Kichukov</a> (ONE Championship Veteran &amp; Founder of CPT MMA Melbourne) · Pomorie Lake Balneology Archive
+        By <a href="https://cptmma.com/" style="color: #1E3A2F; font-weight: 600; text-decoration: none;">Sotir Kichukov</a> (ONE Championship Veteran &amp; Founder of CPT MMA Melbourne) · Lake Pomorie Mineral Archive
       </div>
 
       <img src="{img_url}" alt="{html.escape(title)}" style="width: 100%; max-height: 440px; object-fit: cover; border-radius: 16px; margin-bottom: 32px;">
@@ -648,6 +732,206 @@ def build_post_html(post, all_posts, depth_prefix="../"):
 """
 
 
+def build_melbourne_pages_data():
+    pages = []
+    for slug, suburb, postcode, kicker, intro in MELBOURNE_SUBURBS:
+        pages.append({
+            "slug": slug,
+            "kind": "suburb",
+            "title": f"Dual Magnesium Gel {suburb} ({postcode}) — Black Sea Lye Delivery | ANCHIALO",
+            "h1": f"Certified Black Sea Magnesium Gel in {suburb} ({postcode})",
+            "kicker": f"{suburb.upper()} · {kicker.upper()}",
+            "area": f"{suburb}, {postcode}",
+            "description": f"{intro} Authentic Lake Pomorie Dual Magnesium Gels (253.14 g/L MgCl2 + 70.36 g/L MgSO4, 300g jar $49 AUD) dispatched fast across {suburb} and Melbourne.",
+            "faq_q": f"How fast does ANCHIALO Dual Magnesium Gel arrive in {suburb} ({postcode})?",
+            "faq_a": f"Orders placed on anchialo.com dispatch from our Melbourne hub via Australia Post (typically 1–2 business days to {suburb} {postcode}), with free Express delivery over $80 AUD or local pickup at CPT MMA."
+        })
+
+    for slug, heading, kicker, intro in NICHE_AEO_PAGES:
+        pages.append({
+            "slug": slug,
+            "kind": "niche",
+            "title": f"{heading} — ANCHIALO Lake Pomorie Dual Magnesium Australia",
+            "h1": heading,
+            "kicker": f"MELBOURNE SPECIALTY GUIDE · {kicker.upper()}",
+            "area": "Melbourne, Victoria, Australia",
+            "description": f"{intro} Pure 300g Lake Pomorie cosmetic gels ($49 AUD) and 300ml unscented mineral brine oil stocked in Melbourne under ISO 22716 GMP.",
+            "faq_q": f"Why choose ANCHIALO Lake Pomorie Dual Magnesium for {heading}?",
+            "faq_a": "ANCHIALO combines 253.14 g/L Magnesium Chloride and 70.36 g/L Magnesium Sulfate with natural botanicals (Arnica, Lavender, Rosemary, Juniper, Grape) or 100% pure brine in a clean, non-drip cosmetic formula stocked in Melbourne."
+        })
+    return pages
+
+
+def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
+    slug = page["slug"]
+    canonical = f"https://anchialo.com/melbourne/{slug}"
+    wa_msg = f"Hi Sotir, I found anchialo.com ({page['h1']}) and would like details on ordering or Melbourne clinic/gym pickup."
+    wa_url = f"https://wa.me/61423269586?text={urllib.parse.quote(wa_msg)}"
+
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "HealthAndBeautyBusiness",
+                "@id": f"{canonical}#local",
+                "name": f"ANCHIALO Australia — {page['area']}",
+                "description": page["description"],
+                "url": canonical,
+                "telephone": "+61423269586",
+                "areaServed": page["area"],
+                "priceRange": "$49 - $129 AUD",
+                "founder": {"@type": "Person", "name": "Sotir Kichukov", "url": "https://cptmma.com/"}
+            },
+            {
+                "@type": "FAQPage",
+                "@id": f"{canonical}#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": page["faq_q"],
+                        "acceptedAnswer": {"@type": "Answer", "text": page["faq_a"]}
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What makes Lake Pomorie Black Sea lye different from standard magnesium spray?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "ANCHIALO unites 253.14 g/L Magnesium Chloride and 70.36 g/L Magnesium Sulfate with plant glycerine and botanical extracts in a smooth cosmetic gel that spreads cleanly without dripping."
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": f"{canonical}#breadcrumb",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "ANCHIALO Store", "item": "https://anchialo.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Melbourne Local Hub", "item": canonical}
+                ]
+            }
+        ]
+    }
+
+    nearby = [p for p in all_melbourne if p["slug"] != slug][:12]
+    nearby_links = "\n".join(
+        f'<a href="{depth_prefix}melbourne/{p["slug"]}" style="padding:8px 14px; border-radius:999px; border:1px solid #E2DCD3; background:#fff; color:#1E3A2F; text-decoration:none; font-size:13px; font-weight:600;">{html.escape(p["h1"].split("—")[0][:42])}</a>'
+        for p in nearby
+    )
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{html.escape(page['title'])}</title>
+  <meta name="description" content="{html.escape(page['description'])}">
+  <link rel="canonical" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{html.escape(page['title'])}">
+  <meta property="og:description" content="{html.escape(page['description'])}">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="geo.region" content="AU-VIC">
+  <meta name="geo.placename" content="{html.escape(page['area'])}">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ MELBOURNE LOCAL STOCK</span>
+      <p class="announcement-text">Free Express Delivery Across {html.escape(page['area'])} Over $80 AUD · 253.14 g/L MgCl₂ + 70.36 g/L MgSO₄</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <span class="brand-logo-text">ANCHIALO</span>
+        <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}index.html#ritual-quiz">30s Blend Finder</a>
+        <a href="{depth_prefix}index.html#wholesale">Gym &amp; Clinic Partners</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 960px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>{html.escape(page['area'])}</span>
+      </nav>
+
+      <section style="background: #fff; padding: clamp(28px, 4vw, 48px); border-radius: 24px; border: 1px solid #E6E0D6; box-shadow: 0 12px 32px rgba(30,58,47,0.06);">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">{html.escape(page['kicker'])}</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 4.5vw, 48px); color: #162820; margin: 10px 0 16px; line-height: 1.15;">{html.escape(page['h1'])}</h1>
+        <p style="font-size: 16.5px; line-height: 1.75; color: #2D3833; margin-bottom: 24px;">{html.escape(page['description'])}</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 28px;">
+          <div style="background: #FAF7F2; padding: 16px; border-radius: 14px; border: 1px solid #EAE4DA;">
+            <strong style="color: #1E3A2F; display:block; margin-bottom:4px;">253.14 g/L MgCl₂</strong>
+            <span style="font-size: 13px; color: #4A5550;">Solar-evaporated Lake Pomorie Black Sea brine (BDS 8840:1971).</span>
+          </div>
+          <div style="background: #FAF7F2; padding: 16px; border-radius: 14px; border: 1px solid #EAE4DA;">
+            <strong style="color: #1E3A2F; display:block; margin-bottom:4px;">Non-Drip 300g Gel</strong>
+            <span style="font-size: 13px; color: #4A5550;">Arnica, Lavender, Rosemary, Juniper, Grape + Pure 300ml Oil.</span>
+          </div>
+          <div style="background: #FAF7F2; padding: 16px; border-radius: 14px; border: 1px solid #EAE4DA;">
+            <strong style="color: #1E3A2F; display:block; margin-bottom:4px;">Zero Heavy Metals</strong>
+            <span style="font-size: 13px; color: #4A5550;">0.00 ppm Pb/Cd/As · ISO 22716 GMP · Physiological pH 6.9.</span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px;">
+          <a href="{depth_prefix}index.html#collection" style="background: #1E3A2F; color: #fff; padding: 14px 26px; border-radius: 999px; font-weight: 700; text-decoration: none; font-size: 15px;">Shop Gels &amp; Combos (From A$49) →</a>
+          <a href="{wa_url}" target="_blank" rel="noopener" style="background: #F3EFEA; color: #1E3A2F; border: 1px solid #C8B99E; padding: 14px 24px; border-radius: 999px; font-weight: 700; text-decoration: none; font-size: 15px;">WhatsApp Sotir (+61 423 269 586)</a>
+        </div>
+
+        <div style="background: #F4EFE6; padding: 22px; border-radius: 16px; margin-bottom: 24px;">
+          <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: #162820; margin-bottom: 8px;">{html.escape(page['faq_q'])}</h2>
+          <p style="font-size: 14.5px; color: #2D3833; margin: 0;">{html.escape(page['faq_a'])}</p>
+        </div>
+
+        <div style="border-top: 1px solid #EAE4DA; padding-top: 20px; font-size: 13px; color: #5C6460;">
+          <strong>Gym, Myotherapy &amp; Studio Partnerships in {html.escape(page['area'])}:</strong> Put a zero-risk QR display on your front desk (15–20% automated commission per scan) or request wholesale studio pricing directly via WhatsApp (+61 423 269 586). Cosmetic body care for external use only.
+        </div>
+      </section>
+
+      <section style="margin-top: 40px;">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 24px; color: #162820; margin-bottom: 14px;">Explore Nearby Melbourne Suburbs &amp; Recovery Guides</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          {nearby_links}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
 def build_home_jsonld():
     item_elements = []
     for idx, prod in enumerate(PRODUCTS, start=1):
@@ -665,12 +949,6 @@ def build_home_jsonld():
                 "image": f"https://anchialo.com/{prod['image']}",
                 "description": prod["description"],
                 "brand": {"@type": "Brand", "name": "ANCHIALO"},
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "4.9",
-                    "bestRating": "5",
-                    "ratingCount": "420"
-                },
                 "offers": {
                     "@type": "Offer",
                     "url": canonical,
@@ -692,7 +970,7 @@ def build_home_jsonld():
                 "name": "ANCHIALO Australia",
                 "legalName": "ANCHIALO · Azimut 6000 Ltd & CPT MMA Australia",
                 "alternateName": ["Anchialo Dual Magnesium", "Anchialo Black Sea Balneology"],
-                "description": "Authentic Bulgarian Black Sea natural balneotherapy. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 & 70.36 g/L MgSO4) and pure topical oils harvested from Lake Pomorie. Official Australian Store ($49 AUD) dispatched from Melbourne.",
+                "description": "Authentic Bulgarian Black Sea mineral cosmetics. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 & 70.36 g/L MgSO4) and pure topical brine oil harvested from Lake Pomorie. Official Australian Store ($49 AUD) dispatched from Melbourne.",
                 "url": "https://anchialo.com/",
                 "logo": "https://anchialo.com/assets/images/products/06_file_transp.png",
                 "image": "https://anchialo.com/assets/images/products/06_file_transp.png",
@@ -723,14 +1001,7 @@ def build_home_jsonld():
                     "https://www.facebook.com/ProFighterAndCoach",
                     "https://www.instagram.com/sotir_kichukov/",
                     "https://www.tiktok.com/@sotir_kichukov"
-                ],
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "4.9",
-                    "bestRating": "5",
-                    "ratingCount": "420",
-                    "reviewCount": "420"
-                }
+                ]
             },
             {
                 "@type": "WebSite",
@@ -752,10 +1023,10 @@ def build_home_jsonld():
                 "mainEntity": [
                     {
                         "@type": "Question",
-                        "name": "Why choose transdermal magnesium over oral tablets?",
+                        "name": "Why choose topical magnesium gel over oral tablets?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "Oral magnesium tablets frequently cause gastrointestinal upset, diarrhea, and poor absorption due to stomach acids and digestive limits. Transdermal magnesium chloride is absorbed directly through the skin's sweat glands and hair follicles into the local tissue and bloodstream, delivering targeted relief where your muscles need it most without digestive stress."
+                            "text": "Oral magnesium tablets can feel heavy on sensitive digestion. Topical magnesium chloride and sulfate body gels apply smoothly onto the skin during post-training massage, leaving the skin hydrated and refreshed without digestive stress."
                         }
                     },
                     {
@@ -763,7 +1034,7 @@ def build_home_jsonld():
                         "name": "How do I apply Anchialo Dual Magnesium Gel?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "Massage a generous amount onto clean, dry skin on tired muscles, sore joints, or along the spine. Allow it to absorb for 30 minutes to several hours, or leave it on overnight for deeper relaxation. If faint salt crystals form, simply rinse with cool water."
+                            "text": "Massage a generous amount onto clean, dry skin on calves, shoulders, forearms, or lower back. Allow it to absorb for 30 minutes to several hours, or leave it on overnight for deeper relaxation and skin hydration. If light salt crystals form, simply rinse with cool water."
                         }
                     },
                     {
@@ -771,7 +1042,7 @@ def build_home_jsonld():
                         "name": "Will I feel a tingling sensation?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "Because Anchialo contains a clinical concentration of over 250 g/L magnesium salts, a mild warming or tingling sensation during the first few applications is completely normal and indicates rapid microcirculation."
+                            "text": "Because Anchialo contains over 250 g/L concentrated Lake Pomorie mineral salts, a light warming or tingling sensation during the first few applications is normal. Applying onto clean hydrated skin or rinsing after 30 minutes keeps every session comfortable."
                         }
                     },
                     {
@@ -787,7 +1058,7 @@ def build_home_jsonld():
                         "name": "How can I order and receive my parcel in Australia?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "All stock is located in Melbourne under Sotir Kichukov. You can order directly online through anchialo.com ($49 AUD per jar) or message via WhatsApp (+61 423 269 586) for same-day local pickup at CPT MMA or Australia Post Express dispatch with tracking."
+                            "text": "All stock is located in Melbourne under Sotir Kichukov. You can order directly online through anchialo.com ($49 AUD per jar) or message via WhatsApp (+61 423 269 586) for local pickup at CPT MMA or Australia Post Express dispatch with tracking."
                         }
                     }
                 ]
@@ -797,12 +1068,11 @@ def build_home_jsonld():
     return json.dumps(schema, ensure_ascii=False)
 
 
-def update_index_and_app(posts):
+def update_index_and_app(posts, melbourne_pages):
     index_path = os.path.join(ROOT, "index.html")
     with open(index_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # 1. Upgrade <head> in index.html
     head_seo = f"""<!DOCTYPE html>
 <html lang="en-AU">
 <head>
@@ -810,8 +1080,15 @@ def update_index_and_app(posts):
   <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ANCHIALO — Pure Black Sea Balneology &amp; Certified Dual Magnesium ($49 AUD Melbourne)</title>
-  <meta name="description" content="Authentic Bulgarian Black Sea natural balneotherapy. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 &amp; 70.36 g/L MgSO4) and pure topical oils harvested from Lake Pomorie. Official Australian Store ($49 AUD) dispatched from Melbourne by Sotir Kichukov.">
+  <meta name="description" content="Authentic Bulgarian Black Sea mineral cosmetics. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 &amp; 70.36 g/L MgSO4) and pure topical brine oil harvested from Lake Pomorie. Official Australian Store ($49 AUD) dispatched from Melbourne by Sotir Kichukov.">
   <link rel="canonical" href="https://anchialo.com/">
+  <script>
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {{
+      if (location.protocol === 'http:' || location.hostname === 'www.anchialo.com') {{
+        location.replace('https://anchialo.com' + location.pathname + location.search + location.hash);
+      }}
+    }}
+  </script>
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="ANCHIALO — Pure Black Sea Balneology &amp; Certified Dual Magnesium ($49 AUD)">
@@ -822,7 +1099,7 @@ def update_index_and_app(posts):
   <meta property="og:locale" content="en_AU">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="ANCHIALO — Pure Black Sea Balneology &amp; Certified Dual Magnesium">
-  <meta name="twitter:description" content="100% natural Dual Magnesium gels and pure topical oils from Lake Pomorie. Official Australian Store ($49 AUD) in Melbourne.">
+  <meta name="twitter:description" content="100% natural Dual Magnesium gels and pure topical brine oil from Lake Pomorie. Official Australian Store ($49 AUD) in Melbourne.">
   <meta name="twitter:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
   <meta name="geo.region" content="AU-VIC">
   <meta name="geo.placename" content="Melbourne, Victoria">
@@ -831,13 +1108,18 @@ def update_index_and_app(posts):
   <link rel="manifest" href="manifest.webmanifest">
   <script type="application/ld+json">{build_home_jsonld()}</script>"""
 
-    # Replace everything from <!DOCTYPE html> up to <link rel="icon" type="image/x-icon" href="favicon.ico">
     marker = '<link rel="icon" type="image/x-icon" href="favicon.ico">'
     if marker in content:
-        idx = content.index(marker) + len(marker)
-        content = head_seo + content[idx:]
+        # Preserve manifest & json-ld replacement cleanly up to just before <link rel="preconnect"
+        preconnect_marker = '<!-- Premium Bio-Cosmetics Typography -->'
+        if preconnect_marker in content:
+            idx = content.index(preconnect_marker)
+            content = head_seo + "\n  \n  " + content[idx:]
+        else:
+            idx = content.index(marker) + len(marker)
+            content = head_seo + content[idx:]
 
-    # 2. Pre-render SSR product cards inside #productsGrid so crawlers see all 9 products immediately
+    # 2. Idempotent SSR replacement for #productsGrid
     ssr_products = []
     for prod in PRODUCTS:
         wa_msg = urllib.parse.quote(f"Hi Sotir, I would like to order {prod['name']} (A$ {prod['priceAUD']} AUD). Please confirm delivery / Melbourne pickup.")
@@ -850,7 +1132,7 @@ def update_index_and_app(posts):
               <h3 class="product-name"><a href="product-page/{prod['slug']}" style="color:inherit;text-decoration:none;">{html.escape(prod['name'])}</a></h3>
               <div class="product-price-row">
                 <span class="price-main">A$ {prod['priceAUD']} AUD</span>
-                <span class="price-unit">/ 300g Net</span>
+                <span class="price-unit">{html.escape(prod['unitLabel'])}</span>
               </div>
               <p class="product-desc">{html.escape(prod['description'])}</p>
               <div class="product-actions">
@@ -861,16 +1143,15 @@ def update_index_and_app(posts):
           </div>""")
     ssr_products_block = '<div class="products-grid" id="productsGrid">\n' + "\n".join(ssr_products) + '\n        </div>'
 
-    old_prod_grid = """<div class="products-grid" id="productsGrid">
-          <!-- Dynamically populated from CATALOG_PRODUCTS in app.js -->
-        </div>"""
-    old_prod_grid_crlf = old_prod_grid.replace("\n", "\r\n")
-    if old_prod_grid_crlf in content:
-        content = content.replace(old_prod_grid_crlf, ssr_products_block)
-    elif old_prod_grid in content:
-        content = content.replace(old_prod_grid, ssr_products_block)
+    content = re.sub(
+        r'<div class="products-grid" id="productsGrid">.*?        </div>(?=\s*\n\s*<!-- Melbourne Gyms)',
+        lambda _: ssr_products_block,
+        content,
+        count=1,
+        flags=re.DOTALL,
+    )
 
-    # 3. Pre-render SSR blog cards + full archive links inside #blogGrid
+    # 3. Idempotent SSR replacement for #blogGrid + journal archive + Melbourne local hub nav
     ssr_blogs = []
     for idx, post in enumerate(posts[:6]):
         img_url = post.get("image", {}).get("url", "assets/images/products/06_file_transp.png")
@@ -890,61 +1171,41 @@ def update_index_and_app(posts):
         f'            <a href="post/{p["slug"]}" style="font-size:13.5px; color:#1E3A2F; text-decoration:underline; margin-right:14px; display:inline-block; margin-bottom:6px;">{html.escape(p["title"])}</a>'
         for p in posts
     )
+    featured_melbourne = melbourne_pages[:24]
+    melbourne_links = "\n".join(
+        f'            <a href="melbourne/{m["slug"]}" style="font-size:12.5px; color:#4A5550; text-decoration:underline; margin-right:12px; display:inline-block; margin-bottom:5px;">{html.escape(m["area"] if m["kind"] == "suburb" else m["h1"].split("(")[0].strip())}</a>'
+        for m in featured_melbourne
+    )
+
     ssr_blog_block = (
         '<div class="blog-grid" id="blogGrid">\n'
         + "\n".join(ssr_blogs)
         + '\n        </div>\n'
-        + f'        <nav aria-label="Complete Balneotherapy Research Archive" style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(30,58,47,0.12);">\n'
-        + f'          <strong style="display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460; margin-bottom:10px;">Complete Clinical &amp; Balneotherapy Archive (16 Publications):</strong>\n'
+        + '        <nav aria-label="Complete Balneotherapy Research Archive" style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(30,58,47,0.12);">\n'
+        + f'          <strong style="display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460; margin-bottom:10px;">Complete Balneology &amp; Recovery Archive ({len(posts)} Publications):</strong>\n'
         + archive_links
+        + '\n        </nav>\n'
+        + '        <nav aria-label="Melbourne Local Dispatch & Clinic Guides" style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(30,58,47,0.08);">\n'
+        + f'          <strong style="display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460; margin-bottom:8px;">Melbourne Suburb Delivery &amp; Clinic Hubs ({len(melbourne_pages)} Local Pages):</strong>\n'
+        + melbourne_links
         + '\n        </nav>'
     )
 
-    old_blog_grid = """<div class="blog-grid" id="blogGrid">
-          <!-- Dynamically populated from data/blog_posts.json -->
-        </div>"""
-    old_blog_grid_crlf = old_blog_grid.replace("\n", "\r\n")
-    if old_blog_grid_crlf in content:
-        content = content.replace(old_blog_grid_crlf, ssr_blog_block)
-    elif old_blog_grid in content:
-        content = content.replace(old_blog_grid, ssr_blog_block)
-
-    # 4. Link CPT MMA in footer
-    content = content.replace(
-        "CPT MMA High Performance Recovery<br>",
-        '<a href="https://cptmma.com/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">CPT MMA High Performance Recovery</a><br>'
+    content = re.sub(
+        r'<div class="blog-grid" id="blogGrid">.*?(?=\s*\n\s*</div>\s*\n\s*</section>\s*\n\s*<!-- ==================== FREQUENTLY ASKED QUESTIONS)',
+        lambda _: ssr_blog_block,
+        content,
+        count=1,
+        flags=re.DOTALL,
     )
 
     with open(index_path, "w", encoding="utf-8") as f:
         f.write(content)
 
-    # 5. Update app.js to include slugs and crawlable links
-    app_path = os.path.join(ROOT, "app.js")
-    with open(app_path, "r", encoding="utf-8") as f:
-        app_js = f.read()
-
-    slug_map = {p["id"]: p["slug"] for p in PRODUCTS}
-    for pid, pslug in slug_map.items():
-        target = f"id: '{pid}',"
-        replacement = f"id: '{pid}',\n      slug: '{pslug}',"
-        if f"slug: '{pslug}'" not in app_js and target in app_js:
-            app_js = app_js.replace(target, replacement, 1)
-
-    app_js = app_js.replace(
-        '<h3 class="product-name">${prod.name}</h3>',
-        '<h3 class="product-name"><a href="product-page/${prod.slug || \'\'}" style="color:inherit;text-decoration:none;">${prod.name}</a></h3>'
-    )
-    app_js = app_js.replace(
-        '<h3 class="blog-card-title">${post.title}</h3>',
-        '<h3 class="blog-card-title"><a href="post/${post.slug || \'\'}" style="color:inherit;text-decoration:none;">${post.title}</a></h3>'
-    )
-
-    with open(app_path, "w", encoding="utf-8") as f:
-        f.write(app_js)
-
 
 def main():
     posts = load_blog_posts()
+    melbourne_pages = build_melbourne_pages_data()
 
     prod_root = os.path.join(ROOT, "product-page")
     os.makedirs(prod_root, exist_ok=True)
@@ -971,13 +1232,36 @@ def main():
         with open(os.path.join(sub, "index.html"), "w", encoding="utf-8") as f:
             f.write(build_post_html(post, posts, depth_prefix="../../"))
 
-    today = "2026-10-28"
-    urls = [("https://anchialo.com/", today, "daily", "1.0")]
+        # Write clean canonical redirects for legacy therapeutic URLs so zero backlinks break
+        for old_slug in post.get("legacy_slugs", []):
+            target = f"https://anchialo.com/post/{s}"
+            redir_html = build_redirect_html(target, post["title"])
+            with open(os.path.join(post_root, f"{old_slug}.html"), "w", encoding="utf-8") as f:
+                f.write(redir_html)
+            old_sub = os.path.join(post_root, old_slug)
+            os.makedirs(old_sub, exist_ok=True)
+            with open(os.path.join(old_sub, "index.html"), "w", encoding="utf-8") as f:
+                f.write(redir_html)
+
+    mel_root = os.path.join(ROOT, "melbourne")
+    os.makedirs(mel_root, exist_ok=True)
+    for page in melbourne_pages:
+        s = page["slug"]
+        with open(os.path.join(mel_root, f"{s}.html"), "w", encoding="utf-8") as f:
+            f.write(build_melbourne_html(page, melbourne_pages, depth_prefix="../"))
+        sub = os.path.join(mel_root, s)
+        os.makedirs(sub, exist_ok=True)
+        with open(os.path.join(sub, "index.html"), "w", encoding="utf-8") as f:
+            f.write(build_melbourne_html(page, melbourne_pages, depth_prefix="../../"))
+
+    urls = [("https://anchialo.com/", BUILD_DATE, "daily", "1.0")]
     for prod in PRODUCTS:
-        urls.append((f"https://anchialo.com/product-page/{prod['slug']}", today, "weekly", "0.9"))
+        urls.append((f"https://anchialo.com/product-page/{prod['slug']}", BUILD_DATE, "weekly", "0.9"))
     for post in posts:
-        d = post.get("dateModified", today)[:10]
+        d = post.get("dateModified", BUILD_DATE)[:10]
         urls.append((f"https://anchialo.com/post/{post['slug']}", d, "monthly", "0.8"))
+    for page in melbourne_pages:
+        urls.append((f"https://anchialo.com/melbourne/{page['slug']}", BUILD_DATE, "monthly", "0.8"))
 
     sitemap_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -995,8 +1279,11 @@ def main():
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write("\n".join(sitemap_lines))
 
-    update_index_and_app(posts)
-    print(f"Successfully updated index.html, app.js, {len(PRODUCTS)} product pages, {len(posts)} blog pages, and sitemap.xml.")
+    update_index_and_app(posts, melbourne_pages)
+    print(
+        f"Successfully updated index.html, {len(PRODUCTS)} product pages, "
+        f"{len(posts)} blog pages, {len(melbourne_pages)} Melbourne pages, and sitemap.xml ({len(urls)} URLs)."
+    )
 
 
 if __name__ == "__main__":

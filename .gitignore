@@ -17,3 +17,14 @@ drive_page.html
 __pycache__/
 *.pyc
 node_modules/
+
+# Akash Server Secrets & Runtime Data
+server/.env
+server/.env.*
+!server/.env.example
+server/data/
+*.db
+*.sqlite
+*.sqlite3
+server/generated_posters/*.pdf
+server/generated_posters/*.png

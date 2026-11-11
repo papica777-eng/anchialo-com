@@ -6,6 +6,29 @@
 (function () {
   'use strict';
 
+  // ==================== MERCHANT & BACKEND CONFIGURATION ====================
+  const MERCHANT_CONFIG = {
+    brandName: 'ANCHIALO Australia',
+    distributorName: 'Sotir Kichukov · CPT MMA Melbourne',
+    abn: '', // Populate verified Australian Business Number when active
+    gstRegistered: false, // Set true only when ABN is registered for Australian GST
+    apiBaseUrl: (typeof window !== 'undefined' && (window.ANCHIALO_API_URL || localStorage.getItem('anchialov2_api_url'))) || ''
+  };
+
+  // Partner QR & Welcome Discount Registry (10% privilege on eligible codes)
+  const PROMO_RULES = {
+    CPT15: { label: 'CPT MMA Partner Privilege (10% Off)', discountPct: 10, isPartner: true },
+    RENEGADE15: { label: 'Gym Partner Privilege (10% Off)', discountPct: 10, isPartner: true },
+    ABSOLUTE15: { label: 'Gym Partner Privilege (10% Off)', discountPct: 10, isPartner: true },
+    OAKLEIGH15: { label: 'Oakleigh Community Privilege (10% Off)', discountPct: 10, isPartner: true },
+    MYO15: { label: 'Myotherapy Clinic Privilege (10% Off)', discountPct: 10, isPartner: true },
+    PILATES15: { label: 'Pilates Studio Privilege (10% Off)', discountPct: 10, isPartner: true },
+    FLOAT15: { label: 'Recovery Studio Privilege (10% Off)', discountPct: 10, isPartner: true },
+    QUIZ10: { label: 'Ritual Quiz Welcome (10% Off)', discountPct: 10, isPartner: false },
+    FOUNDING10: { label: 'Melbourne Founding Privilege (10% Off)', discountPct: 10, isPartner: false },
+    COMEBACK10: { label: 'Bag Recovery Privilege (10% Off)', discountPct: 10, isPartner: false }
+  };
+
   // ==================== CONFIGURATION & STATE ====================
   const STATE = {
     currency: localStorage.getItem('anchialov2_currency') || 'AUD',
@@ -22,6 +45,10 @@
     activeDetailTab: 'purpose',
     products: [],
     blogPosts: [],
+    partnerCode: localStorage.getItem('anchialov2_partner_code') || '',
+    promoCode: localStorage.getItem('anchialov2_promo_code') || '',
+    customerEmail: localStorage.getItem('anchialov2_customer_email') || '',
+    quizState: { goal: 'sport', timeOfDay: 'post-training' },
     selectedLocality: {
       location: 'MELBOURNE',
       state: 'VIC',
@@ -43,22 +70,23 @@
       'gel-unscented': 'https://buy.stripe.com/cNidR97FycoY0239OL5Ne0h',
       'oil-pure': 'https://buy.stripe.com/aFaeVdgc4ex6cOP1if5Ne0i',
       'combo-starter': 'https://buy.stripe.com/6oU4gzcZS60AeWX9OL5Ne0j',
-      'combo-gel-oil': 'https://buy.stripe.com/cNi14ncZS9cMeWX9OL5Ne0d',
-      'combo-trio': 'https://buy.stripe.com/6oU4gzcZS60AeWX9OL5Ne0j',
+      'combo-gel-oil': 'https://buy.stripe.com/4gM28rgc44WwbKL3qn5Ne0l',
+      'combo-best-value': 'https://buy.stripe.com/7sYeVdgc4dt28yzbWT5Ne0k',
+      'combo-trio': 'https://buy.stripe.com/7sYeVdgc4dt28yzbWT5Ne0k',
       'combo-complete': 'https://buy.stripe.com/7sYeVdgc4dt28yzbWT5Ne0k',
       'custom': 'https://buy.stripe.com/4gM28rgc44WwbKL3qn5Ne0l'
     }
   };
 
-  // Official Verbatim Texts
+  // Official Cosmetic Australian Master Texts (TGA Compliant)
   const TEXTS = {
-    usage: "Gently massage a generous amount into clean, dry skin on the desired muscle or joint area. Allow the bioavailable mineral gel to absorb for 30 minutes to several hours, or leave overnight for deep restorative relaxation. If slight natural mineral salt crystals form on the skin, simply rinse with cool water. Avoid open abrasions and eyes.",
-    warning: "For external topical use only. Keep out of reach of children. Avoid direct contact with eyes. If unexpected dermal irritation occurs, rinse thoroughly with cool water. Storage: Store in a cool, dry place between 5°C and 25°C. Natural Black Sea lye maintains stability at ambient room temperatures when shielded from direct sunlight.",
-    heritage: "Formed naturally during the slow fractional solar crystallization of sea water in the ancient coastal salterns of Lake Pomorie. As sodium chloride precipitates out as sea salt, a super-dense colloidal liquid rich in ionic magnesium chloride, magnesium sulfate, trace iodine, bromine, and organic peloids settles on top. Revering Thracian healing traditions dating back to 400 BC.",
+    usage: "Apply topically to clean, dry skin on the desired area and massage thoroughly. Leave on for 30 minutes to several hours, or leave overnight for deeper relaxation and skin hydration. If light mineral salt crystals form on the skin, simply rinse with cool water. Avoid open cuts and direct eye contact.",
+    warning: "For external cosmetic use only. Keep out of reach of children. Avoid contact with eyes. If unexpected skin sensitivity occurs, rinse thoroughly with cool water. This product is not a substitute for medical care. Storage: Store between 5°C and 25°C away from direct sunlight.",
+    heritage: "Formed naturally during the slow fractional solar crystallization of sea water in the ancient coastal salterns of Lake Pomorie (ancient Anchialos). As sea salt precipitates out, a dense mineral liquid rich in magnesium chloride, magnesium sulfate, and trace ocean elements rises on top.",
     producer: "Handcrafted by: AZIMUT 6000 Ltd, Bulgaria, Pomorie 8200, Ivan Vazov 18 str. Tel: +359887470548 | E-mail: sales@luga.bg. GTIN-13: 3 800230 111746. Batch / Expiry: Lot № 04 / Expiry 2027. Net weight: 300 g ℮. PAO 12M | ♳ PET 1 Recyclable. ISO 22716 European GMP Certified."
   };
 
-  // The 5 Signature Botanical Blends
+  // The 5 Signature Botanical Blends (Aligned with Australian Master 2025 Cosmetic Copy)
   const BLENDS = {
     arnica: {
       id: 'arnica',
@@ -71,8 +99,8 @@
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Arnica v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Arnica Top Fv17.pdf',
       botanical: 'Arnica Montana Flower Extract',
-      subtitle: 'Muscle Soreness, Bruises & Physical Trauma Recovery',
-      purpose: "Fast-absorbing topical body gel combining pure transdermal magnesium chloride and magnesium sulfate with natural Arnica Montana extract. Revered by athletes and physical therapists to relieve acute muscle fatigue, ease heavy bruised limbs, reduce post-workout soreness, and soothe inflamed joint tendons.",
+      subtitle: 'Post-Training Body Ritual & Skin Comfort',
+      purpose: "A fast-absorbing topical body gel formulated with natural magnesium sulfate and magnesium chloride from Lake Pomorie to help relax and nourish the body. Supports skin hydration, leaves muscles feeling refreshed after physical activity, and is enriched with Arnica Montana flower extract, traditionally valued to soothe and comfort tired skin.",
       inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ARNICA MONTANA FLOWER EXTRACT."
     },
     lavender: {
@@ -86,8 +114,8 @@
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Lavender v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Lavender Top Fv17.pdf',
       botanical: 'Lavandula Angustifolia Essential Flower Extract',
-      subtitle: 'Restorative Sleep, Deep Calming & Tension Ease',
-      purpose: "A deeply calming bedtime balneotherapy formulation. Synergizes transdermal magnesium chloride with authentic Bulgarian lavender to calm neuromuscular irritability, reduce restless legs, quiet an overactive nervous system, and usher in deep, uninterrupted sleep cycles.",
+      subtitle: 'Calming Evening Ritual & Skin Nourishment',
+      purpose: "A calming topical body gel formulated with natural magnesium sulfate and magnesium chloride to help relax and nourish the body after a long day. Supports skin hydration and evening wind-down, enhanced with Bulgarian Lavandula Angustifolia flower extract, prized for its soothing and relaxing aroma.",
       inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, LAVANDULA ANGUSTIFOLIA FLOWER EXTRACT."
     },
     rosemary: {
@@ -101,8 +129,8 @@
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Rosemary v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Rosemary Top Fv17.pdf',
       botanical: 'Rosmarinus Officinalis Leaf Powder Extract',
-      subtitle: 'Thermal Microcirculation & Tendon Warm-Up',
-      purpose: "Invigorating microcirculatory botanical gel. Rosemary terpenes stimulate localized capillary blood flow and oxygen delivery. Highly recommended for pre-training warm-up, morning tendon stiffness, and reviving cold extremities with natural bio-heat.",
+      subtitle: 'Invigorating Massage & Morning Skin Refresh',
+      purpose: "An invigorating topical body gel combining Lake Pomorie magnesium sulfate and magnesium chloride with Garden Rosemary extract. Traditionally used in energizing body massage to invigorate skin, warm up tired limbs before or after sessions, and leave the body feeling revitalized.",
       inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ROSMARINUS OFFICINALIS LEAF POWDER EXTRACT."
     },
     juniper: {
@@ -116,8 +144,8 @@
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Juniper v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Juniper Top Fv17.pdf',
       botanical: 'Juniperus Chinensis Leaf Extract & Fruit Oil',
-      subtitle: 'Joint Mobility, Detoxification & Lymphatic Flow',
-      purpose: "Targeted joint mobility and cellular detox gel. Alpine juniper fruit pinene terpenes assist osmotic tissue drainage, helping flush cellular metabolic residues, ease chronic arthritic stiffness, and refresh heavy, congested joints.",
+      subtitle: 'Crisp Botanical Massage & Body Refreshment',
+      purpose: "A refreshing topical body gel uniting concentrated Black Sea magnesium salts with Alpine Juniper extract. Supports skin hydration, leaves heavy or overworked limbs feeling light and refreshed, and delivers a crisp botanical finish ideal after showers or sauna sessions.",
       inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE, JUNIPERUS CHINENSIS LEAF EXTRACT."
     },
     grape: {
@@ -131,8 +159,8 @@
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Grape v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Grape Top Fv17.pdf',
       botanical: 'Vitis Vinifera (Grape) Seed Polyphenol Extract',
-      subtitle: 'Cellular Antioxidant & Dermal Elasticity',
-      purpose: "Rich in proanthocyanidins and resveratrol antioxidants. Shields dermal collagen against oxidative free-radical breakdown while feeding transdermal magnesium to tired muscles. Restores skin firmness and velvety softness with a delicate vineyard aroma.",
+      subtitle: 'Skin Softness & Antioxidant Body Care',
+      purpose: "A revitalizing topical body gel formulated with Lake Pomorie magnesium sulfate and magnesium chloride to support skin hydration and daily relaxation. Lightly fragranced with a subtle vineyard grape aroma that leaves skin feeling smooth, soft, and refreshed.",
       inci: "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE."
     }
   };
@@ -145,10 +173,13 @@
       name: 'Dual Magnesium Gel | Arnica Blend',
       category: 'gel',
       priceAUD: 49.00,
+      unitLabel: '/ 300g Net',
+      packagingText: '300g PET 1 Jar',
+      weightKg: 0.35,
       image: 'assets/images/products/06_file_transp.png',
-      badge: 'Bestseller · Muscle Relief',
+      badge: 'Bestseller · Post-Training Ritual',
       isStaged: false,
-      description: 'Fast-absorbing topical gel enriched with Arnica Montana and 253 g/L natural Black Sea magnesium. Relieves acute muscle aches, bruises, joint inflammation, and spasms. 300g net.'
+      description: 'Fast-absorbing topical gel with 253.14 g/L Black Sea magnesium chloride, 70.36 g/L magnesium sulfate, and Arnica Montana extract to hydrate skin and refresh tired muscles. 300g net.'
     },
     {
       id: 'gel-lavender',
@@ -156,10 +187,13 @@
       name: 'Dual Magnesium Gel | Lavender Blend',
       category: 'gel',
       priceAUD: 49.00,
+      unitLabel: '/ 300g Net',
+      packagingText: '300g PET 1 Jar',
+      weightKg: 0.35,
       image: 'assets/images/products/01_file_transp.png',
-      badge: 'Deep Sleep & Calming',
+      badge: 'Evening Calm & Wind-Down',
       isStaged: false,
-      description: 'Infused with Mediterranean Lavender. Calms central nervous excitability, alleviates restless leg syndrome, and supports restorative night sleep. 300g net.'
+      description: 'Infused with Bulgarian Lavender flower extract and Lake Pomorie minerals. Nourishes dry skin and supports a calming evening massage ritual before rest. 300g net.'
     },
     {
       id: 'gel-rosemary',
@@ -167,10 +201,13 @@
       name: 'Dual Magnesium Gel | Rosemary Blend',
       category: 'gel',
       priceAUD: 49.00,
+      unitLabel: '/ 300g Net',
+      packagingText: '300g PET 1 Jar',
+      weightKg: 0.35,
       image: 'assets/images/products/04_file_transp.png',
-      badge: 'Joint Mobility & Warm-Up',
+      badge: 'Invigorating Massage',
       isStaged: false,
-      description: 'Invigorating rosemary extract stimulates microcirculation and speeds tendon warm-up. Perfect for active athletes and post-workout recovery. 300g net.'
+      description: 'Enhanced with Garden Rosemary extract for an energizing massage feel. Ideal before training sessions or after heavy workouts to refresh overworked limbs. 300g net.'
     },
     {
       id: 'gel-juniper',
@@ -178,10 +215,13 @@
       name: 'Dual Magnesium Gel | Juniper Blend',
       category: 'gel',
       priceAUD: 49.00,
+      unitLabel: '/ 300g Net',
+      packagingText: '300g PET 1 Jar',
+      weightKg: 0.35,
       image: 'assets/images/products/07_file_transp.png',
-      badge: 'Deep Tissue Detox',
+      badge: 'Crisp Refresh & Sauna Ritual',
       isStaged: false,
-      description: 'Alpine juniper fruit terpenes assist lymphatic drainage and ease chronic morning joint stiffness and inflammation. 300g net.'
+      description: 'Alpine Juniper botanical blend formulated to hydrate skin and revitalize weary legs, shoulders, and feet after showers, contrast therapy, or long shifts. 300g net.'
     },
     {
       id: 'gel-grape',
@@ -189,10 +229,13 @@
       name: 'Dual Magnesium Gel | Grape Blend',
       category: 'gel',
       priceAUD: 49.00,
+      unitLabel: '/ 300g Net',
+      packagingText: '300g PET 1 Jar',
+      weightKg: 0.35,
       image: 'assets/images/products/03_file_transp.png',
-      badge: 'Antioxidant & Skin Tone',
+      badge: 'Skin Softness & Daily Care',
       isStaged: false,
-      description: 'Rich in grape seed polyphenols and resveratrol. Promotes skin elasticity, reduces oxidative tension, and hydrates tired tissues. 300g net.'
+      description: 'Lightly fragranced with Red Grape aroma alongside pure Lake Pomorie dual magnesium salts to condition skin and leave a smooth, velvet finish. 300g net.'
     },
     {
       id: 'oil-pure',
@@ -200,10 +243,13 @@
       name: 'Dual Magnesium Oil | Natural Topical Brine',
       category: 'oil',
       priceAUD: 49.00,
+      unitLabel: '/ 300ml Net',
+      packagingText: '300ml Brine Bottle',
+      weightKg: 0.38,
       image: 'assets/images/products/08_file_transp.png',
       badge: '100% Pure Liquid Brine',
       isStaged: false,
-      description: 'Unscented, highly bioavailable liquid Black Sea mineral oil. Silky transdermal glide for full-body massage or foot soak mineralization. 300ml.'
+      description: 'Unscented, concentrated liquid Black Sea mineral brine (luga). Silky natural glide tailored for full-body studio massage or evening mineral foot soaks. 300ml.'
     },
     {
       id: 'combo-gel-oil',
@@ -211,10 +257,13 @@
       name: 'Special Offer | Gel + Oil Combo',
       category: 'combo',
       priceAUD: 49.00,
+      unitLabel: '/ 300g + 300ml',
+      packagingText: '300g Gel + 300ml Oil',
+      weightKg: 0.72,
       image: 'assets/images/products/02_file.png',
       badge: '1+1 Free Value Deal',
       isStaged: true,
-      description: 'Buy 1 Dual Magnesium Gel (any blend) and receive 1 Dual Magnesium Oil FREE! Double the care for the price of one single jar. Limited stock.'
+      description: 'Buy 1 Dual Magnesium Gel (300g) and receive 1 Pure Dual Magnesium Oil (300ml) FREE! Complete topical gel and bath/massage brine set for the price of one item.'
     },
     {
       id: 'combo-starter',
@@ -222,10 +271,13 @@
       name: 'Starter Combo | Dual Magnesium Gel (2-Pack)',
       category: 'combo',
       priceAUD: 89.00,
+      unitLabel: '/ 600g (2 × 300g)',
+      packagingText: '2 × 300g PET 1 Jars',
+      weightKg: 0.70,
       image: 'assets/images/products/05_file.png',
       badge: 'Save $9 · Day & Night Pair',
       isStaged: true,
-      description: 'Pair Arnica for daytime athletic recovery with Lavender for evening sleep and nervous system reset. Total 600g pure Pomorie peloids.'
+      description: 'Pair Arnica for daytime post-training massage with Lavender for your calm evening wind-down ritual. Total 600g with FREE Australia-wide Express shipping.'
     },
     {
       id: 'combo-best-value',
@@ -233,10 +285,13 @@
       name: 'Best Value Combo | Dual Magnesium Gel (3-Pack)',
       category: 'combo',
       priceAUD: 129.00,
+      unitLabel: '/ 900g (3 × 300g)',
+      packagingText: '3 × 300g PET 1 Jars',
+      weightKg: 1.05,
       image: 'assets/images/products/09_file.png',
       badge: 'Save $18 · Combat Team Pack',
       isStaged: true,
-      description: 'Choose any three 300g jars. Maximum value package designed for active fighters, gyms, and balneotherapy enthusiasts. Free Australia Post shipping.'
+      description: 'Any three 300g jars for athletes, families, and active studios. Includes FREE Australia Post Express delivery from our Melbourne dispatch hub.'
     }
   ];
 
@@ -262,10 +317,12 @@
 
   // ==================== INITIALIZATION ====================
   document.addEventListener('DOMContentLoaded', () => {
+    initPartnerAttribution();
     initCurrency();
     initHeroBlendSwitcher();
     initBotanicalApothecary();
     initProductsGrid();
+    initRitualQuiz();
     initBlogJournal();
     initCartDrawer();
     initAusPostTracker();
@@ -458,7 +515,7 @@
     switch (STATE.activeDetailTab) {
       case 'purpose':
         html = `
-          <h4 style="font-family:var(--font-serif); font-size:18px; color:var(--accent-pine); margin-bottom:8px;">Therapeutic Indications &amp; Action</h4>
+          <h4 style="font-family:var(--font-serif); font-size:18px; color:var(--accent-pine); margin-bottom:8px;">Cosmetic Formulation &amp; Botanical Profile</h4>
           <p>${blend.purpose}</p>
           <div style="margin-top:14px; padding:12px 16px; background:var(--accent-pine-soft); border-radius:10px; font-size:13.5px; border-left:3px solid var(--accent-pine);">
             <strong style="color:var(--accent-pine);">Active Botanical Essence:</strong> ${blend.botanical}
@@ -548,7 +605,8 @@
     grid.innerHTML = filtered.map(prod => {
       const priceFormatted = formatPrice(prod.priceAUD);
       const isStagedClass = prod.isStaged ? 'has-staged-img' : '';
-      const waMsg = encodeURIComponent(`Hi Sotir, I would like to order ${prod.name} (${priceFormatted}). Please confirm delivery / Melbourne pickup.`);
+      const refSuffix = STATE.partnerCode ? ` [Ref: ${STATE.partnerCode}]` : '';
+      const waMsg = encodeURIComponent(`Hi Sotir, I would like to order ${prod.name} (${priceFormatted})${refSuffix}. Please confirm delivery / Melbourne pickup.`);
 
       return `
         <div class="product-card">
@@ -560,7 +618,7 @@
             <h3 class="product-name"><a href="product-page/${prod.slug || ''}" style="color:inherit;text-decoration:none;">${prod.name}</a></h3>
             <div class="product-price-row">
               <span class="price-main">${priceFormatted}</span>
-              <span class="price-unit">/ 300g Net</span>
+              <span class="price-unit">${prod.unitLabel || '/ 300g Net'}</span>
             </div>
             <p class="product-desc">${prod.description}</p>
             <div class="product-actions">
@@ -584,6 +642,225 @@
         addToCart(id);
       });
     });
+  }
+
+  // ==================== PARTNER QR & PROMO ATTRIBUTION ====================
+  function sanitizeCode(raw) {
+    return (raw || '').toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 24);
+  }
+
+  function getActiveCodeMeta() {
+    const code = sanitizeCode(STATE.promoCode || STATE.partnerCode);
+    if (!code) return null;
+    if (PROMO_RULES[code]) {
+      return { code, ...PROMO_RULES[code] };
+    }
+    // Any valid custom QR partner ref (e.g. GYMNAME15) gets tracked cleanly and unlocks 10% partner privilege
+    if (/^[A-Z0-9_-]{3,24}$/.test(code)) {
+      return {
+        code,
+        label: `Partner Ref ${code} (10% Privilege)`,
+        discountPct: 10,
+        isPartner: true
+      };
+    }
+    return null;
+  }
+
+  function getCartTotals() {
+    const totalQty = STATE.cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+    const rawSubtotalAUD = STATE.cart.reduce((sum, it) => sum + ((it.priceAUD || 49) * (it.qty || 1)), 0);
+    const codeMeta = getActiveCodeMeta();
+    const discountPct = codeMeta ? codeMeta.discountPct : 0;
+    const discountAUD = Math.round((rawSubtotalAUD * (discountPct / 100)) * 100) / 100;
+    const finalSubtotalAUD = Math.max(0, Math.round((rawSubtotalAUD - discountAUD) * 100) / 100);
+    const shippingAUD = (finalSubtotalAUD === 0 || finalSubtotalAUD >= 80) ? 0 : 15;
+    return {
+      totalQty,
+      rawSubtotalAUD,
+      discountAUD,
+      discountPct,
+      finalSubtotalAUD,
+      shippingAUD,
+      grandTotalAUD: Math.round((finalSubtotalAUD + shippingAUD) * 100) / 100,
+      codeMeta
+    };
+  }
+
+  async function postBackendEvent(path, payload) {
+    const base = (MERCHANT_CONFIG.apiBaseUrl || '').replace(/\/+$/, '');
+    if (!base) return null;
+    try {
+      const res = await fetch(`${base}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) return await res.json();
+    } catch (err) {
+      console.warn(`[Anchialo Sync] ${path} offline fallback:`, err);
+    }
+    return null;
+  }
+
+  function initPartnerAttribution() {
+    const params = new URLSearchParams(window.location.search);
+    const refParam = sanitizeCode(params.get('ref') || params.get('partner') || params.get('code'));
+    if (refParam) {
+      STATE.partnerCode = refParam;
+      STATE.promoCode = refParam;
+      localStorage.setItem('anchialov2_partner_code', refParam);
+      localStorage.setItem('anchialov2_promo_code', refParam);
+    }
+
+    const input = document.getElementById('bagPartnerCodeInput');
+    const applyBtn = document.getElementById('btnApplyPartnerCode');
+    const statusEl = document.getElementById('bagPartnerStatus');
+
+    const syncUI = () => {
+      const meta = getActiveCodeMeta();
+      if (input && meta && !input.value) input.value = meta.code;
+      if (statusEl) {
+        if (meta) {
+          statusEl.textContent = `✓ Active: ${meta.label}`;
+          statusEl.style.display = 'block';
+        } else {
+          statusEl.style.display = 'none';
+        }
+      }
+    };
+
+    if (applyBtn && input) {
+      applyBtn.addEventListener('click', () => {
+        const cleaned = sanitizeCode(input.value);
+        STATE.promoCode = cleaned;
+        STATE.partnerCode = cleaned;
+        localStorage.setItem('anchialov2_promo_code', cleaned);
+        localStorage.setItem('anchialov2_partner_code', cleaned);
+        syncUI();
+        updateCartDrawer();
+      });
+    }
+    syncUI();
+  }
+
+  // ==================== 30-SECOND RECOVERY RITUAL QUIZ ====================
+  function initRitualQuiz() {
+    const quizSection = document.getElementById('ritualQuizContainer');
+    if (!quizSection) return;
+
+    const RECOMMENDATIONS = {
+      sport: {
+        primaryId: 'gel-arnica',
+        packId: 'combo-starter',
+        title: 'Arnica Montana Dual Magnesium Gel + Starter 2-Pack',
+        summary: 'Fast-absorbing Lake Pomorie brine (253.14 g/L MgCl2) with Arnica Montana extract to refresh tired muscles after sparring, gym, or long runs — paired with Lavender for night recovery.',
+        singleName: 'Dual Magnesium Gel | Arnica Blend (300g)',
+        packName: 'Starter Combo | Arnica + Lavender 2-Pack (600g)'
+      },
+      sleep: {
+        primaryId: 'gel-lavender',
+        packId: 'combo-starter',
+        title: 'Bulgarian Lavender Dual Magnesium Gel (Evening Ritual)',
+        summary: 'Gentle Lake Pomorie dual magnesium salts infused with Bulgarian Lavandula Angustifolia to support your calming evening wind-down ritual and overnight skin hydration.',
+        singleName: 'Dual Magnesium Gel | Lavender Blend (300g)',
+        packName: 'Starter Combo | Day & Night 2-Pack (600g)'
+      },
+      warmup: {
+        primaryId: 'gel-rosemary',
+        packId: 'combo-starter',
+        title: 'Garden Rosemary Dual Magnesium Gel (Invigorating Massage)',
+        summary: 'Crisp rosemary extract paired with pure Black Sea lye for an energizing morning or pre-session massage ritual across shoulders, calves, and forearms.',
+        singleName: 'Dual Magnesium Gel | Rosemary Blend (300g)',
+        packName: 'Starter Combo | Rosemary + Arnica 2-Pack (600g)'
+      },
+      sauna: {
+        primaryId: 'gel-juniper',
+        packId: 'combo-gel-oil',
+        title: 'Alpine Juniper Gel + Pure Topical Brine Oil Ritual',
+        summary: 'Crisp juniper refreshment after contrast therapy or warm showers, plus 100% pure liquid Black Sea brine for full-body massage glide or evening mineral foot baths.',
+        singleName: 'Dual Magnesium Gel | Juniper Blend (300g)',
+        packName: 'Special Offer | Gel + Pure Oil Combo'
+      }
+    };
+
+    const goalBtns = quizSection.querySelectorAll('.quiz-goal-btn');
+    const resultBox = document.getElementById('quizResultCard');
+    const resultTitle = document.getElementById('quizRecTitle');
+    const resultDesc = document.getElementById('quizRecDesc');
+    const addSingleBtn = document.getElementById('btnQuizAddSingle');
+    const addPackBtn = document.getElementById('btnQuizAddPack');
+    const emailInput = document.getElementById('quizEmailInput');
+    const claimCodeBtn = document.getElementById('btnQuizClaimCode');
+    const quizCodeBadge = document.getElementById('quizUnlockedCode');
+
+    const renderRec = (goalKey) => {
+      STATE.quizState.goal = goalKey;
+      const rec = RECOMMENDATIONS[goalKey] || RECOMMENDATIONS.sport;
+      if (resultBox) resultBox.style.display = 'block';
+      if (resultTitle) resultTitle.textContent = rec.title;
+      if (resultDesc) resultDesc.textContent = rec.summary;
+      if (addSingleBtn) {
+        addSingleBtn.textContent = `Add ${rec.singleName.split('|')[1]?.trim() || 'Gel'} — A$49`;
+        addSingleBtn.setAttribute('data-rec-id', rec.primaryId);
+      }
+      if (addPackBtn) {
+        addPackBtn.textContent = rec.packId === 'combo-starter'
+          ? 'Get 2-Pack (A$89 + Free Shipping)'
+          : 'Get Gel + Oil Deal (A$49)';
+        addPackBtn.setAttribute('data-rec-id', rec.packId);
+      }
+    };
+
+    goalBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        goalBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderRec(btn.getAttribute('data-goal'));
+      });
+    });
+
+    if (addSingleBtn) {
+      addSingleBtn.addEventListener('click', () => {
+        addToCart(addSingleBtn.getAttribute('data-rec-id') || 'gel-arnica');
+      });
+    }
+    if (addPackBtn) {
+      addPackBtn.addEventListener('click', () => {
+        addToCart(addPackBtn.getAttribute('data-rec-id') || 'combo-starter');
+      });
+    }
+
+    if (claimCodeBtn && emailInput) {
+      claimCodeBtn.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          emailInput.focus();
+          return;
+        }
+        STATE.customerEmail = email;
+        localStorage.setItem('anchialov2_customer_email', email);
+        if (!STATE.promoCode) {
+          STATE.promoCode = 'QUIZ10';
+          localStorage.setItem('anchialov2_promo_code', 'QUIZ10');
+        }
+        const activeCode = STATE.promoCode || 'QUIZ10';
+        if (quizCodeBadge) {
+          quizCodeBadge.textContent = `✓ Unlocked ${activeCode} (10% Off Applied to Bag)`;
+          quizCodeBadge.style.display = 'block';
+        }
+        await postBackendEvent('/api/quiz/submit', {
+          email,
+          goal: STATE.quizState.goal,
+          recommended_id: (RECOMMENDATIONS[STATE.quizState.goal] || RECOMMENDATIONS.sport).primaryId,
+          partner_code: STATE.partnerCode || null
+        });
+        initPartnerAttribution();
+        updateCartDrawer();
+      });
+    }
+
+    renderRec(STATE.quizState.goal || 'sport');
   }
 
   // ==================== BLOG JOURNAL ====================
@@ -659,13 +936,77 @@
   // ==================== SHOPPING BAG DRAWER ====================
   function initCartDrawer() {
     const backdrop = document.getElementById('bagBackdrop');
-    const drawer = document.getElementById('bagDrawer');
     const openBtn = document.getElementById('openBagBtn');
     const closeBtn = document.getElementById('closeBagBtn');
 
     if (openBtn) openBtn.addEventListener('click', () => openBagDrawer());
     if (closeBtn) closeBtn.addEventListener('click', () => closeBagDrawer());
     if (backdrop) backdrop.addEventListener('click', () => closeBagDrawer());
+
+    // Bag Email Capture (Abandoned Cart Recovery + 10% Guide)
+    const saveEmailInput = document.getElementById('bagSaveEmailInput');
+    const saveEmailBtn = document.getElementById('btnSaveBagEmail');
+    const saveEmailStatus = document.getElementById('bagSaveEmailStatus');
+    if (saveEmailInput && STATE.customerEmail) {
+      saveEmailInput.value = STATE.customerEmail;
+    }
+    if (saveEmailBtn && saveEmailInput) {
+      saveEmailBtn.addEventListener('click', async () => {
+        const email = saveEmailInput.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          saveEmailInput.focus();
+          return;
+        }
+        STATE.customerEmail = email;
+        localStorage.setItem('anchialov2_customer_email', email);
+        if (!STATE.promoCode) {
+          STATE.promoCode = 'COMEBACK10';
+          localStorage.setItem('anchialov2_promo_code', 'COMEBACK10');
+          initPartnerAttribution();
+        }
+        const totals = getCartTotals();
+        await postBackendEvent('/api/cart/capture', {
+          email,
+          cart: STATE.cart,
+          subtotal_aud: totals.finalSubtotalAUD,
+          partner_code: STATE.partnerCode || null,
+          promo_code: STATE.promoCode || null,
+          postcode: (STATE.selectedLocality && STATE.selectedLocality.postcode) || '3000'
+        });
+        if (saveEmailStatus) {
+          saveEmailStatus.textContent = `✓ Saved! Code ${STATE.promoCode || 'COMEBACK10'} (10% Off) applied.`;
+          saveEmailStatus.style.display = 'block';
+        }
+        updateCartDrawer();
+      });
+    }
+
+    // Dynamic Stripe Express Checkout interceptor (uses Akash session API when live)
+    const stripeBtn = document.getElementById('btnStripeCheckout');
+    if (stripeBtn) {
+      stripeBtn.addEventListener('click', async (e) => {
+        const base = (MERCHANT_CONFIG.apiBaseUrl || '').replace(/\/+$/, '');
+        if (!base || !STATE.cart.length) return; // Fall through seamlessly to href Payment Link
+        e.preventDefault();
+        const origHtml = stripeBtn.innerHTML;
+        stripeBtn.innerHTML = '<span>Opening Secure Stripe Checkout...</span>';
+        const sessionRes = await postBackendEvent('/api/checkout/session', {
+          items: STATE.cart,
+          partner_code: STATE.partnerCode || null,
+          promo_code: STATE.promoCode || null,
+          customer_email: STATE.customerEmail || null,
+          locality: STATE.selectedLocality || null,
+          success_url: 'https://anchialo.com/?payment=stripe_success&session_id={CHECKOUT_SESSION_ID}',
+          cancel_url: 'https://anchialo.com/#collection'
+        });
+        stripeBtn.innerHTML = origHtml;
+        if (sessionRes && sessionRes.checkout_url) {
+          window.location.href = sessionRes.checkout_url;
+        } else if (stripeBtn.href && stripeBtn.href !== '#') {
+          window.open(stripeBtn.href, '_blank', 'noopener');
+        }
+      });
+    }
 
     // WhatsApp Checkout
     const btnWa = document.getElementById('btnProceedWhatsApp');
@@ -677,15 +1018,21 @@
           return;
         }
 
+        const totals = getCartTotals();
         let summary = 'Hello Sotir, I would like to place an order from Anchialo Australia:\n\n';
-        let total = 0;
         STATE.cart.forEach((it, i) => {
           const itemTotal = it.priceAUD * it.qty;
-          total += itemTotal;
           summary += `${i + 1}. ${it.name} × ${it.qty} = A$ ${itemTotal.toFixed(2)} AUD\n`;
         });
-        summary += `\nTotal: A$ ${total.toFixed(2)} AUD\n`;
-        summary += `\nPlease let me know availability and delivery / Melbourne gym pickup details!`;
+        if (totals.discountAUD > 0 && totals.codeMeta) {
+          summary += `\nCode Applied (${totals.codeMeta.code}): -A$ ${totals.discountAUD.toFixed(2)} AUD`;
+        }
+        summary += `\nSubtotal: A$ ${totals.finalSubtotalAUD.toFixed(2)} AUD`;
+        summary += `\nShipping (${STATE.selectedLocality.location} ${STATE.selectedLocality.postcode}): ${totals.shippingAUD === 0 ? 'FREE Express' : 'A$ 15.00 AUD'}`;
+        if (STATE.partnerCode) {
+          summary += `\nPartner Ref: ${STATE.partnerCode}`;
+        }
+        summary += `\n\nPlease confirm availability and Melbourne pickup / Australia Post dispatch!`;
 
         btnWa.href = `https://wa.me/61423269586?text=${encodeURIComponent(summary)}`;
       });
@@ -699,14 +1046,16 @@
           alert('Your shopping bag is empty.');
           return;
         }
+        const totals = getCartTotals();
         let summary = 'ANCHIALO AUSTRALIA — ORDER SUMMARY:\n';
-        let total = 0;
         STATE.cart.forEach((it, i) => {
           const itemTotal = it.priceAUD * it.qty;
-          total += itemTotal;
           summary += `${i + 1}. ${it.name} × ${it.qty} = A$ ${itemTotal.toFixed(2)} AUD\n`;
         });
-        summary += `\nEstimated Total: A$ ${total.toFixed(2)} AUD\nContact: Sotir Kichukov (+61 423 269 586)`;
+        if (totals.discountAUD > 0 && totals.codeMeta) {
+          summary += `\nPrivilege (${totals.codeMeta.code}): -A$ ${totals.discountAUD.toFixed(2)} AUD`;
+        }
+        summary += `\nEstimated Total: A$ ${totals.finalSubtotalAUD.toFixed(2)} AUD\nContact: Sotir Kichukov (+61 423 269 586)`;
 
         navigator.clipboard.writeText(summary).then(() => {
           const orig = copyBtn.textContent;
@@ -736,7 +1085,6 @@
   function addToCart(productId) {
     let prod = STATE.products.find(p => p.id === productId);
     if (!prod) {
-      // Fallback for blend IDs
       const blendKey = productId.replace('gel-', '');
       const blend = BLENDS[blendKey];
       if (blend) {
@@ -744,6 +1092,8 @@
           id: productId,
           name: blend.fullName,
           priceAUD: 49.00,
+          packagingText: '300g PET 1 Jar',
+          weightKg: 0.35,
           image: blend.heroJar
         };
       }
@@ -758,6 +1108,8 @@
         id: prod.id,
         name: prod.name,
         priceAUD: prod.priceAUD,
+        packagingText: prod.packagingText || '300g PET 1 Jar',
+        weightKg: prod.weightKg || 0.35,
         image: prod.image,
         qty: 1
       });
@@ -767,9 +1119,53 @@
     openBagDrawer();
   }
 
+  function upgradeSingleToStarterPack() {
+    const starter = CATALOG_PRODUCTS.find(p => p.id === 'combo-starter');
+    if (!starter) return;
+    STATE.cart = [{
+      id: starter.id,
+      name: starter.name,
+      priceAUD: starter.priceAUD,
+      packagingText: starter.packagingText,
+      weightKg: starter.weightKg,
+      image: starter.image,
+      qty: 1
+    }];
+    saveCart();
+  }
+
   function saveCart() {
     localStorage.setItem('anchialov2_cart', JSON.stringify(STATE.cart));
     updateCartDrawer();
+  }
+
+  function resolveStaticStripeHref(totals) {
+    const totalUnits = totals.totalQty;
+    let baseLink = STRIPE_CONFIG.links['custom'];
+    if (STATE.cart.length === 1) {
+      const single = STATE.cart[0];
+      if (single.qty === 1 && STRIPE_CONFIG.links[single.id]) {
+        baseLink = STRIPE_CONFIG.links[single.id];
+      } else if (single.id.startsWith('gel-') && single.qty === 2) {
+        baseLink = STRIPE_CONFIG.links['combo-starter'];
+      } else if (single.id.startsWith('gel-') && single.qty === 3) {
+        baseLink = STRIPE_CONFIG.links['combo-best-value'];
+      } else if (STRIPE_CONFIG.links[single.id]) {
+        baseLink = `${STRIPE_CONFIG.links[single.id]}?quantity=${single.qty}`;
+      }
+    } else if (totalUnits === 2 && STATE.cart.every(i => i.id.startsWith('gel-'))) {
+      baseLink = STRIPE_CONFIG.links['combo-starter'];
+    } else if (totalUnits === 3 && STATE.cart.every(i => i.id.startsWith('gel-'))) {
+      baseLink = STRIPE_CONFIG.links['combo-best-value'];
+    } else {
+      baseLink = `${STRIPE_CONFIG.links['custom']}?quantity=${totalUnits}`;
+    }
+
+    if (STATE.partnerCode) {
+      const sep = baseLink.includes('?') ? '&' : '?';
+      return `${baseLink}${sep}client_reference_id=${encodeURIComponent(STATE.partnerCode)}`;
+    }
+    return baseLink;
   }
 
   function updateCartDrawer() {
@@ -780,26 +1176,60 @@
     const meterBar = document.getElementById('shippingMeterBar');
     const meterText = document.getElementById('shippingMeterText');
     const meterPct = document.getElementById('shippingMeterPercent');
+    const discountRow = document.getElementById('bagDiscountRow');
+    const discountVal = document.getElementById('bagDiscountAmount');
+    const upsellSlot = document.getElementById('bagUpsellSlot');
 
-    const totalQty = STATE.cart.reduce((sum, it) => sum + it.qty, 0);
-    const subtotalAUD = STATE.cart.reduce((sum, it) => sum + (it.priceAUD * it.qty), 0);
+    const totals = getCartTotals();
+    const totalQty = totals.totalQty;
 
     if (badgeEl) badgeEl.textContent = totalQty;
     if (countEl) countEl.textContent = `${totalQty} item${totalQty === 1 ? '' : 's'}`;
-    if (totalEl) totalEl.textContent = formatPrice(subtotalAUD);
+    if (totalEl) totalEl.textContent = formatPrice(totals.finalSubtotalAUD);
+
+    if (discountRow && discountVal) {
+      if (totals.discountAUD > 0 && totals.codeMeta) {
+        discountRow.style.display = 'flex';
+        discountVal.textContent = `-${formatPrice(totals.discountAUD)} (${totals.codeMeta.code})`;
+      } else {
+        discountRow.style.display = 'none';
+      }
+    }
 
     // Free shipping threshold ($80 AUD)
     const threshold = 80;
-    const progress = Math.min(100, (subtotalAUD / threshold) * 100);
+    const progress = Math.min(100, (totals.finalSubtotalAUD / threshold) * 100);
     if (meterBar) meterBar.style.width = `${progress}%`;
     if (meterPct) meterPct.textContent = `${Math.round(progress)}%`;
 
     if (meterText) {
-      if (subtotalAUD >= threshold) {
-        meterText.textContent = '🎉 Qualified for FREE Australia-wide delivery!';
+      if (totals.finalSubtotalAUD >= threshold) {
+        meterText.textContent = '🎉 Qualified for FREE Australia-wide Express delivery!';
       } else {
-        const remaining = threshold - subtotalAUD;
-        meterText.textContent = `Add A$ ${remaining.toFixed(2)} AUD for FREE delivery`;
+        const remaining = threshold - totals.finalSubtotalAUD;
+        meterText.textContent = `Add A$ ${remaining.toFixed(2)} AUD for FREE Express delivery`;
+      }
+    }
+
+    // 1-Click 2-Pack Upsell card inside bag when 1 single $49 jar/oil is selected
+    if (upsellSlot) {
+      const showUpsell = STATE.cart.length === 1 && STATE.cart[0].qty === 1 && STATE.cart[0].priceAUD === 49.00 && STATE.cart[0].id !== 'combo-gel-oil';
+      if (showUpsell) {
+        upsellSlot.style.display = 'block';
+        upsellSlot.innerHTML = `
+          <div class="bag-upsell-card">
+            <div class="upsell-copy">
+              <strong>Save A$9 + Unlock FREE Express Shipping</strong>
+              <span>Upgrade to the Day &amp; Night 2-Pack (600g total) for A$89 instead of A$98.</span>
+            </div>
+            <button type="button" class="btn-upsell-upgrade" id="btnUpsell2Pack">Upgrade 2-Pack</button>
+          </div>
+        `;
+        const upBtn = document.getElementById('btnUpsell2Pack');
+        if (upBtn) upBtn.addEventListener('click', upgradeSingleToStarterPack);
+      } else {
+        upsellSlot.style.display = 'none';
+        upsellSlot.innerHTML = '';
       }
     }
 
@@ -819,19 +1249,9 @@
       return;
     }
 
-    // Configure Stripe Express Link for current cart
     if (stripeBtn) {
       stripeBtn.style.display = 'flex';
-      const totalUnits = STATE.cart.reduce((sum, it) => sum + it.qty, 0);
-      if (STATE.cart.length === 1 && STRIPE_CONFIG.links[STATE.cart[0].id]) {
-        stripeBtn.href = `${STRIPE_CONFIG.links[STATE.cart[0].id]}?quantity=${STATE.cart[0].qty}`;
-      } else if (totalUnits === 3 && subtotalAUD === 125) {
-        stripeBtn.href = STRIPE_CONFIG.links['combo-trio'];
-      } else if (totalUnits === 6 && subtotalAUD === 245) {
-        stripeBtn.href = STRIPE_CONFIG.links['combo-complete'];
-      } else {
-        stripeBtn.href = `${STRIPE_CONFIG.links['custom']}?quantity=${totalUnits}`;
-      }
+      stripeBtn.href = resolveStaticStripeHref(totals);
     }
 
     listEl.innerHTML = STATE.cart.map((item, idx) => `
@@ -850,7 +1270,6 @@
       </div>
     `).join('');
 
-    // Attach actions
     listEl.querySelectorAll('.btn-qty').forEach(btn => {
       btn.addEventListener('click', () => {
         const idx = parseInt(btn.getAttribute('data-idx'), 10);
@@ -866,7 +1285,7 @@
         saveCart();
       });
     });
-    // Re-render PayPal Smart Buttons with current cart total
+
     renderPayPalButtons();
   }
 
@@ -895,13 +1314,12 @@
       return;
     }
 
-    const subtotalAUD = STATE.cart.reduce((sum, it) => sum + (it.priceAUD * it.qty), 0);
-    if (STATE.cart.length === 0 || subtotalAUD <= 0) {
+    const totals = getCartTotals();
+    if (STATE.cart.length === 0 || totals.finalSubtotalAUD <= 0) {
       container.innerHTML = '<div style="text-align:center; padding:10px 0; font-size:12px; color:var(--text-muted);">Select formulations above to activate PayPal &amp; Card Checkout</div>';
       return;
     }
 
-    // Debounce to prevent multiple SDK re-renders
     clearTimeout(paypalRenderTimer);
     paypalRenderTimer = setTimeout(() => {
       container.innerHTML = '';
@@ -915,21 +1333,29 @@
             height: 44
           },
           createOrder: function(data, actions) {
-            const currentTotal = STATE.cart.reduce((sum, it) => sum + (it.priceAUD * it.qty), 0);
+            const current = getCartTotals();
+            const breakdown = {
+              item_total: {
+                currency_code: 'AUD',
+                value: current.rawSubtotalAUD.toFixed(2)
+              }
+            };
+            if (current.discountAUD > 0) {
+              breakdown.discount = {
+                currency_code: 'AUD',
+                value: current.discountAUD.toFixed(2)
+              };
+            }
+            const refTag = STATE.partnerCode ? `|REF:${STATE.partnerCode}` : '';
             return actions.order.create({
               intent: 'CAPTURE',
               purchase_units: [{
                 description: 'Anchialo Certified Dual Magnesium Balneology Formulations',
-                custom_id: 'ANCHIALO_MELBOURNE_DISPATCH',
+                custom_id: `ANCHIALO_MELBOURNE_DISPATCH${refTag}`.slice(0, 127),
                 amount: {
                   currency_code: 'AUD',
-                  value: currentTotal.toFixed(2),
-                  breakdown: {
-                    item_total: {
-                      currency_code: 'AUD',
-                      value: currentTotal.toFixed(2)
-                    }
-                  }
+                  value: current.finalSubtotalAUD.toFixed(2),
+                  breakdown: breakdown
                 },
                 items: STATE.cart.map(it => ({
                   name: it.name,
@@ -997,14 +1423,26 @@
       waBtn.href = `https://wa.me/61423269586?text=${msg}`;
     }
 
-    // Record order metadata for ATO Tax Invoice generation
+    // Record order metadata for invoice generation & notify Akash ledger if configured
+    const purchasedItems = [...STATE.cart];
     STATE.lastOrderMeta = {
       type: 'PayPal',
       txId: txId,
       amount: `A$ ${paidVal} AUD`,
       payer: `${fullName} (${payerEmail})`,
-      items: [...STATE.cart]
+      items: purchasedItems
     };
+
+    postBackendEvent('/api/orders/paypal', {
+      tx_id: txId,
+      customer_name: fullName,
+      customer_email: payerEmail || STATE.customerEmail || '',
+      amount_aud: parseFloat(paidVal) || 49.0,
+      partner_code: STATE.partnerCode || null,
+      promo_code: STATE.promoCode || null,
+      locality: STATE.selectedLocality || null,
+      items: purchasedItems
+    });
 
     // Clear cart & close drawer
     STATE.cart = [];
@@ -1592,30 +2030,58 @@
       items = [{
         name: 'Dual Magnesium Gel | Arnica Blend (300g)',
         priceAUD: 49.00,
+        packagingText: '300g PET 1 Jar',
+        weightKg: 0.35,
         qty: 1
       }];
     }
 
-    // Calculate totals
-    const totalQty = items.reduce((sum, it) => sum + (it.qty || 1), 0);
-    const subtotal = items.reduce((sum, it) => sum + ((it.priceAUD || 49.00) * (it.qty || 1)), 0);
-    const parcelWeight = (totalQty * 0.35).toFixed(2);
+    // Calculate totals with discount & dynamic packaging weight
+    const rawSubtotal = items.reduce((sum, it) => sum + ((it.priceAUD || 49.00) * (it.qty || 1)), 0);
+    const codeMeta = getActiveCodeMeta();
+    const discountAUD = codeMeta ? Math.round((rawSubtotal * (codeMeta.discountPct / 100)) * 100) / 100 : 0;
+    const netSubtotal = Math.max(0, Math.round((rawSubtotal - discountAUD) * 100) / 100);
+    const parcelWeight = items.reduce((sum, it) => sum + ((it.weightKg || 0.35) * (it.qty || 1)), 0).toFixed(2);
     if (invWeightEl) invWeightEl.textContent = `${parcelWeight} kg Net`;
 
-    const shippingCost = subtotal >= 80 ? 0.00 : 15.00;
-    const grandTotal = subtotal + shippingCost;
-    const gstPortion = (grandTotal / 11).toFixed(2);
+    const shippingCost = netSubtotal >= 80 ? 0.00 : 15.00;
+    const grandTotal = netSubtotal + shippingCost;
+    const gstPortion = MERCHANT_CONFIG.gstRegistered ? (grandTotal / 11).toFixed(2) : '0.00';
+
+    const invBadgeEl = document.querySelector('.inv-title-badge');
+    const invGstLabelEl = document.getElementById('invGstComplianceLabel');
+    const invGstRowLabelEl = document.getElementById('invGstRowLabel');
+    const invNotesEl = document.getElementById('invTaxNotesBox');
+    if (invBadgeEl) {
+      invBadgeEl.textContent = (MERCHANT_CONFIG.gstRegistered && MERCHANT_CONFIG.abn) ? 'TAX INVOICE' : 'ORDER INVOICE';
+    }
+    if (invGstLabelEl) {
+      invGstLabelEl.textContent = (MERCHANT_CONFIG.gstRegistered && MERCHANT_CONFIG.abn)
+        ? `ABN ${MERCHANT_CONFIG.abn} · 10% GST Included`
+        : 'Domestic AU Order Receipt (No GST Charged)';
+    }
+    if (invGstRowLabelEl) {
+      invGstRowLabelEl.textContent = MERCHANT_CONFIG.gstRegistered
+        ? 'Includes 10% Australian GST:'
+        : 'Australian GST (Not Registered):';
+    }
+    if (invNotesEl) {
+      invNotesEl.innerHTML = (MERCHANT_CONFIG.gstRegistered && MERCHANT_CONFIG.abn)
+        ? `<strong>Balneological Assay &amp; Tax Notice:</strong><br>ABN ${MERCHANT_CONFIG.abn}. Formulations harvested from Lake Pomorie, Bulgaria (253.14 g/L MgCl₂). All prices in AUD inclusive of 10% Australian GST.`
+        : `<strong>Balneological Assay &amp; Dispatch Notice:</strong><br>Formulations derived from the fractional solar crystallization of Lake Pomorie mineral brine, Bulgaria (BDS 8840:1971 · 253.14 g/L MgCl₂). All figures in AUD; no GST charged.`;
+    }
 
     if (tableBody) {
       tableBody.innerHTML = items.map(it => {
         const itemTotal = ((it.priceAUD || 49.00) * (it.qty || 1)).toFixed(2);
+        const packLabel = it.packagingText || (String(it.id || '').includes('oil') ? '300ml Brine Bottle' : '300g Recyclable PET 1');
         return `
           <tr>
             <td>
               <strong>${it.name}</strong><br>
               <span style="font-size:11.5px; color:#52525b;">Pomorie Lake Hyper-Mineral Lye (253 g/L MgCl₂) · Batch Lot № 04 / Exp 2027</span>
             </td>
-            <td style="text-align:center; font-size:12px; color:#52525b;">300g Recyclable PET 1</td>
+            <td style="text-align:center; font-size:12px; color:#52525b;">${packLabel}</td>
             <td style="text-align:center; font-weight:700;">${it.qty || 1}</td>
             <td style="text-align:right;">A$ ${(it.priceAUD || 49.00).toFixed(2)}</td>
             <td style="text-align:right; font-weight:700;">A$ ${itemTotal}</td>
@@ -1624,10 +2090,14 @@
       }).join('');
     }
 
-    if (invSubtotalEl) invSubtotalEl.textContent = `A$ ${subtotal.toFixed(2)}`;
+    if (invSubtotalEl) {
+      invSubtotalEl.textContent = discountAUD > 0
+        ? `A$ ${netSubtotal.toFixed(2)} (saved A$ ${discountAUD.toFixed(2)})`
+        : `A$ ${netSubtotal.toFixed(2)}`;
+    }
     if (invShippingEl) {
-      invShippingEl.textContent = shippingCost === 0 
-        ? 'FREE ($80+ Express Promotion)' 
+      invShippingEl.textContent = shippingCost === 0
+        ? 'FREE ($80+ Express Promotion)'
         : `A$ ${shippingCost.toFixed(2)} (AusPost Parcel Post)`;
     }
     if (invGstEl) invGstEl.textContent = `A$ ${gstPortion}`;

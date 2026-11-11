@@ -1,0 +1,49 @@
+---
+version: "2.0"
+services:
+  anchialo-growth-engine:
+    image: ghcr.io/papica777-eng/anchialo-growth-server:latest
+    expose:
+      - port: 8000
+        as: 80
+        to:
+          - global: true
+    env:
+      - ANCHIALO_DB_PATH=/data/anchialo.db
+      - ALLOWED_ORIGINS=https://anchialo.com,https://www.anchialo.com
+      - DEFAULT_PARTNER_COMMISSION_RATE=0.18
+      - MAX_DAILY_B2B_EMAILS=25
+      - MAX_DAILY_PLACES_CALLS=80
+      - SENDER_PHYSICAL_ADDRESS=CPT MMA / Anchialo Australia, Melbourne VIC 3000, Australia
+    params:
+      storage:
+        data:
+          mount: /data
+          readOnly: false
+profiles:
+  compute:
+    anchialo-growth-engine:
+      resources:
+        cpu:
+          units: 1.0
+        memory:
+          size: 1Gi
+        storage:
+          - size: 512Mi
+          - name: data
+            size: 5Gi
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    dcloud:
+      pricing:
+        anchialo-growth-engine:
+          denom: uakt
+          amount: 10000
+deployment:
+  anchialo-growth-engine:
+    dcloud:
+      profile: anchialo-growth-engine
+      count: 1
+
