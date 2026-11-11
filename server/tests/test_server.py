@@ -306,3 +306,89 @@ def test_telemetry_dashboard_and_bot_calibration(test_client):
     assert cal["checks"]["b2b_pitch_tga_violations"] == 0
     assert cal["checks"]["lifecycle_tga_violations"] == 0
     assert cal["checks"]["unsubscribe_hmac_valid"] is True
+
+
+def test_100_virtual_clients_stress_load(test_client):
+    """Simulate 100 concurrent-style Melbourne virtual clients across quiz, cart recovery, and checkout bots."""
+    client, db_file = test_client
+    suburbs = [
+        ("ST KILDA", "3182"),
+        ("RICHMOND", "3121"),
+        ("SOUTH YARRA", "3141"),
+        ("OAKLEIGH", "3166"),
+        ("CARLTON", "3053"),
+        ("BRUNSWICK", "3056"),
+        ("DOCKLANDS", "3008"),
+        ("FITZROY", "3065"),
+        ("BRIGHTON", "3186"),
+        ("GEELONG", "3220"),
+    ]
+    partners = ["CPT15", "RENEGADE15", "ABSOLUTE15", "OAKLEIGH15", "MYO15", "PILATES15", "FLOAT15"]
+    skus = [
+        ("gel-arnica", 49.0),
+        ("gel-lavender", 49.0),
+        ("combo-starter", 89.0),
+        ("combo-best-value", 129.0),
+        ("oil-pure", 49.0),
+    ]
+
+    t_start = time.perf_counter()
+    for i in range(100):
+        suburb, postcode = suburbs[i % len(suburbs)]
+        partner = partners[i % len(partners)]
+        sku, price = skus[i % len(skus)]
+        email = f"melbourne.client.{i}@example.com"
+
+        r_quiz = client.post(
+            "/api/quiz/submit",
+            json={"email": email, "goal": "sport", "recommended_id": sku, "partner_code": partner},
+        )
+        assert r_quiz.status_code == 200
+
+        r_cart = client.post(
+            "/api/cart/capture",
+            json={
+                "email": email,
+                "cart": [{"id": sku, "qty": 1}],
+                "subtotal_aud": price,
+                "partner_code": partner,
+                "postcode": postcode,
+            },
+        )
+        assert r_cart.status_code == 200
+
+        r_order = client.post(
+            "/api/orders/paypal",
+            json={
+                "tx_id": f"STRESS_TX_{i:04d}",
+                "customer_name": f"Virtual Client {i}",
+                "customer_email": email,
+                "amount_aud": price,
+                "partner_code": partner,
+                "promo_code": partner,
+                "locality": {"location": suburb, "state": "VIC", "postcode": postcode},
+                "items": [{"id": sku, "name": sku, "qty": 1}],
+            },
+        )
+        assert r_order.status_code == 200
+        assert r_order.json()["duplicate"] is False
+
+    # Process lifecycle welcome + post-order emails cleanly in memory via mocked SMTP
+    with patch("notifications.send_resend_email", return_value=(True, "sent_mock")):
+        r_lfc = client.post("/api/lifecycle/run?limit=200")
+        assert r_lfc.status_code == 200
+
+    elapsed_ms = int((time.perf_counter() - t_start) * 1000)
+
+    tel = client.get("/api/telemetry/overview").json()
+    stats = tel["stats"]
+    assert stats["quiz_submissions"] == 100
+    assert stats["orders_count"] == 100
+    assert stats["commissions_count"] == 100
+    assert stats["revenue_aud"] > 6000.0
+    assert stats["commissions_aud"] > 1000.0
+    assert elapsed_ms < 15000, f"100-client stress test took too long: {elapsed_ms}ms"
+    print(
+        f"\n[STRESS TEST 100 CLIENTS] Time={elapsed_ms}ms | Orders={stats['orders_count']} | "
+        f"Revenue=A${stats['revenue_aud']:.2f} | Commissions=A${stats['commissions_aud']:.2f}"
+    )
