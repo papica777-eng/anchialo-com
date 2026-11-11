@@ -85,7 +85,7 @@
   <script>
     const input = document.getElementById('apiUrlInput');
     const urlParam = new URLSearchParams(window.location.search).get('api');
-    const saved = urlParam || localStorage.getItem('anchialov2_api_url') || 'http://127.0.0.1:8000';
+    const saved = urlParam || localStorage.getItem('anchialov2_api_url') || 'https://jbic42j0o1fa3a70frsbkbk1lg.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
     input.value = saved;
     if (urlParam) localStorage.setItem('anchialov2_api_url', urlParam.replace(/\/$/, ''));
 
@@ -157,3 +157,4 @@
   </script>
 </body>
 </html>
+
