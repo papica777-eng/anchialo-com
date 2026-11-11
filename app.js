@@ -2118,12 +2118,21 @@
     let currentIndex = 0;
     let autoPlayTimer = null;
 
+    function getVisibleCount() {
+      if (window.innerWidth <= 720) return 1;
+      if (window.innerWidth <= 1100) return 2;
+      return 3;
+    }
+
     function updateCarousel(index) {
-      if (index < 0) index = slides.length - 1;
-      if (index >= slides.length) index = 0;
+      const visible = getVisibleCount();
+      const maxIndex = Math.max(0, slides.length - visible);
+      if (index < 0) index = maxIndex;
+      if (index > maxIndex) index = 0;
       currentIndex = index;
 
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      const stepPct = 100 / visible;
+      track.style.transform = `translateX(-${currentIndex * stepPct}%)`;
 
       dots.forEach((dot, idx) => {
         if (idx === currentIndex) {
@@ -2135,6 +2144,8 @@
         }
       });
     }
+
+    window.addEventListener('resize', () => updateCarousel(currentIndex));
 
     function startAutoPlay() {
       stopAutoPlay();
