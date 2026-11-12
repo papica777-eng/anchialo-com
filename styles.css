@@ -3444,7 +3444,7 @@ button {
 
 .purity-visual-showcase {
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
+  grid-template-columns: 1fr;
   gap: 28px;
   align-items: stretch;
   margin: 34px 0 28px;
