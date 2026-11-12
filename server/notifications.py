@@ -52,21 +52,25 @@ def is_unsubscribed(conn: sqlite3.Connection, email: str) -> bool:
 
 
 async def send_telegram_alert(message: str) -> bool:
-    """Push instant order or warm B2B lead alert to Sotir via zero-cost Telegram Bot API."""
+    """Push instant order or warm B2B lead alert to configured Telegram recipients."""
     token = (os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
-    chat_id = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip()
-    if not token or not chat_id:
+    raw_chat_ids = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip()
+    chat_ids = [cid.strip() for cid in raw_chat_ids.split(",") if cid.strip()]
+    if not token or not chat_ids:
         logger.info("Telegram alert skipped (bot credentials unset): %s", message.replace("\n", " | "))
         return False
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
+    delivered = 0
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.post(url, json={"chat_id": chat_id, "text": message})
-            if resp.status_code >= 400:
-                logger.warning("Telegram API error %s: %s", resp.status_code, resp.text)
-                return False
-            return True
+            for chat_id in chat_ids:
+                resp = await client.post(url, json={"chat_id": chat_id, "text": message})
+                if resp.status_code >= 400:
+                    logger.warning("Telegram API error for %s (%s): %s", chat_id, resp.status_code, resp.text)
+                else:
+                    delivered += 1
+            return delivered > 0
     except httpx.HTTPError as exc:
         logger.warning("Telegram request failed: %s", exc)
         return False
