@@ -30,7 +30,16 @@ MELBOURNE_VERTICAL_QUERIES: list[tuple[str, str, int]] = [
 ]
 
 EMAIL_REGEX = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
-IGNORED_EMAIL_DOMAINS = ("sentry.io", "wixpress.com", "example.com", "domain.com", "schema.org", "w3.org")
+IGNORED_EMAIL_DOMAINS = (
+    "sentry.io",
+    "wixpress.com",
+    "example.com",
+    "domain.com",
+    "your.com",
+    "mysite.com",
+    "schema.org",
+    "w3.org",
+)
 
 
 def extract_suburb_from_address(address: str) -> str:
@@ -77,6 +86,8 @@ async def discover_public_contact_email(website_url: str) -> str:
                     for match in EMAIL_REGEX.findall(res.text):
                         lower = re.sub(r"^(%[0-9a-f]{2})+", "", match.lower()).strip()
                         if any(bad in lower for bad in IGNORED_EMAIL_DOMAINS):
+                            continue
+                        if lower.startswith(("webmaster@", "noreply@", "no-reply@", "anonymous_user_")):
                             continue
                         if lower.endswith((".png", ".jpg", ".jpeg", ".webp", ".svg")):
                             continue

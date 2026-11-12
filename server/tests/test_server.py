@@ -208,7 +208,8 @@ async def test_b2b_outreach_respects_unsubscribe_and_quota(tmp_path, monkeypatch
             r["recipient_email"]
             for r in conn.execute("SELECT recipient_email FROM b2b_outreach_log").fetchall()
         ]
-        assert sent_emails == ["coach@richmondbjj.com.au"]
+        # Opted-out clinics and legacy combat_gym leads must both be excluded
+        assert sent_emails == ["hello@oakleighpilates.com.au"]
 
 
 def test_places_quota_and_qr_poster_generation(tmp_path):

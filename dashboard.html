@@ -136,15 +136,16 @@
         const d = await res.json();
         const s = d.stats || {};
         const dm = d.demo || {};
+        const eb = d.ebay || {};
         demoAutoEnabled = !!dm.enabled;
         statusEl.textContent = 'CONNECTED · Uptime ' + Math.floor((d.uptime_seconds || 0) / 60) + ' min';
         statusEl.style.color = '#34d399';
 
         document.getElementById('kpiRow').innerHTML = `
           <div class="card"><div class="stat-lbl">Server Uptime</div><div class="stat-val">${Math.floor((d.uptime_seconds||0)/60)}m</div><div style="font-size:12px;color:#94a3b8;">Scheduler ticks: ${d.scheduler?.scheduler_ticks ?? 0}</div></div>
-          <div class="card"><div class="stat-lbl">Orders & Revenue</div><div class="stat-val">A$${Number(s.revenue_aud||0).toFixed(2)}</div><div style="font-size:12px;color:#94a3b8;">${s.orders_count||0} orders · A$${Number(s.commissions_aud||0).toFixed(2)} commissions</div></div>
-          <div class="card"><div class="stat-lbl">Virtual Cohort Comms</div><div class="stat-val">${(dm.delivered_lifecycle_total||0) + (dm.delivered_b2b_total||0)}</div><div style="font-size:12px;color:#94a3b8;">${dm.total_virtual_users||0} demo users · ${dm.tga_violations_total||0} TGA errors</div></div>
-          <div class="card"><div class="stat-lbl">Leads & Quiz</div><div class="stat-val">${s.b2b_leads_total||0} / ${s.quiz_submissions||0}</div><div style="font-size:12px;color:#94a3b8;">B2B leads · ${s.quiz_submissions||0} ritual quiz</div></div>
+          <div class="card"><div class="stat-lbl">Orders &amp; Revenue</div><div class="stat-val">A$${Number(s.revenue_aud||0).toFixed(2)}</div><div style="font-size:12px;color:#94a3b8;">${s.orders_count||0} orders · 25% share: A$${Number(s.architect_share_aud||0).toFixed(2)} · Partners: A$${Number(s.commissions_aud||0).toFixed(2)}</div></div>
+          <div class="card"><div class="stat-lbl">eBay AU Storefront</div><div class="stat-val">${Number(eb.active_listings_count||0)} Live</div><div style="font-size:12px;color:#94a3b8;">${Number(eb.orders_total||0)} orders · ${Number(eb.orders_to_ship||0)} to ship · A$${Number(eb.revenue_aud||0).toFixed(2)}</div></div>
+          <div class="card"><div class="stat-lbl">Leads &amp; Quiz</div><div class="stat-val">${s.b2b_leads_total||0} / ${s.quiz_submissions||0}</div><div style="font-size:12px;color:#94a3b8;">B2B leads · ${s.quiz_submissions||0} ritual quiz · ${dm.total_virtual_users||0} demo users</div></div>
         `;
         document.getElementById('agentsBox').innerHTML = (d.agents || []).map(a => {
           const isOk = a.status.includes('LIVE') || a.status.includes('ACTIVE') || a.status.includes('READY');

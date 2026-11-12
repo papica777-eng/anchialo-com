@@ -409,9 +409,9 @@ TGA_FORBIDDEN_PATTERN = re.compile(
 
 
 async def _background_lifecycle_loop() -> None:
-    """Autonomous 24/7 scheduler processing lifecycle emails and Melbourne business-hours B2B runs every 15 minutes."""
+    """Autonomous 24/7 scheduler processing lifecycle emails and Melbourne business-hours B2B runs every 3 minutes."""
     while True:
-        await asyncio.sleep(900)
+        await asyncio.sleep(180)
         try:
             res = await run_due_lifecycle_jobs(limit=25)
             await run_melbourne_b2b_schedule_tick()
@@ -889,12 +889,17 @@ async def telemetry_overview() -> dict[str, Any]:
     max_b2b = int(os.environ.get("MAX_DAILY_B2B_EMAILS") or "25")
     max_places = int(os.environ.get("MAX_DAILY_PLACES_CALLS") or "80")
 
+    HEARTBEAT_STATE["melbourne_business_hours"] = is_melbourne_business_hours()
+    HEARTBEAT_STATE["b2b_autopilot_enabled"] = (
+        (os.environ.get("B2B_AUTOPILOT_ENABLED") or "false").strip().lower() in ("1", "true", "yes")
+    )
+
     integrations = {
         "telegram_bot": _is_real_secret("TELEGRAM_BOT_TOKEN") and _is_real_secret("TELEGRAM_CHAT_ID"),
         "smtp_gmail": _is_real_secret("SMTP_USER") and _is_real_secret("SMTP_PASS"),
         "resend_email": _is_real_secret("RESEND_API_KEY"),
         "stripe_dynamic": _is_real_secret("STRIPE_SECRET_KEY"),
-        "google_places": _is_real_secret("GOOGLE_PLACES_API_KEY"),
+        "google_places": _is_real_secret("GOOGLE_PLACES_API_KEY") or _is_real_secret("SERPAPI_API_KEY"),
         "ebay_au": is_ebay_configured(),
     }
 

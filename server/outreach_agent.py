@@ -148,7 +148,7 @@ async def run_daily_b2b_outreach(db_path: str | None = None) -> dict[str, int]:
             FROM b2b_leads l
             LEFT JOIN b2b_outreach_log o ON o.lead_id = l.id
             LEFT JOIN unsubscribes u ON LOWER(TRIM(l.email)) = u.email
-            WHERE l.email != '' AND l.status IN ('new', 'contacted') AND u.email IS NULL
+            WHERE l.email != '' AND l.category != 'combat_gym' AND l.status IN ('new', 'contacted') AND u.email IS NULL
             GROUP BY l.id
             HAVING (last_step = 0)
                 OR (last_step = 1 AND last_sent_at <= ?)
