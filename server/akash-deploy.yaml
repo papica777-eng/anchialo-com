@@ -2,7 +2,7 @@
 version: "2.0"
 services:
   anchialo-growth-engine:
-    image: ghcr.io/papica777-eng/anchialo-growth-server:latest
+    image: papica777/anchialo-growth-server:latest
     expose:
       - port: 8000
         as: 80
