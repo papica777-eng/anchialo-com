@@ -82,7 +82,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: url('assets/images/pomorie-salterns-sunset.jpg') center/cover no-repeat;
+  background: url('assets/images/web/pomorie-salterns-sunset.webp') center/cover no-repeat;
   opacity: 0.14;
   z-index: -1;
   pointer-events: none;
@@ -314,7 +314,7 @@ button {
   align-items: center;
   background: 
     linear-gradient(180deg, rgba(16, 22, 28, 0.14) 0%, rgba(16, 22, 28, 0.08) 60%, rgba(250, 248, 245, 0.45) 100%),
-    url('assets/images/pomorie-salterns-sunset.jpg') center 48%/cover no-repeat;
+    url('assets/images/web/pomorie-salterns-sunset.webp') center 48%/cover no-repeat;
   overflow: hidden;
 }
 
@@ -1444,7 +1444,7 @@ button {
 
 .heritage-image-frame {
   position: relative;
-  background: url('assets/images/pomorie-salterns-lake.jpg') center/cover no-repeat, #283747;
+  background: url('assets/images/web/pomorie-salterns-lake.webp') center/cover no-repeat, #283747;
   border-radius: 28px;
   min-height: 480px;
   display: flex;
@@ -1458,7 +1458,7 @@ button {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(10, 15, 22, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(10, 15, 22, 0.72) 100%);
 }
 
 .heritage-quote-box {

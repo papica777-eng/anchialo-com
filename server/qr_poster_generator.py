@@ -447,33 +447,37 @@ def generate_brand_usp_brochures(
 
 
 def optimize_web_product_images(max_dim: int = 900, quality: int = 82) -> list[dict[str, object]]:
-    """Generate lightweight WebP derivatives in assets/images/products/web/ for fast LCP/PageSpeed."""
+    """Generate lightweight WebP derivatives in assets/images/products/web/ and assets/images/web/."""
     from PIL import Image
 
-    src_dir = _asset_path("assets", "images", "products")
-    web_dir = os.path.join(src_dir, "web")
-    os.makedirs(web_dir, exist_ok=True)
     results: list[dict[str, object]] = []
-    for name in sorted(os.listdir(src_dir)):
-        if not name.lower().endswith((".png", ".jpg", ".jpeg")):
-            continue
-        src_path = os.path.join(src_dir, name)
-        stem = os.path.splitext(name)[0]
-        out_path = os.path.join(web_dir, f"{stem}.webp")
-        with Image.open(src_path) as im:
-            im.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
-            mode = "RGBA" if im.mode in ("RGBA", "LA", "P") else "RGB"
-            converted = im.convert(mode)
-            converted.save(out_path, "WEBP", quality=quality, method=6)
-            w, h = converted.size
-        results.append(
-            {
-                "file": f"{stem}.webp",
-                "width": w,
-                "height": h,
-                "kb": round(os.path.getsize(out_path) / 1024, 1),
-            }
-        )
+    targets = [
+        (_asset_path("assets", "images", "products"), max_dim),
+        (_asset_path("assets", "images"), 1440),
+    ]
+    for src_dir, dim in targets:
+        web_dir = os.path.join(src_dir, "web")
+        os.makedirs(web_dir, exist_ok=True)
+        for name in sorted(os.listdir(src_dir)):
+            if not name.lower().endswith((".png", ".jpg", ".jpeg")):
+                continue
+            src_path = os.path.join(src_dir, name)
+            stem = os.path.splitext(name)[0]
+            out_path = os.path.join(web_dir, f"{stem}.webp")
+            with Image.open(src_path) as im:
+                im.thumbnail((dim, dim), Image.Resampling.LANCZOS)
+                mode = "RGBA" if im.mode in ("RGBA", "LA", "P") else "RGB"
+                converted = im.convert(mode)
+                converted.save(out_path, "WEBP", quality=quality, method=6)
+                w, h = converted.size
+            results.append(
+                {
+                    "file": f"{os.path.relpath(out_path, _asset_path())}",
+                    "width": w,
+                    "height": h,
+                    "kb": round(os.path.getsize(out_path) / 1024, 1),
+                }
+            )
     return results
 
 
