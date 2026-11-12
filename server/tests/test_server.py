@@ -506,3 +506,37 @@ def test_demo_sandbox_variable_cohorts_and_reset(test_client):
     assert tel_after["stats"]["orders_count"] == 0
     assert tel_after["stats"]["partners_count"] >= 7
     client.post("/api/demo/toggle", json={"enabled": False})
+
+
+@pytest.mark.asyncio
+async def test_melbourne_business_hours_b2b_schedule(tmp_path, monkeypatch):
+    """Verify Melbourne Mon-Fri 09:00-17:00 schedule blocks nights/weekends and runs strictly once per business day."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    db_file = str(tmp_path / "schedule.db")
+    init_db(db_file)
+    monkeypatch.setenv("ANCHIALO_DB_PATH", db_file)
+    monkeypatch.setenv("B2B_AUTOPILOT_ENABLED", "true")
+    monkeypatch.delenv("GOOGLE_PLACES_API_KEY", raising=False)
+    monkeypatch.delenv("SERPAPI_API_KEY", raising=False)
+
+    melb = ZoneInfo("Australia/Melbourne")
+    # Night (22:00 Monday) and Weekend (11:00 Saturday) must NOT run
+    night_dt = datetime(2026, 11, 16, 22, 0, tzinfo=melb)
+    sat_dt = datetime(2026, 11, 14, 11, 0, tzinfo=melb)
+    assert server_app.is_melbourne_business_hours(night_dt) is False
+    assert server_app.is_melbourne_business_hours(sat_dt) is False
+    assert (await server_app.run_melbourne_b2b_schedule_tick(now_dt=night_dt, db_path=db_file))["reason"] == "outside_melbourne_hours"
+    assert (await server_app.run_melbourne_b2b_schedule_tick(now_dt=sat_dt, db_path=db_file))["reason"] == "outside_melbourne_hours"
+
+    # Monday 10:30 Melbourne time runs once, then skips duplicate ticks on the same day
+    mon_dt = datetime(2026, 11, 16, 10, 30, tzinfo=melb)
+    assert server_app.is_melbourne_business_hours(mon_dt) is True
+    r1 = await server_app.run_melbourne_b2b_schedule_tick(now_dt=mon_dt, db_path=db_file)
+    assert r1["ran"] is True
+    assert r1["date"] == "2026-11-16"
+
+    r2 = await server_app.run_melbourne_b2b_schedule_tick(now_dt=mon_dt, db_path=db_file)
+    assert r2["ran"] is False
+    assert r2["reason"] == "already_ran_today"

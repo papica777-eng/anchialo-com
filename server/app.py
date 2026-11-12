@@ -2,7 +2,7 @@
 
 import asyncio
 from contextlib import asynccontextmanager, suppress
-from datetime import date
+from datetime import date, datetime
 import json
 import logging
 import os
@@ -10,6 +10,7 @@ import re
 import sqlite3
 import time
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,8 +28,8 @@ from notifications import (
     send_telegram_alert,
     verify_unsubscribe_token,
 )
-from outreach_agent import build_b2b_pitch
-from places_crawler import MELBOURNE_VERTICAL_QUERIES
+from outreach_agent import build_b2b_pitch, run_daily_b2b_outreach
+from places_crawler import MELBOURNE_VERTICAL_QUERIES, crawl_melbourne_businesses
 
 logger = logging.getLogger("anchialo.server")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -327,7 +328,71 @@ HEARTBEAT_STATE: dict[str, Any] = {
     "last_lifecycle_processed": 0,
     "last_calibration_ts": 0,
     "last_calibration_status": "not_run",
+    "b2b_autopilot_enabled": False,
+    "melbourne_business_hours": False,
+    "last_b2b_run_date": "",
 }
+
+MELBOURNE_TZ = ZoneInfo("Australia/Melbourne")
+
+
+def is_melbourne_business_hours(now_dt: datetime | None = None) -> bool:
+    """Return True strictly during Melbourne Mon-Fri 09:00-17:00 business hours."""
+    melb_now = now_dt.astimezone(MELBOURNE_TZ) if now_dt else datetime.now(MELBOURNE_TZ)
+    return melb_now.weekday() < 5 and 9 <= melb_now.hour < 17
+
+
+async def run_melbourne_b2b_schedule_tick(
+    now_dt: datetime | None = None,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    """Run daily B2B discovery & outreach once per Melbourne business day (Mon-Fri 09:00-17:00)."""
+    melb_now = now_dt.astimezone(MELBOURNE_TZ) if now_dt else datetime.now(MELBOURNE_TZ)
+    in_hours = is_melbourne_business_hours(melb_now)
+    enabled = (os.environ.get("B2B_AUTOPILOT_ENABLED") or "false").strip().lower() in ("1", "true", "yes")
+    HEARTBEAT_STATE["b2b_autopilot_enabled"] = enabled
+    HEARTBEAT_STATE["melbourne_business_hours"] = in_hours
+
+    if not enabled or not in_hours:
+        return {"ran": False, "reason": "disabled" if not enabled else "outside_melbourne_hours"}
+
+    melb_date = melb_now.date().isoformat()
+    with get_conn(db_path) as conn:
+        already = conn.execute(
+            "SELECT count FROM api_usage_counters WHERE usage_date = ? AND metric = 'b2b_melbourne_run'",
+            (melb_date,),
+        ).fetchone()
+        if already and int(already["count"]) > 0:
+            HEARTBEAT_STATE["last_b2b_run_date"] = melb_date
+            return {"ran": False, "reason": "already_ran_today", "date": melb_date}
+        conn.execute(
+            """
+            INSERT INTO api_usage_counters (usage_date, metric, count) VALUES (?, 'b2b_melbourne_run', 1)
+            ON CONFLICT(usage_date, metric) DO UPDATE SET count = count + 1
+            """,
+            (melb_date,),
+        )
+
+    crawl_res = {"inserted": 0, "emails_enriched": 0}
+    if (os.environ.get("GOOGLE_PLACES_API_KEY") or "").strip() or (os.environ.get("SERPAPI_API_KEY") or "").strip():
+        crawl_res = await crawl_melbourne_businesses(enrich_emails=True)
+
+    outreach_res = await run_daily_b2b_outreach(db_path=db_path)
+    HEARTBEAT_STATE["last_b2b_run_date"] = melb_date
+
+    if crawl_res.get("inserted", 0) > 0 or outreach_res.get("sent", 0) > 0:
+        await send_telegram_alert(
+            f"MELBOURNE B2B DAILY RUN ({melb_now.strftime('%a %H:%M AEDT/AEST')}):\n"
+            f"• New Leads: +{crawl_res.get('inserted', 0)} (emails: {crawl_res.get('emails_enriched', 0)})\n"
+            f"• Outreach Sent: {outreach_res.get('sent', 0)} | Skipped: {outreach_res.get('skipped', 0)}"
+        )
+
+    return {
+        "ran": True,
+        "date": melb_date,
+        "crawl": crawl_res,
+        "outreach": outreach_res,
+    }
 
 TGA_FORBIDDEN_PATTERN = re.compile(
     r"\b(arthritis|cure|cures|cured|heal|heals|healing|treat|treats|treatment|disease|illness|fractures|neuritis|neuralgia|inflammation|sprains)\b",
@@ -336,11 +401,12 @@ TGA_FORBIDDEN_PATTERN = re.compile(
 
 
 async def _background_lifecycle_loop() -> None:
-    """Autonomous 24/7 scheduler processing due lifecycle emails every 15 minutes."""
+    """Autonomous 24/7 scheduler processing lifecycle emails and Melbourne business-hours B2B runs every 15 minutes."""
     while True:
         await asyncio.sleep(900)
         try:
             res = await run_due_lifecycle_jobs(limit=25)
+            await run_melbourne_b2b_schedule_tick()
             HEARTBEAT_STATE["scheduler_ticks"] += 1
             HEARTBEAT_STATE["last_tick_ts"] = int(time.time())
             HEARTBEAT_STATE["last_lifecycle_processed"] = int(res.get("processed", 0))
