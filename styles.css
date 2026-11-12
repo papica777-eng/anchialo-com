@@ -507,7 +507,11 @@ button {
 }
 
 .hero-jar-img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
   max-height: 290px;
+  object-fit: contain;
   margin: 0 auto 28px;
   filter: drop-shadow(0 20px 30px rgba(35, 30, 20, 0.18));
   transition: transform var(--tr-smooth);
@@ -3399,6 +3403,11 @@ button {
 /* ==================== LUXURY BLENDS SHOWCASE & CERTIFICATE THUMBNAILS ==================== */
 .blends-showcase-banner {
   position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
   border-radius: 22px;
   overflow: hidden;
   margin: 0 auto 44px;
@@ -3408,10 +3417,21 @@ button {
 
 .blends-showcase-banner img {
   width: 100%;
-  max-height: 440px;
+  height: 390px;
   object-fit: cover;
-  object-position: center 55%;
+  object-position: center;
+  border-radius: 14px;
   display: block;
+}
+
+@media (max-width: 720px) {
+  .blends-showcase-banner {
+    grid-template-columns: 1fr;
+  }
+  .blends-showcase-banner img {
+    height: auto;
+    max-height: 420px;
+  }
 }
 
 .blends-showcase-caption {
