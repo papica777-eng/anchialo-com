@@ -12,7 +12,7 @@
     distributorName: 'Sotir Kichukov · CPT MMA Melbourne',
     abn: '', // Populate verified Australian Business Number when active
     gstRegistered: false, // Set true only when ABN is registered for Australian GST
-    apiBaseUrl: (typeof window !== 'undefined' && (window.ANCHIALO_API_URL || localStorage.getItem('anchialov2_api_url'))) || 'https://jbic42j0o1fa3a70frsbkbk1lg.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so'
+    apiBaseUrl: (typeof window !== 'undefined' && (window.ANCHIALO_API_URL || localStorage.getItem('anchialov2_api_url'))) || 'https://d8tepk57nhdpv1ieit2tbcdigk.ingress.m3a.eu-n-3.digitalfrontier.network'
   };
 
   // Partner QR & Welcome Discount Registry (10% privilege on eligible codes)
