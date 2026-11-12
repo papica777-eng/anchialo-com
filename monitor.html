@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>ANCHIALO Australia · Live Operations Monitor</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --surface: #ffffff;
+      --surface-soft: #f3efe8;
+      --pine: #1b3d34;
+      --pine-deep: #122923;
+      --gold: #8c6212;
+      --gold-soft: #f8f1df;
+      --text: #18221e;
+      --muted: #5a636b;
+      --border: #e5dfd3;
+      --ok: #15803d;
+      --ok-bg: #dcfce7;
+      --warn: #b45309;
+      --warn-bg: #fef3c7;
+      --shadow: 0 10px 28px rgba(18, 41, 35, 0.06);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 18px 48px;
+    }
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--pine-deep), var(--pine));
+      color: #ffffff;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .kicker {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e6c67c;
+      margin-bottom: 4px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+    }
+    .dot.warn { background: #fbbf24; }
+    .dot.off { background: #f87171; }
+    .btn {
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.28);
+      background: #ffffff;
+      color: var(--pine-deep);
+      font-weight: 700;
+      font-size: 12.5px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+    .btn.ghost {
+      background: rgba(255,255,255,0.1);
+      color: #ffffff;
+    }
+    .grid-kpi {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .kpi-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .kpi-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--pine-deep);
+      margin-top: 6px;
+      letter-spacing: -0.02em;
+    }
+    .kpi-sub {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .grid-equal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin: 0 0 14px;
+    }
+    .agent-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .agent-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .agent-name { font-weight: 700; font-size: 14px; color: var(--pine-deep); }
+    .agent-meta { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      background: var(--ok-bg);
+      color: var(--ok);
+    }
+    .badge.warn {
+      background: var(--warn-bg);
+      color: var(--warn);
+    }
+    .quota-block { margin-bottom: 14px; }
+    .quota-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      overflow: hidden;
+    }
+    .bar > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--pine), var(--gold));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+    .cat-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .cat-chip {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 11px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 6px;
+      border-bottom: 1px solid #f1ece3;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .status-note {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+      padding: 0 4px;
+    }
+    @media (max-width: 960px) {
+      .grid-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2, .grid-equal { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .grid-kpi { grid-template-columns: 1fr; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div>
+        <div class="kicker">ANCHIALO AUSTRALIA · PARTNER &amp; OPERATIONS MONITOR</div>
+        <h1>Live Storefront, Sales &amp; Autonomous Agents</h1>
+      </div>
+      <div class="header-meta">
+        <span class="pill" id="liveBadge"><span class="dot warn" id="liveDot"></span><span id="liveText">Connecting...</span></span>
+        <span class="pill" id="melbClock">Melbourne: --:--</span>
+        <button class="btn" onclick="loadTelemetry()">Refresh</button>
+        <a class="btn ghost" href="index.html">Storefront</a>
+      </div>
+    </header>
+
+    <section class="grid-kpi" id="kpiGrid">
+      <div class="card"><div class="kpi-label">Orders</div><div class="kpi-val">—</div><div class="kpi-sub">Loading...</div></div>
+      <div class="card"><div class="kpi-label">Gross Revenue</div><div class="kpi-val">—</div><div class="kpi-sub">Loading...</div></div>
+      <div class="card"><div class="kpi-label">Partner Commissions</div><div class="kpi-val">—</div><div class="kpi-sub">Loading...</div></div>
+      <div class="card"><div class="kpi-label">Melbourne B2B Leads</div><div class="kpi-val">—</div><div class="kpi-sub">Loading...</div></div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <h2 class="section-title">Autonomous Agent Activity</h2>
+        <div id="agentsList">Loading live agent status...</div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Daily Quotas &amp; Melbourne Pipeline</h2>
+        <div class="quota-block">
+          <div class="quota-head"><span>B2B Outreach Emails Today</span><span id="b2bQuotaLabel">0 / 25</span></div>
+          <div class="bar"><span id="b2bQuotaBar" style="width:0%"></span></div>
+        </div>
+        <div class="quota-block">
+          <div class="quota-head"><span>Melbourne Discovery Queries Today</span><span id="placesQuotaLabel">0 / 6</span></div>
+          <div class="bar"><span id="placesQuotaBar" style="width:0%"></span></div>
+        </div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:8px;" id="scheduleInfo">Checking Melbourne business hours...</div>
+        <div class="cat-grid" id="categoryChips"></div>
+      </div>
+    </section>
+
+    <section class="grid-equal">
+      <div class="card">
+        <h2 class="section-title">Recent Storefront Orders</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>Customer</th><th>Partner Code</th><th>Total</th><th>Status</th></tr>
+            </thead>
+            <tbody id="ordersBody">
+              <tr><td colspan="4" style="color:var(--muted);">Loading orders...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Recent B2B Outreach &amp; Emails</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>Recipient</th><th>Subject</th><th>Status</th></tr>
+            </thead>
+            <tbody id="outreachBody">
+              <tr><td colspan="3" style="color:var(--muted);">Loading outreach feed...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="status-note">
+      <span id="channelSummary">Channels: checking...</span>
+      <span id="lastUpdated">Auto-refresh every 30s</span>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://jbic42j0o1fa3a70frsbkbk1lg.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
+    function updateMelbourneClock() {
+      try {
+        const nowStr = new Intl.DateTimeFormat('en-AU', {
+          timeZone: 'Australia/Melbourne',
+          weekday: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }).format(new Date());
+        document.getElementById('melbClock').textContent = 'Melbourne: ' + nowStr;
+      } catch (_) {}
+    }
+
+    function fmtTime(ts) {
+      if (!ts) return '—';
+      const d = new Date(Number(ts) * 1000);
+      return isNaN(d.getTime()) ? '—' : d.toLocaleString('en-AU', {
+        timeZone: 'Australia/Melbourne',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function formatCategory(cat) {
+      const labels = {
+        combat_gym: 'Combat Gyms',
+        float_sauna: 'Float & Sauna',
+        myotherapy: 'Myotherapy & Physio',
+        pilates: 'Pilates & Reformer',
+        greek_hub: 'Greek Community'
+      };
+      return labels[cat] || cat;
+    }
+
+    async function loadTelemetry() {
+      updateMelbourneClock();
+      const dot = document.getElementById('liveDot');
+      const liveText = document.getElementById('liveText');
+
+      try {
+        const res = await fetch(API_BASE + '/api/telemetry/overview', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        const stats = data.stats || {};
+        const integ = data.integrations || {};
+        const sched = data.scheduler || {};
+        const demo = data.demo || {};
+
+        dot.className = 'dot';
+        liveText.textContent = demo.enabled ? 'Live · Sandbox Active' : 'Live · Production';
+
+        document.getElementById('kpiGrid').innerHTML = `
+          <div class="card">
+            <div class="kpi-label">Total Orders</div>
+            <div class="kpi-val">${Number(stats.orders_count || 0)}</div>
+            <div class="kpi-sub">${Number(stats.quiz_submissions || 0)} Blend Finder completions</div>
+          </div>
+          <div class="card">
+            <div class="kpi-label">Gross Revenue (AUD)</div>
+            <div class="kpi-val">A$${Number(stats.revenue_aud || 0).toFixed(2)}</div>
+            <div class="kpi-sub">Checkout: ${integ.stripe_dynamic ? 'Live Card Processing' : 'Awaiting Live Keys'}</div>
+          </div>
+          <div class="card">
+            <div class="kpi-label">Partner Commissions</div>
+            <div class="kpi-val">A$${Number(stats.commissions_aud || 0).toFixed(2)}</div>
+            <div class="kpi-sub">${Number(stats.commissions_count || 0)} attributed · ${Number(stats.partners_count || 0)} active partners</div>
+          </div>
+          <div class="card">
+            <div class="kpi-label">Melbourne B2B Leads</div>
+            <div class="kpi-val">${Number(stats.b2b_leads_total || 0)}</div>
+            <div class="kpi-sub">Verified venues in outreach pipeline</div>
+          </div>
+        `;
+
+        const agents = Array.isArray(data.agents) ? data.agents : [];
+        document.getElementById('agentsList').innerHTML = agents.map((a) => {
+          const isReady = /LIVE|ACTIVE|READY|CALIBRATED/i.test(a.status || '');
+          const cleanStatus = String(a.status || 'STANDBY').replace(/_/g, ' ');
+          return `
+            <div class="agent-row">
+              <div>
+                <div class="agent-name">${esc(a.name)}</div>
+                <div class="agent-meta">${esc(a.metrics)}</div>
+              </div>
+              <span class="badge ${isReady ? '' : 'warn'}">${esc(cleanStatus)}</span>
+            </div>
+          `;
+        }).join('');
+
+        const b2bUsed = Number(stats.b2b_emails_today || 0);
+        const b2bMax = Math.max(1, Number(stats.b2b_emails_limit || 25));
+        document.getElementById('b2bQuotaLabel').textContent = `${b2bUsed} / ${b2bMax}`;
+        document.getElementById('b2bQuotaBar').style.width = Math.min(100, (b2bUsed / b2bMax) * 100) + '%';
+
+        const placesUsed = Number(stats.places_calls_today || 0);
+        const placesMax = Math.max(1, Number(stats.places_calls_limit || 6));
+        document.getElementById('placesQuotaLabel').textContent = `${placesUsed} / ${placesMax}`;
+        document.getElementById('placesQuotaBar').style.width = Math.min(100, (placesUsed / placesMax) * 100) + '%';
+
+        document.getElementById('scheduleInfo').textContent = sched.melbourne_business_hours
+          ? 'Melbourne Business Hours ACTIVE (Mon–Fri 09:00–17:00) · Outreach & discovery running.'
+          : 'Outside Melbourne Business Hours (Mon–Fri 09:00–17:00) · B2B outreach paused until morning.';
+
+        const cats = stats.leads_by_category || {};
+        document.getElementById('categoryChips').innerHTML = Object.keys(cats).length
+          ? Object.entries(cats).map(([k, v]) => `<span class="cat-chip">${esc(formatCategory(k))}: <strong>${Number(v)}</strong></span>`).join('')
+          : '<span class="cat-chip">No B2B leads synced yet</span>';
+
+        const orders = Array.isArray(data.recent_orders) ? data.recent_orders : [];
+        document.getElementById('ordersBody').innerHTML = orders.length
+          ? orders.map((o) => `
+              <tr>
+                <td><strong>${esc(o.customer_name || 'Customer')}</strong><div style="font-size:11.5px;color:var(--muted);">${esc(fmtTime(o.created_at))}</div></td>
+                <td>${esc(o.partner_code || 'Direct')}</td>
+                <td><strong>A$${(Number(o.total_cents || 0) / 100).toFixed(2)}</strong></td>
+                <td><span class="badge ${o.status === 'paid' ? '' : 'warn'}">${esc(o.status || 'pending')}</span></td>
+              </tr>
+            `).join('')
+          : '<tr><td colspan="4" style="color:var(--muted);">No orders recorded yet.</td></tr>';
+
+        const outreach = Array.isArray(data.recent_outreach) ? data.recent_outreach : [];
+        document.getElementById('outreachBody').innerHTML = outreach.length
+          ? outreach.map((m) => `
+              <tr>
+                <td><strong>${esc(m.recipient_email)}</strong><div style="font-size:11.5px;color:var(--muted);">${esc(m.step || 'b2b')} · ${esc(fmtTime(m.sent_at))}</div></td>
+                <td>${esc(m.subject)}</td>
+                <td><span class="badge ${/sent/i.test(m.status || '') ? '' : 'warn'}">${esc(m.status || 'queued')}</span></td>
+              </tr>
+            `).join('')
+          : '<tr><td colspan="3" style="color:var(--muted);">No outreach messages sent yet.</td></tr>';
+
+        document.getElementById('channelSummary').textContent =
+          `Telegram Alerts: ${integ.telegram_bot ? 'Active' : 'Off'} · Email Dispatch: ${(integ.smtp_gmail || integ.resend_email) ? 'Active' : 'Off'} · Payments: ${integ.stripe_dynamic ? 'Live Stripe' : 'Pending Live Keys'}`;
+        document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString() + ' · Auto-refresh 30s';
+      } catch (err) {
+        dot.className = 'dot off';
+        liveText.textContent = 'Reconnecting...';
+        document.getElementById('lastUpdated').textContent = 'Connection error: ' + (err.message || err);
+      }
+    }
+
+    loadTelemetry();
+    setInterval(loadTelemetry, 30000);
+    setInterval(updateMelbourneClock, 15000);
+  </script>
+</body>
+</html>
