@@ -392,3 +392,40 @@ def test_100_virtual_clients_stress_load(test_client):
         f"\n[STRESS TEST 100 CLIENTS] Time={elapsed_ms}ms | Orders={stats['orders_count']} | "
         f"Revenue=A${stats['revenue_aud']:.2f} | Commissions=A${stats['commissions_aud']:.2f}"
     )
+
+
+def test_demo_sandbox_variable_cohorts_and_reset(test_client):
+    """Verify overnight demo simulator handles varying virtual user counts, dispatches comms, and resets cleanly."""
+    client, _db_file = test_client
+
+    r1 = client.post("/api/demo/wave", json={"user_count": 12, "notify_telegram": False})
+    assert r1.status_code == 200
+    w1 = r1.json()["wave"]
+    assert w1["virtual_users"] == 12
+    assert w1["tga_violations"] == 0
+    assert (w1["lifecycle_msgs"] + w1["b2b_msgs"]) >= 1
+
+    r2 = client.post("/api/demo/wave", json={"user_count": 27, "notify_telegram": False})
+    assert r2.status_code == 200
+    d2 = r2.json()["demo"]
+    assert d2["waves_completed"] == 2
+    assert d2["total_virtual_users"] == 39
+    assert len(d2["recent_communications"]) >= 1
+
+    r_tog = client.post("/api/demo/toggle", json={"enabled": True})
+    assert r_tog.status_code == 200
+    assert r_tog.json()["enabled"] is True
+
+    tel = client.get("/api/telemetry/overview").json()
+    assert tel["demo"]["enabled"] is True
+    assert tel["demo"]["total_virtual_users"] == 39
+
+    r_rst = client.post("/api/demo/reset")
+    assert r_rst.status_code == 200
+    assert r_rst.json()["status"] == "clean_for_production"
+
+    tel_after = client.get("/api/telemetry/overview").json()
+    assert tel_after["demo"]["total_virtual_users"] == 0
+    assert tel_after["stats"]["orders_count"] == 0
+    assert tel_after["stats"]["partners_count"] >= 7
+    client.post("/api/demo/toggle", json={"enabled": False})

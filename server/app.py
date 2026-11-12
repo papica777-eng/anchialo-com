@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 import stripe
 
 from db import get_conn, init_db
+from demo_simulator import DEMO_STATE, get_demo_telemetry, reset_demo_data, run_demo_wave
 from notifications import (
     build_unsubscribe_url,
     normalize_email,
@@ -310,6 +311,15 @@ class CalibrationTestRequest(BaseModel):
     sample_suburb: str = "Richmond VIC"
 
 
+class DemoWaveRequest(BaseModel):
+    user_count: int | None = Field(default=None, ge=1, le=200)
+    notify_telegram: bool = True
+
+
+class DemoToggleRequest(BaseModel):
+    enabled: bool
+
+
 HEARTBEAT_STATE: dict[str, Any] = {
     "started_at": int(time.time()),
     "scheduler_ticks": 0,
@@ -338,18 +348,42 @@ async def _background_lifecycle_loop() -> None:
             logger.warning("Background lifecycle tick error: %s", exc)
 
 
+async def _background_demo_loop() -> None:
+    """Autonomous variable-cohort overnight demo runner active when DEMO_STATE['enabled'] is True."""
+    await asyncio.sleep(6)
+    while True:
+        try:
+            if DEMO_STATE["enabled"]:
+                now = int(time.time())
+                due = (
+                    int(DEMO_STATE["waves_completed"]) == 0
+                    or (now - int(DEMO_STATE["last_wave_ts"])) >= int(DEMO_STATE["interval_seconds"])
+                )
+                if due:
+                    next_wave = int(DEMO_STATE["waves_completed"]) + 1
+                    notify = (next_wave == 1) or (next_wave % 6 == 0)
+                    await run_demo_wave(user_count=None, notify_telegram=notify)
+        except Exception as exc:
+            logger.warning("Background demo wave error: %s", exc)
+        await asyncio.sleep(30)
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    """Initialize SQLite schema at startup and run autonomous 24/7 lifecycle worker."""
+    """Initialize SQLite schema at startup and run autonomous 24/7 lifecycle + optional demo workers."""
     init_db()
     HEARTBEAT_STATE["started_at"] = int(time.time())
     worker = asyncio.create_task(_background_lifecycle_loop())
+    demo_worker = asyncio.create_task(_background_demo_loop())
     try:
         yield
     finally:
         worker.cancel()
+        demo_worker.cancel()
         with suppress(asyncio.CancelledError):
             await worker
+        with suppress(asyncio.CancelledError):
+            await demo_worker
 
 
 app = FastAPI(title="ANCHIALO Melbourne Growth Engine", version="1.0.0", lifespan=lifespan)
@@ -828,7 +862,30 @@ def telemetry_overview() -> dict[str, Any]:
         },
         "recent_orders": recent_orders,
         "recent_outreach": recent_outreach,
+        "demo": get_demo_telemetry(),
     }
+
+
+@app.post("/api/demo/wave")
+async def trigger_demo_wave(req: DemoWaveRequest | None = None) -> dict[str, Any]:
+    """Run a synthetic variable-sized user wave immediately in sandbox mode."""
+    req = req or DemoWaveRequest()
+    summary = await run_demo_wave(user_count=req.user_count, notify_telegram=req.notify_telegram)
+    return {"status": "ok", "wave": summary, "demo": get_demo_telemetry()}
+
+
+@app.post("/api/demo/toggle")
+def toggle_demo_mode(req: DemoToggleRequest) -> dict[str, Any]:
+    """Enable or pause autonomous overnight demo waves at runtime."""
+    DEMO_STATE["enabled"] = bool(req.enabled)
+    return {"status": "ok", "enabled": DEMO_STATE["enabled"], "demo": get_demo_telemetry()}
+
+
+@app.post("/api/demo/reset")
+def reset_demo_sandbox() -> dict[str, Any]:
+    """Purge all synthetic sandbox records so the database is clean for Production."""
+    removed = reset_demo_data()
+    return {"status": "clean_for_production", "removed": removed, "demo": get_demo_telemetry()}
 
 
 @app.post("/api/bots/test-calibration")
@@ -968,23 +1025,51 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         <div id="ordersBox">No orders recorded yet.</div>
       </div>
       <div class="card">
-        <div class="kicker" style="margin-bottom:10px;">Recent Melbourne B2B Outreach Logs</div>
+        <div class="kicker" style="margin-bottom:10px;">Melbourne B2B Outreach Dispatch Log</div>
         <div id="outreachBox">No outreach emails dispatched yet.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:22px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+        <div>
+          <div class="kicker">OVERNIGHT SANDBOX · MULTI-COHORT BOT SIMULATION</div>
+          <div id="demoSummaryLine" style="font-size:13.5px;color:#cbd5e1;margin-top:4px;">Loading demo sandbox state...</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="runDemoWave(null)">Run Random Cohort Wave</button>
+          <button class="sec" onclick="runDemoWave(50)">Burst 50 Virtual Users</button>
+          <button class="sec" id="demoToggleBtn" onclick="toggleDemoAuto()">Toggle Auto-Demo</button>
+          <button class="sec" onclick="resetDemo()">Wipe Demo (Ready for Prod)</button>
+        </div>
+      </div>
+      <div class="grid2" style="margin-bottom:0;">
+        <div>
+          <div class="kicker" style="margin-bottom:8px;">Recent Cohort Waves (Variable User Count)</div>
+          <div id="demoWavesBox">—</div>
+        </div>
+        <div>
+          <div class="kicker" style="margin-bottom:8px;">Live Bot-to-User Communications Feed</div>
+          <div id="demoCommsBox">—</div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
+    let demoAutoEnabled = false;
     async function loadTelemetry() {
       try {
         const res = await fetch('/api/telemetry/overview');
         const d = await res.json();
         const s = d.stats || {};
+        const dm = d.demo || {};
+        demoAutoEnabled = !!dm.enabled;
         document.getElementById('kpiRow').innerHTML = `
           <div class="card"><div class="stat-lbl">Server Uptime</div><div class="stat-val">${Math.floor((d.uptime_seconds||0)/60)}m</div><div style="font-size:12px;color:#94a3b8;">Scheduler ticks: ${d.scheduler?.scheduler_ticks ?? 0}</div></div>
           <div class="card"><div class="stat-lbl">Orders & Revenue</div><div class="stat-val">A$${Number(s.revenue_aud||0).toFixed(2)}</div><div style="font-size:12px;color:#94a3b8;">${s.orders_count||0} orders · A$${Number(s.commissions_aud||0).toFixed(2)} commissions</div></div>
-          <div class="card"><div class="stat-lbl">B2B Outreach Quota</div><div class="stat-val">${s.b2b_emails_today||0} / ${s.b2b_emails_limit||25}</div><div style="font-size:12px;color:#94a3b8;">${s.b2b_leads_total||0} Melbourne leads stored</div></div>
-          <div class="card"><div class="stat-lbl">Places API Quota</div><div class="stat-val">${s.places_calls_today||0} / ${s.places_calls_limit||80}</div><div style="font-size:12px;color:#94a3b8;">${s.quiz_submissions||0} ritual quiz leads</div></div>
+          <div class="card"><div class="stat-lbl">Virtual Cohort Comms</div><div class="stat-val">${(dm.delivered_lifecycle_total||0) + (dm.delivered_b2b_total||0)}</div><div style="font-size:12px;color:#94a3b8;">${dm.total_virtual_users||0} demo users · ${dm.tga_violations_total||0} TGA errors</div></div>
+          <div class="card"><div class="stat-lbl">Leads & Quiz</div><div class="stat-val">${s.b2b_leads_total||0} / ${s.quiz_submissions||0}</div><div style="font-size:12px;color:#94a3b8;">B2B leads · ${s.quiz_submissions||0} ritual quiz</div></div>
         `;
         document.getElementById('agentsBox').innerHTML = (d.agents || []).map(a => {
           const isOk = a.status.includes('LIVE') || a.status.includes('ACTIVE') || a.status.includes('READY');
@@ -996,9 +1081,52 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         document.getElementById('outreachBox').innerHTML = (d.recent_outreach && d.recent_outreach.length)
           ? '<table><tr><th>Step</th><th>Recipient</th><th>Status</th></tr>' + d.recent_outreach.map(o => `<tr><td>Step ${o.step}</td><td>${o.recipient_email}</td><td>${o.status}</td></tr>`).join('') + '</table>'
           : '<div style="color:#94a3b8;font-size:13px;">Awaiting B2B outreach dispatch.</div>';
+        const toggleBtn = document.getElementById('demoToggleBtn');
+        if (toggleBtn) toggleBtn.textContent = demoAutoEnabled ? 'Pause Auto-Demo (ON)' : 'Start Auto-Demo (OFF)';
+        document.getElementById('demoSummaryLine').innerHTML =
+          `<span class="badge ${demoAutoEnabled ? 'ok' : 'warn'}">${demoAutoEnabled ? 'AUTO-DEMO RUNNING' : 'PAUSED'}</span> ` +
+          `Waves: <strong>${dm.waves_completed||0}</strong> · Total Users: <strong>${dm.total_virtual_users||0}</strong> · ` +
+          `Lifecycle Delivered: <strong>${dm.delivered_lifecycle_total||0}</strong> · B2B: <strong>${dm.delivered_b2b_total||0}</strong> · ` +
+          `Opt-outs Honored: <strong>${dm.unsubscribed_honored_total||0}</strong> · Future Queued: <strong>${dm.scheduled_future_total||0}</strong>`;
+        document.getElementById('demoWavesBox').innerHTML = (dm.wave_history && dm.wave_history.length)
+          ? '<table><tr><th>Wave</th><th>Users</th><th>Orders</th><th>Recovered</th><th>Msgs</th><th>Revenue</th></tr>' +
+            dm.wave_history.map(w => `<tr><td>#${w.wave}</td><td>${w.virtual_users}</td><td>${w.orders_paid}</td><td>${w.carts_recovered}/${w.carts_created}</td><td>${w.lifecycle_msgs + w.b2b_msgs}</td><td>A$${Number(w.revenue_aud).toFixed(2)}</td></tr>`).join('') + '</table>'
+          : '<div style="color:#94a3b8;font-size:13px;">No demo waves run yet.</div>';
+        document.getElementById('demoCommsBox').innerHTML = (dm.recent_communications && dm.recent_communications.length)
+          ? '<table><tr><th>Stage</th><th>Virtual User</th><th>Status</th></tr>' +
+            dm.recent_communications.map(c => `<tr><td>${c.stage}</td><td>${c.recipient}</td><td>${c.status}</td></tr>`).join('') + '</table>'
+          : '<div style="color:#94a3b8;font-size:13px;">No synthetic communications recorded yet.</div>';
       } catch (e) {
         document.getElementById('agentsBox').textContent = 'Telemetry connection error: ' + e;
       }
+    }
+
+    async function runDemoWave(count) {
+      const box = document.getElementById('calOut');
+      box.textContent = 'Running variable-cohort demo wave...';
+      const res = await fetch('/api/demo/wave', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_count: count, notify_telegram: true })
+      });
+      box.textContent = JSON.stringify(await res.json(), null, 2);
+      loadTelemetry();
+    }
+
+    async function toggleDemoAuto() {
+      await fetch('/api/demo/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !demoAutoEnabled })
+      });
+      loadTelemetry();
+    }
+
+    async function resetDemo() {
+      const box = document.getElementById('calOut');
+      const res = await fetch('/api/demo/reset', { method: 'POST' });
+      box.textContent = JSON.stringify(await res.json(), null, 2);
+      loadTelemetry();
     }
 
     async function runCalibration(sendTg) {

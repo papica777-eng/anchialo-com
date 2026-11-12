@@ -80,6 +80,31 @@
         <div id="outreachBox">—</div>
       </div>
     </div>
+
+    <div class="card" style="margin-bottom:22px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+        <div>
+          <div class="kicker">OVERNIGHT SANDBOX · MULTI-COHORT BOT SIMULATION</div>
+          <div id="demoSummaryLine" style="font-size:13.5px;color:#cbd5e1;margin-top:4px;">Loading demo sandbox state...</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="runDemoWave(null)">Run Random Cohort Wave</button>
+          <button class="sec" onclick="runDemoWave(50)">Burst 50 Virtual Users</button>
+          <button class="sec" id="demoToggleBtn" onclick="toggleDemoAuto()">Toggle Auto-Demo</button>
+          <button class="sec" onclick="resetDemo()">Wipe Demo (Ready for Prod)</button>
+        </div>
+      </div>
+      <div class="grid2" style="margin-bottom:0;">
+        <div>
+          <div class="kicker" style="margin-bottom:8px;">Recent Cohort Waves (Variable User Count)</div>
+          <div id="demoWavesBox">—</div>
+        </div>
+        <div>
+          <div class="kicker" style="margin-bottom:8px;">Live Bot-to-User Communications Feed</div>
+          <div id="demoCommsBox">—</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -88,6 +113,7 @@
     const saved = urlParam || localStorage.getItem('anchialov2_api_url') || 'https://jbic42j0o1fa3a70frsbkbk1lg.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
     input.value = saved;
     if (urlParam) localStorage.setItem('anchialov2_api_url', urlParam.replace(/\/$/, ''));
+    let demoAutoEnabled = false;
 
     function getBaseUrl() {
       return (input.value || '').trim().replace(/\/$/, '');
@@ -109,14 +135,16 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const d = await res.json();
         const s = d.stats || {};
+        const dm = d.demo || {};
+        demoAutoEnabled = !!dm.enabled;
         statusEl.textContent = 'CONNECTED · Uptime ' + Math.floor((d.uptime_seconds || 0) / 60) + ' min';
         statusEl.style.color = '#34d399';
 
         document.getElementById('kpiRow').innerHTML = `
           <div class="card"><div class="stat-lbl">Server Uptime</div><div class="stat-val">${Math.floor((d.uptime_seconds||0)/60)}m</div><div style="font-size:12px;color:#94a3b8;">Scheduler ticks: ${d.scheduler?.scheduler_ticks ?? 0}</div></div>
           <div class="card"><div class="stat-lbl">Orders & Revenue</div><div class="stat-val">A$${Number(s.revenue_aud||0).toFixed(2)}</div><div style="font-size:12px;color:#94a3b8;">${s.orders_count||0} orders · A$${Number(s.commissions_aud||0).toFixed(2)} commissions</div></div>
-          <div class="card"><div class="stat-lbl">B2B Outreach Quota</div><div class="stat-val">${s.b2b_emails_today||0} / ${s.b2b_emails_limit||25}</div><div style="font-size:12px;color:#94a3b8;">${s.b2b_leads_total||0} Melbourne leads</div></div>
-          <div class="card"><div class="stat-lbl">Places API Quota</div><div class="stat-val">${s.places_calls_today||0} / ${s.places_calls_limit||80}</div><div style="font-size:12px;color:#94a3b8;">${s.quiz_submissions||0} ritual quiz leads</div></div>
+          <div class="card"><div class="stat-lbl">Virtual Cohort Comms</div><div class="stat-val">${(dm.delivered_lifecycle_total||0) + (dm.delivered_b2b_total||0)}</div><div style="font-size:12px;color:#94a3b8;">${dm.total_virtual_users||0} demo users · ${dm.tga_violations_total||0} TGA errors</div></div>
+          <div class="card"><div class="stat-lbl">Leads & Quiz</div><div class="stat-val">${s.b2b_leads_total||0} / ${s.quiz_submissions||0}</div><div style="font-size:12px;color:#94a3b8;">B2B leads · ${s.quiz_submissions||0} ritual quiz</div></div>
         `;
         document.getElementById('agentsBox').innerHTML = (d.agents || []).map(a => {
           const isOk = a.status.includes('LIVE') || a.status.includes('ACTIVE') || a.status.includes('READY');
@@ -128,10 +156,56 @@
         document.getElementById('outreachBox').innerHTML = (d.recent_outreach && d.recent_outreach.length)
           ? '<table><tr><th>Step</th><th>Recipient</th><th>Status</th></tr>' + d.recent_outreach.map(o => `<tr><td>Step ${o.step}</td><td>${o.recipient_email}</td><td>${o.status}</td></tr>`).join('') + '</table>'
           : '<div style="color:#94a3b8;font-size:13px;">No outreach emails dispatched yet.</div>';
+        const toggleBtn = document.getElementById('demoToggleBtn');
+        if (toggleBtn) toggleBtn.textContent = demoAutoEnabled ? 'Pause Auto-Demo (ON)' : 'Start Auto-Demo (OFF)';
+        document.getElementById('demoSummaryLine').innerHTML =
+          `<span class="badge ${demoAutoEnabled ? 'ok' : 'warn'}">${demoAutoEnabled ? 'AUTO-DEMO RUNNING' : 'PAUSED'}</span> ` +
+          `Waves: <strong>${dm.waves_completed||0}</strong> · Total Users: <strong>${dm.total_virtual_users||0}</strong> · ` +
+          `Lifecycle Delivered: <strong>${dm.delivered_lifecycle_total||0}</strong> · B2B: <strong>${dm.delivered_b2b_total||0}</strong> · ` +
+          `Opt-outs Honored: <strong>${dm.unsubscribed_honored_total||0}</strong> · Future Queued: <strong>${dm.scheduled_future_total||0}</strong>`;
+        document.getElementById('demoWavesBox').innerHTML = (dm.wave_history && dm.wave_history.length)
+          ? '<table><tr><th>Wave</th><th>Users</th><th>Orders</th><th>Recovered</th><th>Msgs</th><th>Revenue</th></tr>' +
+            dm.wave_history.map(w => `<tr><td>#${w.wave}</td><td>${w.virtual_users}</td><td>${w.orders_paid}</td><td>${w.carts_recovered}/${w.carts_created}</td><td>${w.lifecycle_msgs + w.b2b_msgs}</td><td>A$${Number(w.revenue_aud).toFixed(2)}</td></tr>`).join('') + '</table>'
+          : '<div style="color:#94a3b8;font-size:13px;">No demo waves run yet.</div>';
+        document.getElementById('demoCommsBox').innerHTML = (dm.recent_communications && dm.recent_communications.length)
+          ? '<table><tr><th>Stage</th><th>Virtual User</th><th>Status</th></tr>' +
+            dm.recent_communications.map(c => `<tr><td>${c.stage}</td><td>${c.recipient}</td><td>${c.status}</td></tr>`).join('') + '</table>'
+          : '<div style="color:#94a3b8;font-size:13px;">No synthetic communications recorded yet.</div>';
       } catch (e) {
         statusEl.textContent = 'Offline / Unreachable: ' + e.message;
         statusEl.style.color = '#fbbf24';
       }
+    }
+
+    async function runDemoWave(count) {
+      const box = document.getElementById('calOut');
+      const base = getBaseUrl();
+      box.textContent = 'Running variable-cohort demo wave on ' + base + '...';
+      const res = await fetch(base + '/api/demo/wave', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_count: count, notify_telegram: true })
+      });
+      box.textContent = JSON.stringify(await res.json(), null, 2);
+      refreshAll();
+    }
+
+    async function toggleDemoAuto() {
+      const base = getBaseUrl();
+      await fetch(base + '/api/demo/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !demoAutoEnabled })
+      });
+      refreshAll();
+    }
+
+    async function resetDemo() {
+      const box = document.getElementById('calOut');
+      const base = getBaseUrl();
+      const res = await fetch(base + '/api/demo/reset', { method: 'POST' });
+      box.textContent = JSON.stringify(await res.json(), null, 2);
+      refreshAll();
     }
 
     async function runCalibration(sendTg) {
