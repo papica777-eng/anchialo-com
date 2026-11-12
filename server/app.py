@@ -20,6 +20,7 @@ import stripe
 
 from db import get_conn, init_db
 from demo_simulator import DEMO_STATE, get_demo_telemetry, reset_demo_data, run_demo_wave
+from ebay_client import get_ebay_summary, is_ebay_configured, publish_or_revise_catalog
 from notifications import (
     build_unsubscribe_url,
     normalize_email,
@@ -822,10 +823,11 @@ def root_status() -> dict[str, Any]:
 
 
 @app.get("/api/telemetry/overview")
-def telemetry_overview() -> dict[str, Any]:
-    """Return live runtime status of all 4 autonomous agents, daily quotas, orders, and Melbourne leads."""
+async def telemetry_overview() -> dict[str, Any]:
+    """Return live runtime status of all autonomous agents, daily quotas, orders, eBay AU, and Melbourne leads."""
     now = int(time.time())
     today_key = date.today().isoformat()
+    ebay_data = await get_ebay_summary()
 
     with get_conn() as conn:
         order_agg = conn.execute(
@@ -877,6 +879,7 @@ def telemetry_overview() -> dict[str, Any]:
         "resend_email": _is_real_secret("RESEND_API_KEY"),
         "stripe_dynamic": _is_real_secret("STRIPE_SECRET_KEY"),
         "google_places": _is_real_secret("GOOGLE_PLACES_API_KEY"),
+        "ebay_au": is_ebay_configured(),
     }
 
     agents = [
@@ -904,6 +907,12 @@ def telemetry_overview() -> dict[str, Any]:
             "status": "READY_SMTP" if integrations["smtp_gmail"] else ("READY_RESEND" if integrations["resend_email"] else "DRY_RUN_ONLY"),
             "metrics": f"{quotas.get('b2b_emails', 0)}/{max_b2b} emails today · {len(MELBOURNE_VERTICAL_QUERIES)} verticals",
         },
+        {
+            "id": "ebay_au_sync",
+            "name": "eBay Australia (EBAY_AU) Storefront & Order Sync",
+            "status": str(ebay_data.get("status") or "AWAITING_TOKEN"),
+            "metrics": f"{int(ebay_data.get('active_listings_count') or 0)} active listings · {int(ebay_data.get('orders_total') or 0)} orders ({int(ebay_data.get('orders_to_ship') or 0)} to ship)",
+        },
     ]
 
     return {
@@ -912,6 +921,7 @@ def telemetry_overview() -> dict[str, Any]:
         "scheduler": HEARTBEAT_STATE,
         "integrations": integrations,
         "agents": agents,
+        "ebay": ebay_data,
         "stats": {
             "orders_count": int(order_agg["cnt"]),
             "revenue_aud": round(int(order_agg["revenue_cents"]) / 100.0, 2),
@@ -930,6 +940,20 @@ def telemetry_overview() -> dict[str, Any]:
         "recent_outreach": recent_outreach,
         "demo": get_demo_telemetry(),
     }
+
+
+@app.get("/api/ebay/summary")
+async def ebay_summary(force: bool = False) -> dict[str, Any]:
+    """Return live eBay AU storefront listings, selling limits, and orders."""
+    return await get_ebay_summary(force=force)
+
+
+@app.post("/api/ebay/sync-catalog")
+async def ebay_sync_catalog(dry_run: bool = False) -> dict[str, Any]:
+    """Verify or publish/revise the 8 TGA-compliant ANCHIALO listings on EBAY_AU."""
+    if not is_ebay_configured():
+        raise HTTPException(status_code=503, detail="eBay Production OAuth credentials are not configured.")
+    return await publish_or_revise_catalog(dry_run=dry_run)
 
 
 @app.post("/api/demo/wave")

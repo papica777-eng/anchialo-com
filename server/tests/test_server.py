@@ -368,7 +368,7 @@ def test_telemetry_dashboard_and_bot_calibration(test_client):
     assert res_tel.status_code == 200
     tel = res_tel.json()
     assert tel["status"] == "ok"
-    assert len(tel["agents"]) == 4
+    assert len(tel["agents"]) == 5
     assert tel["stats"]["partners_count"] >= 7
 
     res_cal = client.post(
@@ -540,3 +540,34 @@ async def test_melbourne_business_hours_b2b_schedule(tmp_path, monkeypatch):
     r2 = await server_app.run_melbourne_b2b_schedule_tick(now_dt=mon_dt, db_path=db_file)
     assert r2["ran"] is False
     assert r2["reason"] == "already_ran_today"
+
+
+def test_ebay_catalog_tga_compliance_and_xml_builder(tmp_path, monkeypatch):
+    """Verify all EBAY_AU catalog SKUs pass TGA cosmetic compliance, <=80 char titles, and XML builder."""
+    import ebay_client
+
+    forbidden = ["pain", "inflammation", "cramp", "arthritis", "cure", "treat", "heal", "disease"]
+    assert len(ebay_client.EBAY_AU_CATALOG) == 8
+    for entry in ebay_client.EBAY_AU_CATALOG:
+        assert len(entry["title"]) <= 80
+        blob = f"{entry['title']} {entry['summary']}".lower()
+        for word in forbidden:
+            assert word not in blob, f"Forbidden TGA term '{word}' in {entry['sku']}"
+        xml = ebay_client._build_trading_item_xml("AddFixedPriceItem", entry)
+        assert "<ConditionID>1000</ConditionID>" in xml
+        assert "<CategoryID>21205</CategoryID>" in xml
+        assert "<Currency>AUD</Currency>" in xml
+
+    # Unconfigured eBay must degrade gracefully
+    monkeypatch.delenv("EBAY_PRD_APP_ID", raising=False)
+    monkeypatch.delenv("EBAY_PRD_CERT_ID", raising=False)
+    monkeypatch.delenv("EBAY_PRD_REFRESH_TOKEN", raising=False)
+    monkeypatch.delenv("EBAY_PRD_USER_TOKEN", raising=False)
+    db_file = str(tmp_path / "ebay.db")
+    init_db(db_file)
+    monkeypatch.setenv("ANCHIALO_DB_PATH", db_file)
+    client = TestClient(server_app.app)
+    res = client.get("/api/ebay/summary")
+    assert res.status_code == 200
+    assert res.json()["configured"] is False
+

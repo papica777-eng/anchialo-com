@@ -393,6 +393,7 @@
         const integ = data.integrations || {};
         const sched = data.scheduler || {};
         const demo = data.demo || {};
+        const ebay = data.ebay || {};
 
         dot.className = 'dot';
         liveText.textContent = demo.enabled ? 'Live · Sandbox Active' : 'Live · Production';
@@ -407,6 +408,11 @@
             <div class="kpi-label">Gross Revenue (AUD)</div>
             <div class="kpi-val">A$${Number(stats.revenue_aud || 0).toFixed(2)}</div>
             <div class="kpi-sub">Checkout: ${integ.stripe_dynamic ? 'Live Card Processing' : 'Awaiting Live Keys'}</div>
+          </div>
+          <div class="card">
+            <div class="kpi-label">eBay AU Storefront</div>
+            <div class="kpi-val">${Number(ebay.active_listings_count || 0)} Live</div>
+            <div class="kpi-sub">${Number(ebay.orders_total || 0)} orders · ${Number(ebay.orders_to_ship || 0)} to ship · A$${Number(ebay.revenue_aud || 0).toFixed(2)}</div>
           </div>
           <div class="card">
             <div class="kpi-label">Partner Commissions</div>
