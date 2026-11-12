@@ -63,6 +63,13 @@ def sanitize_code(raw: str | None) -> str:
     return cleaned[:24]
 
 
+def calculate_architect_share_cents(total_cents: int, bps: int | None = None) -> int:
+    """Compute exact integer-cent revenue share (default 2500 bps = 25.00%) with zero float drift."""
+    share_bps = bps if bps is not None else int(os.environ.get("ARCHITECT_SHARE_BPS") or "2500")
+    share_bps = max(0, min(10000, share_bps))
+    return (max(0, int(total_cents)) * share_bps + 5000) // 10000
+
+
 def calculate_order_cents(
     items: list[dict[str, Any]],
     promo_code: str | None,
@@ -547,6 +554,15 @@ def create_checkout_session(req: CheckoutSessionRequest) -> dict[str, Any]:
     if req.customer_email and "@" in req.customer_email:
         session_kwargs["customer_email"] = normalize_email(req.customer_email)
 
+    connect_dest = (os.environ.get("STRIPE_CONNECT_DESTINATION_ID") or "").strip()
+    if connect_dest.startswith("acct_"):
+        fee_cents = calculate_architect_share_cents(pricing["total_cents"])
+        if fee_cents > 0:
+            session_kwargs["payment_intent_data"] = {
+                "application_fee_amount": fee_cents,
+                "transfer_data": {"destination": connect_dest},
+            }
+
     session = stripe.checkout.Session.create(**session_kwargs)
     return {
         "checkout_url": session.url,
@@ -925,6 +941,9 @@ async def telemetry_overview() -> dict[str, Any]:
         "stats": {
             "orders_count": int(order_agg["cnt"]),
             "revenue_aud": round(int(order_agg["revenue_cents"]) / 100.0, 2),
+            "architect_share_bps": int(os.environ.get("ARCHITECT_SHARE_BPS") or "2500"),
+            "architect_share_aud": round(calculate_architect_share_cents(int(order_agg["revenue_cents"])) / 100.0, 2),
+            "stripe_connect_active": bool((os.environ.get("STRIPE_CONNECT_DESTINATION_ID") or "").strip().startswith("acct_")),
             "commissions_count": int(comm_agg["cnt"]),
             "commissions_aud": round(int(comm_agg["comm_cents"]) / 100.0, 2),
             "quiz_submissions": quiz_count,

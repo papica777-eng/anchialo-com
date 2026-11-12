@@ -571,3 +571,8 @@ def test_ebay_catalog_tga_compliance_and_xml_builder(tmp_path, monkeypatch):
     assert res.status_code == 200
     assert res.json()["configured"] is False
 
+    # Architect 25% revenue share integer math (zero float drift)
+    assert server_app.calculate_architect_share_cents(4900) == 1225
+    assert server_app.calculate_architect_share_cents(10000) == 2500
+    assert server_app.calculate_architect_share_cents(0) == 0
+
