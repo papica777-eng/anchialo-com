@@ -577,3 +577,27 @@ def test_ebay_catalog_tga_compliance_and_xml_builder(tmp_path, monkeypatch):
     assert server_app.calculate_architect_share_cents(10000) == 2500
     assert server_app.calculate_architect_share_cents(0) == 0
 
+    # Filter out unrelated pre-existing seller listings/orders from ANCHIALO reporting
+    assert ebay_client._is_anchialo_item("", "benefit cosmetics") is False
+    assert ebay_client._is_anchialo_item("ANCHIALO-GEL-ARNICA", "ANCHIALO Dual Magnesium Gel") is True
+    mixed_orders = [
+        {
+            "orderId": "12-15406-68173",
+            "orderFulfillmentStatus": "FULFILLED",
+            "pricingSummary": {"total": {"value": "49.00"}},
+            "buyer": {"username": "naz-616"},
+            "lineItems": [{"sku": "", "title": "benefit cosmetics", "quantity": 1, "lineItemCost": {"value": "49.00"}}],
+        },
+        {
+            "orderId": "99-00001-00002",
+            "orderFulfillmentStatus": "NOT_STARTED",
+            "pricingSummary": {"total": {"value": "89.00"}},
+            "buyer": {"username": "melb_buyer"},
+            "lineItems": [{"sku": "ANCHIALO-COMBO-STARTER", "title": "ANCHIALO Dual Magnesium Gel 2-Pack", "quantity": 1, "lineItemCost": {"value": "89.00"}}],
+        },
+    ]
+    assert ebay_client._sync_orders_into_sqlite(mixed_orders, db_path=db_file) == 1
+    with get_conn(db_file) as conn:
+        rows = conn.execute("SELECT external_tx_id, total_cents FROM orders").fetchall()
+        assert [(r["external_tx_id"], r["total_cents"]) for r in rows] == [("ebay_99-00001-00002", 8900)]
+

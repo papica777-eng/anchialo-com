@@ -411,11 +411,28 @@ async def publish_or_revise_catalog(dry_run: bool = False) -> dict[str, Any]:
     }
 
 
-def _sync_orders_into_sqlite(orders: list[dict[str, Any]]) -> int:
-    """Idempotently persist real eBay AU orders into the local SQLite orders table."""
+def _is_anchialo_item(sku: str, title: str) -> bool:
+    """Return True only for official ANCHIALO eBay AU SKUs/listings, excluding pre-existing seller items."""
+    sku_norm = (sku or "").strip().upper()
+    title_norm = (title or "").strip().lower()
+    return sku_norm.startswith("ANCHIALO-") or "anchialo" in title_norm
+
+
+def _is_anchialo_order(order: dict[str, Any]) -> bool:
+    """Return True if at least one line item in an eBay order belongs to the ANCHIALO catalog."""
+    return any(
+        _is_anchialo_item(str(li.get("sku") or ""), str(li.get("title") or ""))
+        for li in (order.get("lineItems") or [])
+    )
+
+
+def _sync_orders_into_sqlite(orders: list[dict[str, Any]], db_path: str | None = None) -> int:
+    """Idempotently persist real ANCHIALO eBay AU orders into the local SQLite orders table."""
     inserted = 0
-    with get_conn() as conn:
+    with get_conn(db_path) as conn:
         for order in orders:
+            if not _is_anchialo_order(order):
+                continue
             order_id = str(order.get("orderId") or "").strip()
             if not order_id:
                 continue
@@ -486,9 +503,13 @@ async def get_ebay_summary(force: bool = False) -> dict[str, Any]:
 
         priv_json = priv_resp.json() if priv_resp.status_code == 200 else {}
         ord_json = ord_resp.json() if ord_resp.status_code == 200 else {}
-        orders = ord_json.get("orders") or []
+        all_orders = ord_json.get("orders") or []
+        orders = [o for o in all_orders if _is_anchialo_order(o)]
         _sync_orders_into_sqlite(orders)
-        active_listings = await fetch_active_listings(token)
+        all_active_listings = await fetch_active_listings(token)
+        active_listings = [
+            it for it in all_active_listings if _is_anchialo_item(str(it.get("sku") or ""), str(it.get("title") or ""))
+        ]
 
         orders_to_ship = sum(
             1 for o in orders if str(o.get("orderFulfillmentStatus") or "") in ("NOT_STARTED", "IN_PROGRESS")
@@ -506,7 +527,7 @@ async def get_ebay_summary(force: bool = False) -> dict[str, Any]:
             "selling_limit_qty": int((priv_json.get("sellingLimit") or {}).get("quantity") or 0),
             "active_listings_count": len(active_listings),
             "active_listings": active_listings[:15],
-            "orders_total": int(ord_json.get("total") or len(orders)),
+            "orders_total": len(orders),
             "orders_to_ship": orders_to_ship,
             "revenue_aud": revenue_aud,
             "recent_orders": [
