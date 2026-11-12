@@ -446,20 +446,56 @@ def generate_brand_usp_brochures(
     }
 
 
+def optimize_web_product_images(max_dim: int = 900, quality: int = 82) -> list[dict[str, object]]:
+    """Generate lightweight WebP derivatives in assets/images/products/web/ for fast LCP/PageSpeed."""
+    from PIL import Image
+
+    src_dir = _asset_path("assets", "images", "products")
+    web_dir = os.path.join(src_dir, "web")
+    os.makedirs(web_dir, exist_ok=True)
+    results: list[dict[str, object]] = []
+    for name in sorted(os.listdir(src_dir)):
+        if not name.lower().endswith((".png", ".jpg", ".jpeg")):
+            continue
+        src_path = os.path.join(src_dir, name)
+        stem = os.path.splitext(name)[0]
+        out_path = os.path.join(web_dir, f"{stem}.webp")
+        with Image.open(src_path) as im:
+            im.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+            mode = "RGBA" if im.mode in ("RGBA", "LA", "P") else "RGB"
+            converted = im.convert(mode)
+            converted.save(out_path, "WEBP", quality=quality, method=6)
+            w, h = converted.size
+        results.append(
+            {
+                "file": f"{stem}.webp",
+                "width": w,
+                "height": h,
+                "kb": round(os.path.getsize(out_path) / 1024, 1),
+            }
+        )
+    return results
+
+
 def main() -> None:
-    """CLI entrypoint for generating Melbourne QR partner posters and USP brochures."""
+    """CLI entrypoint for generating Melbourne QR partner posters, USP brochures, and WebP assets."""
     parser = argparse.ArgumentParser(description="Generate ANCHIALO Melbourne QR partner poster & USP brochures")
     parser.add_argument("--code", help="Partner promo code (e.g., CPT15, RENEGADE15)")
     parser.add_argument("--name", help="Partner gym or clinic display name")
     parser.add_argument("--out", default=None, help="Output directory")
     parser.add_argument("--brochures", action="store_true", help="Also generate customer & partner USP brochures")
+    parser.add_argument("--optimize-web", action="store_true", help="Generate lightweight WebP product images")
     args = parser.parse_args()
     if args.code and args.name:
         result = generate_qr_partner_poster(args.code, args.name, output_dir=args.out)
         print(f"Generated poster: {result['pdf_path']} ({result['target_url']})")
-    if args.brochures or not (args.code and args.name):
+    if args.brochures or not (args.code and args.name or args.optimize_web):
         brochures = generate_brand_usp_brochures(output_dir=args.out)
         print(f"Generated brochures: {brochures['product_guide_pdf']} & {brochures['partner_guide_pdf']}")
+    if args.optimize_web:
+        items = optimize_web_product_images()
+        for item in items:
+            print(f"{item['file']}: {item['width']}x{item['height']} ({item['kb']} KB)")
 
 
 if __name__ == "__main__":

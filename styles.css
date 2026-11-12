@@ -12,8 +12,8 @@
   --bg-dark-accent: #171c1f;    /* Deep obsidian charcoal for banner / footer */
   
   --text-primary: #191d20;      /* Rich charcoal obsidian, warm & clear */
-  --text-secondary: #525a62;    /* Refined mineral graphite for body copy */
-  --text-muted: #828c94;        /* Soft warm stone for sub-labels */
+  --text-secondary: #4a5259;    /* Refined mineral graphite for body copy */
+  --text-muted: #5a636b;        /* Accessible warm stone for sub-labels (WCAG AA) */
   --text-on-dark: #fbfaf8;      /* Cream text on dark accents */
 
   /* Botanical & Mineral Brand Accents */
@@ -21,8 +21,8 @@
   --accent-pine-light: #285549; /* Hover state for primary buttons */
   --accent-pine-soft: rgba(27, 61, 52, 0.08);
 
-  --accent-gold: #b38222;       /* Warm artisan gold / burnished brass */
-  --accent-gold-hover: #c9932b;
+  --accent-gold: #8c6212;       /* Accessible rich artisan gold (WCAG AA) */
+  --accent-gold-hover: #a67518;
   --accent-gold-soft: rgba(179, 130, 34, 0.1);
   --border-gold: rgba(179, 130, 34, 0.3);
 
