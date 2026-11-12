@@ -19,7 +19,7 @@ from db import get_conn, init_db  # noqa: E402
 from notifications import send_resend_email, sign_unsubscribe_token  # noqa: E402
 from outreach_agent import run_daily_b2b_outreach  # noqa: E402
 from places_crawler import check_and_increment_places_quota, extract_suburb_from_address  # noqa: E402
-from qr_poster_generator import generate_qr_partner_poster  # noqa: E402
+from qr_poster_generator import generate_brand_usp_brochures, generate_qr_partner_poster  # noqa: E402
 
 
 @pytest.fixture()
@@ -225,6 +225,25 @@ def test_places_quota_and_qr_poster_generation(tmp_path):
     assert os.path.exists(poster["pdf_path"])
     assert os.path.exists(poster["poster_png_path"])
     assert poster["target_url"] == "https://anchialo.com/?ref=CPT15#collection"
+
+
+def test_usp_brochures_generation_and_tga_compliance(tmp_path):
+    """Verify customer and B2B USP brochure PDFs are generated cleanly with zero TGA medical claims."""
+    import fitz
+
+    brochures = generate_brand_usp_brochures(output_dir=str(tmp_path))
+    assert os.path.exists(brochures["product_guide_pdf"])
+    assert os.path.exists(brochures["partner_guide_pdf"])
+
+    forbidden = ("arthritis", "neuritis", "neuralgia", "fractures", "inflammation", "sprains")
+    for pdf_path in (brochures["product_guide_pdf"], brochures["partner_guide_pdf"]):
+        doc = fitz.open(pdf_path)
+        assert doc.page_count >= 1
+        full_text = "\n".join(page.get_text("text").lower() for page in doc)
+        doc.close()
+        assert "323.5 g/l" in full_text
+        for word in forbidden:
+            assert word not in full_text, f"Forbidden TGA term '{word}' found in {pdf_path}"
 
 
 @pytest.mark.asyncio
