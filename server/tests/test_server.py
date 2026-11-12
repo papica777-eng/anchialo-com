@@ -247,6 +247,64 @@ def test_usp_brochures_generation_and_tga_compliance(tmp_path):
 
 
 @pytest.mark.asyncio
+async def test_serpapi_google_maps_crawler_normalization(tmp_path, monkeypatch):
+    """Verify SerpApi Google Maps fallback normalizes Melbourne leads and stores them cleanly."""
+    from places_crawler import crawl_melbourne_businesses
+
+    db_file = str(tmp_path / "serpapi.db")
+    monkeypatch.setenv("ANCHIALO_DB_PATH", db_file)
+    monkeypatch.delenv("GOOGLE_PLACES_API_KEY", raising=False)
+    monkeypatch.setenv("SERPAPI_API_KEY", "serpapi_test_key")
+    monkeypatch.setenv("MAX_DAILY_PLACES_CALLS", "5")
+
+    class DummyResp:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "local_results": [
+                    {
+                        "place_id": "ChIJ_melb_1",
+                        "title": "Melbourne Combat Academy",
+                        "address": "42 Victoria St, Fitzroy VIC 3065, Australia",
+                        "website": "https://melbcombat.example.com.au",
+                        "phone": "+61 3 9000 1111",
+                    }
+                ]
+            }
+
+    class DummyClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        async def get(self, url, params=None):
+            assert "serpapi.com/search.json" in url
+            assert params["engine"] == "google_maps"
+            return DummyResp()
+
+    with patch("places_crawler.httpx.AsyncClient", DummyClient):
+        result = await crawl_melbourne_businesses(
+            queries=[("combat_gym", "MMA gym Melbourne VIC", 95)],
+            enrich_emails=False,
+        )
+
+    assert result["inserted"] == 1
+    with get_conn(db_file) as conn:
+        row = conn.execute("SELECT name, suburb, score FROM b2b_leads WHERE place_id = 'ChIJ_melb_1'").fetchone()
+        assert row is not None
+        assert row["name"] == "Melbourne Combat Academy"
+        assert row["suburb"] == "Fitzroy VIC 3065"
+        assert row["score"] == 98
+
+
+@pytest.mark.asyncio
 async def test_smtp_fallback_when_resend_unset(tmp_path, monkeypatch):
     """Verify SMTP fallback dispatches multipart email with Spam Act unsubscribe headers when Resend is unset."""
     db_file = str(tmp_path / "smtp.db")

@@ -89,46 +89,95 @@ async def discover_public_contact_email(website_url: str) -> str:
     return ""
 
 
+async def _fetch_places_google(client: httpx.AsyncClient, api_key: str, text_query: str) -> list[dict[str, str]]:
+    """Fetch normalized business records from Google Places API (New)."""
+    resp = await client.post(
+        "https://places.googleapis.com/v1/places:searchText",
+        headers={
+            "X-Goog-Api-Key": api_key,
+            "X-Goog-FieldMask": PLACES_FIELD_MASK,
+            "Content-Type": "application/json",
+        },
+        json={"textQuery": text_query, "regionCode": "AU", "maxResultCount": 20},
+    )
+    resp.raise_for_status()
+    rows: list[dict[str, str]] = []
+    for place in resp.json().get("places") or []:
+        rows.append(
+            {
+                "id": str(place.get("id") or "").strip(),
+                "name": str((place.get("displayName") or {}).get("text") or "").strip(),
+                "address": str(place.get("formattedAddress") or "").strip(),
+                "website": str(place.get("websiteUri") or "").strip(),
+                "phone": str(place.get("nationalPhoneNumber") or "").strip(),
+            }
+        )
+    return rows
+
+
+async def _fetch_places_serpapi(client: httpx.AsyncClient, serp_key: str, text_query: str) -> list[dict[str, str]]:
+    """Fetch normalized Melbourne business records from SerpApi Google Maps engine."""
+    resp = await client.get(
+        "https://serpapi.com/search.json",
+        params={
+            "engine": "google_maps",
+            "q": text_query,
+            "ll": "@-37.8136,144.9631,12z",
+            "hl": "en",
+            "gl": "au",
+            "api_key": serp_key,
+        },
+    )
+    resp.raise_for_status()
+    rows: list[dict[str, str]] = []
+    for item in resp.json().get("local_results") or []:
+        rows.append(
+            {
+                "id": str(item.get("place_id") or item.get("data_id") or "").strip(),
+                "name": str(item.get("title") or "").strip(),
+                "address": str(item.get("address") or "").strip(),
+                "website": str(item.get("website") or "").strip(),
+                "phone": str(item.get("phone") or "").strip(),
+            }
+        )
+    return rows
+
+
 async def crawl_melbourne_businesses(
     queries: list[tuple[str, str, int]] | None = None,
     enrich_emails: bool = True,
 ) -> dict[str, int]:
-    """Query Google Places API (New) and store scored Greater Melbourne B2B prospects."""
+    """Query Google Places API (New) or SerpApi Google Maps and store scored Melbourne B2B prospects."""
     init_db()
     api_key = (os.environ.get("GOOGLE_PLACES_API_KEY") or "").strip()
-    if not api_key:
-        raise RuntimeError("GOOGLE_PLACES_API_KEY environment variable is required to crawl Places API.")
+    serp_key = (os.environ.get("SERPAPI_API_KEY") or "").strip()
+    if not api_key and not serp_key:
+        raise RuntimeError("GOOGLE_PLACES_API_KEY or SERPAPI_API_KEY environment variable is required to crawl.")
 
     max_daily = int(os.environ.get("MAX_DAILY_PLACES_CALLS") or "80")
     inserted = 0
     enriched = 0
     now = int(time.time())
 
-    async with httpx.AsyncClient(timeout=15.0) as client:
+    async with httpx.AsyncClient(timeout=20.0) as client:
         for category, text_query, base_score in (queries or MELBOURNE_VERTICAL_QUERIES):
             with get_conn() as conn:
                 if not check_and_increment_places_quota(conn, max_daily):
                     logger.warning("Daily Google Places quota cap reached (%s). Stopping cleanly.", max_daily)
                     break
 
-            resp = await client.post(
-                "https://places.googleapis.com/v1/places:searchText",
-                headers={
-                    "X-Goog-Api-Key": api_key,
-                    "X-Goog-FieldMask": PLACES_FIELD_MASK,
-                    "Content-Type": "application/json",
-                },
-                json={"textQuery": text_query, "regionCode": "AU", "maxResultCount": 20},
+            places = (
+                await _fetch_places_google(client, api_key, text_query)
+                if api_key
+                else await _fetch_places_serpapi(client, serp_key, text_query)
             )
-            resp.raise_for_status()
-            places = resp.json().get("places") or []
 
             for place in places:
-                place_id = str(place.get("id") or "").strip()
-                name = str((place.get("displayName") or {}).get("text") or "").strip()
-                address = str(place.get("formattedAddress") or "").strip()
-                website = str(place.get("websiteUri") or "").strip()
-                phone = str(place.get("nationalPhoneNumber") or "").strip()
+                place_id = place["id"]
+                name = place["name"]
+                address = place["address"]
+                website = place["website"]
+                phone = place["phone"]
                 if not place_id or not name:
                     continue
 
