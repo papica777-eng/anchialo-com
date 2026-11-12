@@ -22,7 +22,6 @@ PLACES_FIELD_MASK = (
 )
 
 MELBOURNE_VERTICAL_QUERIES: list[tuple[str, str, int]] = [
-    ("combat_gym", "MMA BJJ Boxing Muay Thai gym Melbourne VIC", 95),
     ("myotherapy", "Myotherapy clinic Melbourne VIC", 92),
     ("remedial_massage", "Remedial massage clinic Melbourne VIC", 88),
     ("pilates", "Reformer Pilates studio Richmond South Yarra Prahran VIC", 84),
@@ -31,7 +30,7 @@ MELBOURNE_VERTICAL_QUERIES: list[tuple[str, str, int]] = [
 ]
 
 EMAIL_REGEX = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
-IGNORED_EMAIL_DOMAINS = ("sentry.io", "wixpress.com", "example.com", "schema.org", "w3.org")
+IGNORED_EMAIL_DOMAINS = ("sentry.io", "wixpress.com", "example.com", "domain.com", "schema.org", "w3.org")
 
 
 def extract_suburb_from_address(address: str) -> str:
@@ -76,12 +75,13 @@ async def discover_public_contact_email(website_url: str) -> str:
                     if res.status_code != 200:
                         continue
                     for match in EMAIL_REGEX.findall(res.text):
-                        lower = match.lower()
+                        lower = re.sub(r"^(%[0-9a-f]{2})+", "", match.lower()).strip()
                         if any(bad in lower for bad in IGNORED_EMAIL_DOMAINS):
                             continue
                         if lower.endswith((".png", ".jpg", ".jpeg", ".webp", ".svg")):
                             continue
-                        return lower
+                        if "@" in lower and not lower.startswith("%"):
+                            return lower
                 except httpx.HTTPError:
                     continue
     except Exception as exc:
