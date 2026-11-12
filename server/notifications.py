@@ -100,21 +100,27 @@ def _send_smtp_sync(
     msg.add_alternative(html_full, subtype="html")
 
     tls_ctx = ssl.create_default_context()
-    try:
-        if port == 465:
-            with smtplib.SMTP_SSL(host, port, timeout=15, context=tls_ctx) as server:
-                server.login(smtp_user, smtp_pass)
-                server.send_message(msg)
-        else:
-            with smtplib.SMTP(host, port, timeout=15) as server:
-                server.ehlo()
-                server.starttls(context=tls_ctx)
-                server.ehlo()
-                server.login(smtp_user, smtp_pass)
-                server.send_message(msg)
-        return True, "sent_smtp"
-    except (smtplib.SMTPException, OSError) as exc:
-        return False, f"smtp_error: {exc}"
+    ports_to_try = [port] + ([587] if port == 465 else ([465] if port == 587 else []))
+    last_exc: Exception | None = None
+    for candidate_port in ports_to_try:
+        try:
+            if candidate_port == 465:
+                with smtplib.SMTP_SSL(host, candidate_port, timeout=6, context=tls_ctx) as server:
+                    server.login(smtp_user, smtp_pass)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(host, candidate_port, timeout=6) as server:
+                    server.ehlo()
+                    server.starttls(context=tls_ctx)
+                    server.ehlo()
+                    server.login(smtp_user, smtp_pass)
+                    server.send_message(msg)
+            logger.info("Email dispatched via SMTP port %s -> %s", candidate_port, to_email)
+            return True, "sent_smtp"
+        except (smtplib.SMTPException, OSError) as exc:
+            last_exc = exc
+            logger.warning("SMTP port %s failed for %s: %s", candidate_port, to_email, exc)
+    return False, f"smtp_error: {last_exc}"
 
 
 async def send_resend_email(

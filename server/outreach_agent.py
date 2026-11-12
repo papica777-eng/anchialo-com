@@ -126,21 +126,23 @@ def increment_daily_b2b_count(conn: Any) -> None:
     )
 
 
-async def run_daily_b2b_outreach(db_path: str | None = None) -> dict[str, int]:
+async def run_daily_b2b_outreach(db_path: str | None = None) -> dict[str, Any]:
     """Send throttled Step 1, Day-3 (Step 2), and Day-7 (Step 3) B2B emails under Spam Act 2003 rules."""
     init_db(db_path)
     max_daily = int(os.environ.get("MAX_DAILY_B2B_EMAILS") or "25")
     now = int(time.time())
     sent = 0
     skipped = 0
+    consecutive_transport_errors = 0
+    transport_blocked = False
 
     with get_conn(db_path) as conn:
         remaining = check_daily_b2b_budget(conn, max_daily)
         if remaining <= 0:
-            return {"sent": 0, "skipped": 0, "remaining_quota": 0}
+            return {"sent": 0, "skipped": 0, "remaining_quota": 0, "transport_blocked": False}
 
         # Prioritize scheduled follow-ups first (D3 after Step 1, D7 after Step 2), excluding unsubscribed emails
-        candidates = conn.execute(
+        rows = conn.execute(
             """
             SELECT l.id, l.name, l.category, l.suburb, l.email, l.status,
                    COALESCE(MAX(o.step), 0) AS last_step,
@@ -158,33 +160,48 @@ async def run_daily_b2b_outreach(db_path: str | None = None) -> dict[str, int]:
             """,
             (now - 3 * 86400, now - 4 * 86400, remaining),
         ).fetchall()
+        candidates = [dict(r) for r in rows]
 
-        for row in candidates:
-            lead = dict(row)
-            recipient = normalize_email(lead["email"])
+    for lead in candidates:
+        recipient = normalize_email(lead["email"])
+        with get_conn(db_path) as conn:
             if not recipient or is_unsubscribed(conn, recipient):
                 skipped += 1
                 continue
 
-            next_step = int(lead["last_step"]) + 1
-            subject, body_html, body_text = await personalize_with_llm_if_enabled(lead, next_step)
+        next_step = int(lead["last_step"]) + 1
+        subject, body_html, body_text = await personalize_with_llm_if_enabled(lead, next_step)
+        with get_conn(db_path) as conn:
             ok, status_msg = await send_resend_email(conn, recipient, subject, body_html, body_text)
             if ok:
                 sent += 1
+                consecutive_transport_errors = 0
                 increment_daily_b2b_count(conn)
                 conn.execute(
                     """
                     INSERT INTO b2b_outreach_log (lead_id, step, recipient_email, subject, body, status, sent_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (lead["id"], next_step, recipient, subject, body_text, status_msg, now),
+                    (lead["id"], next_step, recipient, subject, body_text, status_msg, int(time.time())),
                 )
                 new_status = "sequence_complete" if next_step >= 3 else "contacted"
                 conn.execute("UPDATE b2b_leads SET status = ? WHERE id = ?", (new_status, lead["id"]))
             else:
                 skipped += 1
+                logger.warning("B2B email failed for %s (%s): %s", lead["name"], recipient, status_msg)
+                if str(status_msg).startswith(("smtp_error:", "http_error:")):
+                    consecutive_transport_errors += 1
+                    if consecutive_transport_errors >= 3 and sent == 0:
+                        transport_blocked = True
+                        logger.error("Aborting B2B batch cleanly after %s consecutive transport failures.", consecutive_transport_errors)
+                        break
 
-    return {"sent": sent, "skipped": skipped, "remaining_quota": max(0, remaining - sent)}
+    return {
+        "sent": sent,
+        "skipped": skipped,
+        "remaining_quota": max(0, remaining - sent),
+        "transport_blocked": transport_blocked,
+    }
 
 
 async def notify_warm_leads_digest(db_path: str | None = None) -> list[dict[str, Any]]:

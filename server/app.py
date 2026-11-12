@@ -350,6 +350,9 @@ def is_melbourne_business_hours(now_dt: datetime | None = None) -> bool:
     return melb_now.weekday() < 5 and 9 <= melb_now.hour < 17
 
 
+_b2b_tick_lock = asyncio.Lock()
+
+
 async def run_melbourne_b2b_schedule_tick(
     now_dt: datetime | None = None,
     db_path: str | None = None,
@@ -365,42 +368,45 @@ async def run_melbourne_b2b_schedule_tick(
         return {"ran": False, "reason": "disabled" if not enabled else "outside_melbourne_hours"}
 
     melb_date = melb_now.date().isoformat()
-    with get_conn(db_path) as conn:
-        already = conn.execute(
-            "SELECT count FROM api_usage_counters WHERE usage_date = ? AND metric = 'b2b_melbourne_run'",
-            (melb_date,),
-        ).fetchone()
-        if already and int(already["count"]) > 0:
+    async with _b2b_tick_lock:
+        with get_conn(db_path) as conn:
+            already = conn.execute(
+                "SELECT count FROM api_usage_counters WHERE usage_date = ? AND metric = 'b2b_melbourne_run'",
+                (melb_date,),
+            ).fetchone()
+            if already and int(already["count"]) > 0:
+                HEARTBEAT_STATE["last_b2b_run_date"] = melb_date
+                return {"ran": False, "reason": "already_ran_today", "date": melb_date}
+
+        crawl_res = {"inserted": 0, "emails_enriched": 0}
+        if (os.environ.get("GOOGLE_PLACES_API_KEY") or "").strip() or (os.environ.get("SERPAPI_API_KEY") or "").strip():
+            crawl_res = await crawl_melbourne_businesses(enrich_emails=True)
+
+        outreach_res = await run_daily_b2b_outreach(db_path=db_path)
+        if not outreach_res.get("transport_blocked"):
+            with get_conn(db_path) as conn:
+                conn.execute(
+                    """
+                    INSERT INTO api_usage_counters (usage_date, metric, count) VALUES (?, 'b2b_melbourne_run', 1)
+                    ON CONFLICT(usage_date, metric) DO UPDATE SET count = count + 1
+                    """,
+                    (melb_date,),
+                )
             HEARTBEAT_STATE["last_b2b_run_date"] = melb_date
-            return {"ran": False, "reason": "already_ran_today", "date": melb_date}
-        conn.execute(
-            """
-            INSERT INTO api_usage_counters (usage_date, metric, count) VALUES (?, 'b2b_melbourne_run', 1)
-            ON CONFLICT(usage_date, metric) DO UPDATE SET count = count + 1
-            """,
-            (melb_date,),
-        )
 
-    crawl_res = {"inserted": 0, "emails_enriched": 0}
-    if (os.environ.get("GOOGLE_PLACES_API_KEY") or "").strip() or (os.environ.get("SERPAPI_API_KEY") or "").strip():
-        crawl_res = await crawl_melbourne_businesses(enrich_emails=True)
+        if crawl_res.get("inserted", 0) > 0 or outreach_res.get("sent", 0) > 0:
+            await send_telegram_alert(
+                f"MELBOURNE B2B DAILY RUN ({melb_now.strftime('%a %H:%M AEDT/AEST')}):\n"
+                f"• New Leads: +{crawl_res.get('inserted', 0)} (emails: {crawl_res.get('emails_enriched', 0)})\n"
+                f"• Outreach Sent: {outreach_res.get('sent', 0)} | Skipped: {outreach_res.get('skipped', 0)}"
+            )
 
-    outreach_res = await run_daily_b2b_outreach(db_path=db_path)
-    HEARTBEAT_STATE["last_b2b_run_date"] = melb_date
-
-    if crawl_res.get("inserted", 0) > 0 or outreach_res.get("sent", 0) > 0:
-        await send_telegram_alert(
-            f"MELBOURNE B2B DAILY RUN ({melb_now.strftime('%a %H:%M AEDT/AEST')}):\n"
-            f"• New Leads: +{crawl_res.get('inserted', 0)} (emails: {crawl_res.get('emails_enriched', 0)})\n"
-            f"• Outreach Sent: {outreach_res.get('sent', 0)} | Skipped: {outreach_res.get('skipped', 0)}"
-        )
-
-    return {
-        "ran": True,
-        "date": melb_date,
-        "crawl": crawl_res,
-        "outreach": outreach_res,
-    }
+        return {
+            "ran": True,
+            "date": melb_date,
+            "crawl": crawl_res,
+            "outreach": outreach_res,
+        }
 
 TGA_FORBIDDEN_PATTERN = re.compile(
     r"\b(arthritis|cure|cures|cured|heal|heals|healing|treat|treats|treatment|disease|illness|fractures|neuritis|neuralgia|inflammation|sprains)\b",
@@ -410,8 +416,8 @@ TGA_FORBIDDEN_PATTERN = re.compile(
 
 async def _background_lifecycle_loop() -> None:
     """Autonomous 24/7 scheduler processing lifecycle emails and Melbourne business-hours B2B runs every 3 minutes."""
+    await asyncio.sleep(8)
     while True:
-        await asyncio.sleep(180)
         try:
             res = await run_due_lifecycle_jobs(limit=25)
             await run_melbourne_b2b_schedule_tick()
@@ -420,6 +426,7 @@ async def _background_lifecycle_loop() -> None:
             HEARTBEAT_STATE["last_lifecycle_processed"] = int(res.get("processed", 0))
         except Exception as exc:
             logger.warning("Background lifecycle tick error: %s", exc)
+        await asyncio.sleep(180)
 
 
 async def _background_demo_loop() -> None:
@@ -1002,6 +1009,17 @@ def reset_demo_sandbox() -> dict[str, Any]:
     return {"status": "clean_for_production", "removed": removed, "demo": get_demo_telemetry()}
 
 
+def _tcp_reachable(host: str, port: int, timeout: float = 3.0) -> bool:
+    """Verify outbound TCP connectivity without emitting email traffic."""
+    import socket
+
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
 @app.post("/api/bots/test-calibration")
 async def run_bot_calibration_test(req: CalibrationTestRequest | None = None) -> dict[str, Any]:
     """Execute non-destructive calibration verification across all 4 autonomous bots + optional live Telegram ping."""
@@ -1043,6 +1061,11 @@ async def run_bot_calibration_test(req: CalibrationTestRequest | None = None) ->
         telegram_sent = await send_telegram_alert(msg)
         telegram_latency_ms = int((time.perf_counter() - t_tg) * 1000)
 
+    smtp_host = (os.environ.get("SMTP_HOST") or "smtp.gmail.com").strip()
+    smtp_probe_enabled = _is_real_secret("SMTP_USER") and _is_real_secret("SMTP_PASS")
+    smtp_465_ok = await asyncio.to_thread(_tcp_reachable, smtp_host, 465) if smtp_probe_enabled else False
+    smtp_587_ok = await asyncio.to_thread(_tcp_reachable, smtp_host, 587) if smtp_probe_enabled else False
+
     total_ms = int((time.perf_counter() - t_start) * 1000)
     all_ok = db_ok and pricing_ok and tga_clean and lifecycle_ok
 
@@ -1058,7 +1081,9 @@ async def run_bot_calibration_test(req: CalibrationTestRequest | None = None) ->
             "b2b_pitch_tga_violations": len(tga_matches),
             "lifecycle_tga_violations": len(lifecycle_tga_matches),
             "unsubscribe_hmac_valid": "token=" in unsub_sample,
-            "smtp_configured": _is_real_secret("SMTP_USER") and _is_real_secret("SMTP_PASS"),
+            "smtp_configured": smtp_probe_enabled,
+            "smtp_465_reachable": smtp_465_ok,
+            "smtp_587_reachable": smtp_587_ok,
             "telegram_configured": _is_real_secret("TELEGRAM_BOT_TOKEN") and _is_real_secret("TELEGRAM_CHAT_ID"),
             "telegram_live_ping_sent": telegram_sent,
             "telegram_latency_ms": telegram_latency_ms,

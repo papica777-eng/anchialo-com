@@ -1,6 +1,7 @@
 """Melbourne B2B Lead Engine powered by Google Places API (New) with strict FieldMask & quota guard."""
 
 from datetime import date
+import asyncio
 import logging
 import os
 import re
@@ -77,7 +78,7 @@ async def discover_public_contact_email(website_url: str) -> str:
         return ""
     candidates = [url.rstrip("/"), f"{url.rstrip('/')}/contact"]
     try:
-        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as client:
             for target in candidates:
                 try:
                     res = await client.get(target, headers={"User-Agent": "AnchialoPartnerDiscovery/1.0"})
@@ -183,24 +184,29 @@ async def crawl_melbourne_businesses(
                 else await _fetch_places_serpapi(client, serp_key, text_query)
             )
 
-            for place in places:
-                place_id = place["id"]
-                name = place["name"]
-                address = place["address"]
-                website = place["website"]
-                phone = place["phone"]
-                if not place_id or not name:
-                    continue
+            sem = asyncio.Semaphore(10)
 
-                email = ""
-                if enrich_emails and website:
-                    email = await discover_public_contact_email(website)
+            async def _resolve_email(site_url: str) -> str:
+                if not enrich_emails or not site_url:
+                    return ""
+                async with sem:
+                    return await discover_public_contact_email(site_url)
+
+            emails = await asyncio.gather(*(_resolve_email(p["website"]) for p in places))
+
+            with get_conn() as conn:
+                for place, email in zip(places, emails):
+                    place_id = place["id"]
+                    name = place["name"]
+                    address = place["address"]
+                    website = place["website"]
+                    phone = place["phone"]
+                    if not place_id or not name:
+                        continue
                     if email:
                         enriched += 1
-
-                suburb = extract_suburb_from_address(address)
-                score = base_score + (5 if email else 0) + (3 if website else 0)
-                with get_conn() as conn:
+                    suburb = extract_suburb_from_address(address)
+                    score = base_score + (5 if email else 0) + (3 if website else 0)
                     cur = conn.execute(
                         """
                         INSERT OR IGNORE INTO b2b_leads (
