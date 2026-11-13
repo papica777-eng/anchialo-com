@@ -5,13 +5,13 @@ import os
 import re
 import urllib.parse
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BUILD_DATE = "2026-11-14"
 
 
-def _convert_dir_to_webp(src_dir, dst_dir, patterns, max_width=1000, quality=84):
+def _convert_dir_to_webp(src_dir, dst_dir, patterns, max_width=1000, quality=84, min_width=None, sharpen=False):
     """Idempotently convert heavy PNG/JPG/WebP assets to lightweight WebP files."""
     if not os.path.isdir(src_dir):
         return
@@ -25,14 +25,35 @@ def _convert_dir_to_webp(src_dir, dst_dir, patterns, max_width=1000, quality=84)
             with Image.open(src_path) as im:
                 if im.mode not in ("RGB", "RGBA"):
                     im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
-                if max_width and im.width > max_width:
+                if min_width and im.width < min_width:
+                    new_h = max(1, int(im.height * (min_width / float(im.width))))
+                    im = im.resize((min_width, new_h), Image.Resampling.LANCZOS)
+                elif max_width and im.width > max_width:
                     new_h = max(1, int(im.height * (max_width / float(im.width))))
                     im = im.resize((max_width, new_h), Image.Resampling.LANCZOS)
+                if sharpen:
+                    im = im.filter(ImageFilter.UnsharpMask(radius=1.2, percent=95, threshold=2))
                 im.save(out_path, "WEBP", quality=quality, method=6)
 
 
 def optimize_web_assets():
-    """Ensure lightweight WebP derivatives exist for blog, labels, and flyer assets."""
+    """Ensure lightweight WebP derivatives exist for hero, heritage, blog, labels, and flyer assets."""
+    _convert_dir_to_webp(
+        os.path.join(ROOT, "assets", "images"),
+        os.path.join(ROOT, "assets", "images", "web"),
+        ("pomorie-salterns-lake.jpg", "pomorie-lye-harvest.jpg"),
+        max_width=1440,
+        quality=94,
+    )
+    _convert_dir_to_webp(
+        os.path.join(ROOT, "assets", "images"),
+        os.path.join(ROOT, "assets", "images", "web"),
+        ("pomorie-salterns-sunset.jpg",),
+        max_width=2048,
+        min_width=2048,
+        quality=95,
+        sharpen=True,
+    )
     _convert_dir_to_webp(
         os.path.join(ROOT, "assets", "images", "blog"),
         os.path.join(ROOT, "assets", "images", "blog", "web"),
@@ -1204,51 +1225,16 @@ def update_index_and_app(posts, melbourne_pages):
     with open(index_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    head_seo = f"""<!DOCTYPE html>
-<html lang="en-AU">
-<head>
-  <meta charset="UTF-8">
-  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANCHIALO — Pure Black Sea Balneology &amp; Certified Dual Magnesium ($49 AUD Melbourne)</title>
-  <meta name="description" content="Authentic Bulgarian Black Sea mineral cosmetics. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 &amp; 70.36 g/L MgSO4) and pure topical brine oil harvested from Lake Pomorie. Official Australian Store ($49 AUD) dispatched from Melbourne by Sotir Kichukov.">
-  <link rel="canonical" href="https://anchialo.com/">
-  <script>
-    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {{
-      if (location.protocol === 'http:' || location.hostname === 'www.anchialo.com') {{
-        location.replace('https://anchialo.com' + location.pathname + location.search + location.hash);
-      }}
-    }}
-  </script>
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="ANCHIALO — Pure Black Sea Balneology &amp; Certified Dual Magnesium ($49 AUD)">
-  <meta property="og:description" content="100% natural Lake Pomorie Dual Magnesium gels (Arnica, Lavender, Rosemary, Juniper, Grape) &amp; pure brine oil. 253.14 g/L MgCl2. Dispatched from Melbourne across Australia.">
-  <meta property="og:url" content="https://anchialo.com/">
-  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
-  <meta property="og:site_name" content="ANCHIALO">
-  <meta property="og:locale" content="en_AU">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ANCHIALO — Pure Black Sea Balneology &amp; Certified Dual Magnesium">
-  <meta name="twitter:description" content="100% natural Dual Magnesium gels and pure topical brine oil from Lake Pomorie. Official Australian Store ($49 AUD) in Melbourne.">
-  <meta name="twitter:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
-  <meta name="geo.region" content="AU-VIC">
-  <meta name="geo.placename" content="Melbourne, Victoria">
-  <meta name="ICBM" content="-37.8136, 144.9631">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="manifest" href="manifest.webmanifest">
-  <script type="application/ld+json">{build_home_jsonld()}</script>"""
-
-    marker = '<link rel="icon" type="image/x-icon" href="favicon.ico">'
-    if marker in content:
-        # Preserve manifest & json-ld replacement cleanly up to just before <link rel="preconnect"
-        preconnect_marker = '<!-- Premium Bio-Cosmetics Typography -->'
-        if preconnect_marker in content:
-            idx = content.index(preconnect_marker)
-            content = head_seo + "\n  \n  " + content[idx:]
-        else:
-            idx = content.index(marker) + len(marker)
-            content = head_seo + content[idx:]
+    jsonld_script = f'<script type="application/ld+json">{build_home_jsonld()}</script>'
+    content, ld_replaced = re.subn(
+        r'<script type="application/ld\+json">.*?</script>',
+        lambda _m: jsonld_script,
+        content,
+        count=1,
+        flags=re.DOTALL,
+    )
+    if ld_replaced == 0:
+        content = content.replace("</head>", f"  {jsonld_script}\n</head>", 1)
 
     # 2. Idempotent SSR replacement for #productsGrid
     ssr_products = []

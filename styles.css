@@ -82,7 +82,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: url('assets/images/web/pomorie-salterns-sunset.webp') center/cover no-repeat;
+  background: url('assets/images/web/pomorie-salterns-sunset.webp?v=2') center 30%/cover no-repeat;
   opacity: 0.14;
   z-index: -1;
   pointer-events: none;
@@ -308,13 +308,13 @@ button {
 /* ==================== HERO SECTION: SPA & BIO-COSMETICS ==================== */
 .hero-section {
   position: relative;
-  padding: 72px 0 88px;
-  min-height: 620px;
+  padding: 76px 0 92px;
+  min-height: 680px;
   display: flex;
   align-items: center;
   background: 
-    linear-gradient(180deg, rgba(16, 22, 28, 0.14) 0%, rgba(16, 22, 28, 0.08) 60%, rgba(250, 248, 245, 0.45) 100%),
-    url('assets/images/web/pomorie-salterns-sunset.webp') center 48%/cover no-repeat;
+    linear-gradient(180deg, rgba(14, 20, 26, 0.08) 0%, rgba(14, 20, 26, 0.04) 72%, rgba(250, 248, 245, 0.16) 100%),
+    url('assets/images/web/pomorie-salterns-sunset.webp?v=2') center 30%/cover no-repeat;
   overflow: hidden;
 }
 
@@ -1444,7 +1444,7 @@ button {
 
 .heritage-image-frame {
   position: relative;
-  background: url('assets/images/web/pomorie-salterns-lake.webp') center/cover no-repeat, #283747;
+  background: url('assets/images/web/pomorie-salterns-lake.webp?v=2') center/cover no-repeat, #283747;
   border-radius: 28px;
   min-height: 480px;
   display: flex;
