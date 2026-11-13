@@ -401,6 +401,14 @@ def build_product_html(prod, depth_prefix="../"):
                             "handlingTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY"},
                             "transitTime": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 4, "unitCode": "DAY"}
                         }
+                    },
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "AU",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                        "merchantReturnDays": 30,
+                        "returnMethod": "https://schema.org/ReturnByMail",
+                        "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
                     }
                 }
             },
@@ -834,6 +842,10 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <meta property="og:url" content="{canonical}">
   <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
   <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{html.escape(page['title'])}">
+  <meta name="twitter:description" content="{html.escape(page['description'])}">
+  <meta name="twitter:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
   <meta name="geo.region" content="AU-VIC">
   <meta name="geo.placename" content="{html.escape(page['area'])}">
   <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
@@ -956,7 +968,24 @@ def build_home_jsonld():
                     "price": prod["priceAUD"],
                     "priceValidUntil": "2027-12-31",
                     "availability": "https://schema.org/InStock",
-                    "itemCondition": "https://schema.org/NewCondition"
+                    "itemCondition": "https://schema.org/NewCondition",
+                    "shippingDetails": {
+                        "@type": "OfferShippingDetails",
+                        "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "AU"},
+                        "deliveryTime": {
+                            "@type": "ShippingDeliveryTime",
+                            "handlingTime": {"@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY"},
+                            "transitTime": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 4, "unitCode": "DAY"}
+                        }
+                    },
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "AU",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                        "merchantReturnDays": 30,
+                        "returnMethod": "https://schema.org/ReturnByMail",
+                        "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
+                    }
                 }
             }
         })

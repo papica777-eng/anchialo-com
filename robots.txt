@@ -1,5 +1,16 @@
 User-agent: *
 Allow: /
+Disallow: /scraped_pages/
+Disallow: /server/
+Disallow: /labels/
+Disallow: /dashboard.html
+Disallow: /monitor.html
+Disallow: /ANCHIALO_Melbourne_Growth_Stack_Report_BG.html
+Disallow: /drive_page.html
+Disallow: /drive_folder_3.html
+Disallow: /vietnam_drive.html
+Disallow: /test_curve.html
+Disallow: /test_label_size.html
 
 # Google Search & Shopping Crawlers
 User-agent: Googlebot

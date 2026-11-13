@@ -110,7 +110,7 @@
   <script>
     const input = document.getElementById('apiUrlInput');
     const urlParam = new URLSearchParams(window.location.search).get('api');
-    const saved = urlParam || localStorage.getItem('anchialov2_api_url') || 'https://d8tepk57nhdpv1ieit2tbcdigk.ingress.m3a.eu-n-3.digitalfrontier.network';
+    const saved = urlParam || localStorage.getItem('anchialov2_api_url') || 'https://5kjovtrvrtdr16bp3ps4lgjot4.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
     input.value = saved;
     if (urlParam) localStorage.setItem('anchialov2_api_url', urlParam.replace(/\/$/, ''));
     let demoAutoEnabled = false;
