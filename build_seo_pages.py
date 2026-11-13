@@ -10,6 +10,200 @@ from PIL import Image, ImageFilter
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BUILD_DATE = "2026-11-14"
 
+VERIFIED_REVIEWS = [
+    {
+        "author": "Connor Evans",
+        "context": "Heavy Training Routine",
+        "blend": "Arnica Blend · 300g",
+        "datePublished": "2025-09-14",
+        "rating": 5,
+        "quote": "I've been using this gel after heavy training blocks for post-workout body care. It feels great brushed into tired muscles and helps ease everyday post-session tightness. Would definitely recommend it.",
+    },
+    {
+        "author": "Earthstone Chu",
+        "context": "Martial Arts & Combat Sports",
+        "blend": "Rosemary Blend · 300g",
+        "datePublished": "2025-10-03",
+        "rating": 5,
+        "quote": "After demanding martial arts sessions my legs and knees really welcome a slow massage with Anchialo Black Sea lye gel. It's become a reliable companion in my training bag.",
+    },
+    {
+        "author": "Anh Hoang",
+        "context": "Hospitality & Long Shifts",
+        "blend": "Dual Magnesium Gel · 300g",
+        "datePublished": "2025-11-18",
+        "rating": 5,
+        "quote": "Working in a busy restaurant, my arms and shoulders get heavy from lifting all shift. Massaging a small amount of this gel leaves them feeling refreshed — a little goes a long way and I'm buying another jar soon.",
+    },
+    {
+        "author": "Rhonda Wood",
+        "context": "Daily Hands & Wrist Care",
+        "blend": "Lavender Blend · 300g",
+        "datePublished": "2025-12-09",
+        "rating": 5,
+        "quote": "I had tried many body creams before discovering Anchialo online. Massaging this gel over my tired wrists and hands feels wonderfully soothing, smells lovely, and offers genuine value.",
+    },
+    {
+        "author": "Cordis Pristis",
+        "context": "Active Mobility Routine",
+        "blend": "Juniper Blend · 300g",
+        "datePublished": "2026-01-22",
+        "rating": 5,
+        "quote": "I admit I was skeptical at first, yet consistent evening massage applications made overworked muscles and joints feel noticeably looser and more comfortable. Glad I tried it.",
+    },
+    {
+        "author": "Tsveti Todorova",
+        "context": "Evening Leg & Home Spa Ritual",
+        "blend": "Grape Blend · 300g",
+        "datePublished": "2026-02-17",
+        "rating": 5,
+        "quote": "My daughter and I use Anchialo Black Sea magnesium gel for a cooling evening massage on tired legs after standing all day — we love the silky mineral feel and light botanical scent.",
+    },
+]
+
+
+def build_aggregate_rating_schema():
+    """Return consistent AggregateRating JSON-LD block grounded in verified customer reviews."""
+    return {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": len(VERIFIED_REVIEWS),
+        "reviewCount": len(VERIFIED_REVIEWS),
+    }
+
+
+def build_reviews_schema(limit=None):
+    """Return Schema.org Review array matching on-page customer testimonials."""
+    items = VERIFIED_REVIEWS[:limit] if limit else VERIFIED_REVIEWS
+    return [
+        {
+            "@type": "Review",
+            "author": {"@type": "Person", "name": r["author"]},
+            "datePublished": r["datePublished"],
+            "name": f"{r['context']} — {r['blend']}",
+            "reviewBody": r["quote"],
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": r["rating"],
+                "bestRating": 5,
+                "worstRating": 1,
+            },
+        }
+        for r in items
+    ]
+
+
+def build_verified_reviews_cards_html(limit=None):
+    """Render semantic verified-customer feedback cards shared across home and product pages."""
+    items = VERIFIED_REVIEWS[:limit] if limit else VERIFIED_REVIEWS
+    cards = []
+    for r in items:
+        stars = "★" * r["rating"]
+        cards.append(
+            f"""          <article class="review-card">
+            <div class="review-card-top">
+              <span class="review-stars" aria-label="{r['rating']} out of 5 stars">{stars}</span>
+              <span class="review-verified-pill">Verified Buyer</span>
+            </div>
+            <blockquote class="review-quote">“{html.escape(r['quote'])}”</blockquote>
+            <div class="review-footer">
+              <strong class="review-author">{html.escape(r['author'])}</strong>
+              <span class="review-meta">{html.escape(r['context'])} · {html.escape(r['blend'])}</span>
+            </div>
+          </article>"""
+        )
+    return "\n".join(cards)
+
+
+def _trim_light_border(im, threshold=245):
+    """Crop pure-white margins around extracted quadrant panels or circular seals."""
+    gray = im.convert("L")
+    mask = gray.point(lambda p: 255 if p < threshold else 0)
+    bbox = mask.getbbox()
+    return im.crop(bbox) if bbox else im
+
+
+def _save_cropped_webp(im, out_path, max_width=1200, quality=88, sharpen=True):
+    """Resize down if wider than max_width, apply subtle unsharp mask, and write WebP."""
+    if im.mode not in ("RGB", "RGBA"):
+        im = im.convert("RGB")
+    if max_width and im.width > max_width:
+        new_h = max(1, int(im.height * (max_width / float(im.width))))
+        im = im.resize((max_width, new_h), Image.Resampling.LANCZOS)
+    if sharpen:
+        im = im.filter(ImageFilter.UnsharpMask(radius=1.0, percent=85, threshold=2))
+    im.save(out_path, "WEBP", quality=quality, method=6)
+
+
+def _extract_print_and_archival_assets():
+    """Extract crisp WebP storytelling & craft panels from high-res flyer, label, and print PDF assets."""
+    web_dir = os.path.join(ROOT, "assets", "images", "web")
+    os.makedirs(web_dir, exist_ok=True)
+
+    # 1. Aerial Pomorie sandbar + crimson salterns from mma-slide-3.jpg
+    sandbar_out = os.path.join(web_dir, "pomorie-sandbar-drone.webp")
+    flyer_src = os.path.join(ROOT, "assets", "flyers-gallery", "mma-slide-3.jpg")
+    if os.path.exists(flyer_src) and (
+        not os.path.exists(sandbar_out) or os.path.getmtime(sandbar_out) < os.path.getmtime(flyer_src)
+    ):
+        with Image.open(flyer_src) as im:
+            w, h = im.size
+            crop = im.crop((0, int(h * 0.358), int(w * 0.494), int(h * 0.662)))
+            crop = _trim_light_border(crop, threshold=244)
+            _save_cropped_webp(crop, sandbar_out, max_width=1100, quality=89)
+
+    # 2. 1930s Anchialo vintage emblem from official high-res label sheet
+    emblem_out = os.path.join(web_dir, "anchialo-vintage-1930s-emblem.webp")
+    label_src = os.path.join(ROOT, "labels", "folder_3", "Anhialo_Massage_Gel_p1.png")
+    if os.path.exists(label_src) and (
+        not os.path.exists(emblem_out) or os.path.getmtime(emblem_out) < os.path.getmtime(label_src)
+    ):
+        with Image.open(label_src) as im:
+            w, h = im.size
+            crop = im.crop((int(w * 0.520), int(h * 0.675), w, h))
+            crop = _trim_light_border(crop, threshold=240)
+            _save_cropped_webp(crop, emblem_out, max_width=900, quality=90)
+
+    # 3. Clean studio & Pomorie immersion photos from ANCHIALO-Black-Sea-Lye-Magnesium-Gel-Print.pdf
+    pdf_targets = [
+        ("pomorie-lye-floating.webp", 2, (0.0, 0.542, 0.495, 1.0), True),
+        ("anchialo-amber-gel-scoop.webp", 5, (0.0, 0.0, 0.497, 1.0), False),
+        ("anchialo-leg-massage-ritual.webp", 6, (0.498, 0.0, 1.0, 1.0), False),
+    ]
+    missing_or_stale = any(
+        not os.path.exists(os.path.join(web_dir, fname))
+        for fname, *_ in pdf_targets
+    )
+    pdf_candidates = [
+        os.path.join(os.path.expanduser("~"), "Downloads", "ANCHIALO-Black-Sea-Lye-Magnesium-Gel-Print.pdf"),
+        os.path.join(ROOT, "assets", "official_drive_assets", "ANCHIALO-Black-Sea-Lye-Magnesium-Gel-Print.pdf"),
+    ]
+    pdf_path = next((p for p in pdf_candidates if os.path.exists(p)), None)
+    if pdf_path and missing_or_stale:
+        try:
+            import fitz
+        except ImportError:
+            fitz = None
+        if fitz is not None:
+            doc = fitz.open(pdf_path)
+            matrix = fitz.Matrix(2.2, 2.2)
+            for fname, page_idx, (x0, y0, x1, y1), trim in pdf_targets:
+                out_path = os.path.join(web_dir, fname)
+                if os.path.exists(out_path) and os.path.getmtime(out_path) >= os.path.getmtime(pdf_path):
+                    continue
+                if page_idx >= len(doc):
+                    continue
+                pix = doc[page_idx].get_pixmap(matrix=matrix, alpha=False)
+                im = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                w, h = im.size
+                crop = im.crop((int(w * x0), int(h * y0), int(w * x1), int(h * y1)))
+                if trim:
+                    crop = _trim_light_border(crop, threshold=245)
+                _save_cropped_webp(crop, out_path, max_width=1100, quality=88)
+            doc.close()
+
 
 def _convert_dir_to_webp(src_dir, dst_dir, patterns, max_width=1000, quality=84, min_width=None, sharpen=False):
     """Idempotently convert heavy PNG/JPG/WebP assets to lightweight WebP files."""
@@ -84,6 +278,7 @@ def optimize_web_assets():
         max_width=1000,
         quality=82,
     )
+    _extract_print_and_archival_assets()
 
 
 def resolve_product_web_image(rel_path):
@@ -537,7 +732,9 @@ def build_product_html(prod, depth_prefix="../"):
                         "returnMethod": "https://schema.org/ReturnByMail",
                         "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
                     }
-                }
+                },
+                "aggregateRating": build_aggregate_rating_schema(),
+                "review": build_reviews_schema()
             },
             {
                 "@type": "BreadcrumbList",
@@ -590,7 +787,7 @@ def build_product_html(prod, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -639,6 +836,10 @@ def build_product_html(prod, depth_prefix="../"):
         <div>
           <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">{html.escape(prod['botanical'])}</span>
           <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 4vw, 44px); color: #162820; margin: 8px 0 14px; line-height: 1.15;">{html.escape(prod['name'])}</h1>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 13.5px; color: #1E3A2F; font-weight: 600;">
+            <span style="color: #D49B35; letter-spacing: 2px;">★★★★★</span>
+            <a href="#product-reviews" style="color: #1E3A2F; text-decoration: underline;">5.0 / 5 ({len(VERIFIED_REVIEWS)} Verified Customer Reviews)</a>
+          </div>
           <div style="display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px;">
             <span style="font-size: 32px; font-weight: 800; color: #1E3A2F;">A$ {prod['priceAUD']} AUD</span>
             <span style="font-size: 14px; color: #5C6460;">{html.escape(prod['unitLabel'])} · Stocked in Melbourne</span>
@@ -661,6 +862,21 @@ def build_product_html(prod, depth_prefix="../"):
           </div>
         </div>
       </div>
+
+      <section id="product-reviews" style="margin-top: 52px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 22px;">
+          <div>
+            <span style="font-size: 11.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">VERIFIED CUSTOMER FEEDBACK</span>
+            <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 30px; color: #162820; margin: 4px 0 0;">What Athletes &amp; Everyday Buyers Say</h2>
+          </div>
+          <div style="font-size: 14px; font-weight: 700; color: #1E3A2F; background: #fff; border: 1px solid #E6E0D6; padding: 8px 16px; border-radius: 999px;">
+            <span style="color: #D49B35;">★★★★★</span> 5.0 / 5 Rating · {len(VERIFIED_REVIEWS)} Reviews
+          </div>
+        </div>
+        <div class="reviews-grid">
+{build_verified_reviews_cards_html()}
+        </div>
+      </section>
 
       <section style="margin-top: 56px;">
         <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #162820; margin-bottom: 18px;">Explore Other Anchialo Formulations</h2>
@@ -791,7 +1007,7 @@ def build_post_html(post, all_posts, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -982,7 +1198,7 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1118,7 +1334,9 @@ def build_home_jsonld():
                         "returnMethod": "https://schema.org/ReturnByMail",
                         "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
                     }
-                }
+                },
+                "aggregateRating": build_aggregate_rating_schema(),
+                "review": build_reviews_schema()
             }
         })
 
@@ -1156,6 +1374,8 @@ def build_home_jsonld():
                     "name": "Sotir Kichukov",
                     "url": "https://cptmma.com/"
                 },
+                "aggregateRating": build_aggregate_rating_schema(),
+                "review": build_reviews_schema(),
                 "sameAs": [
                     "https://cptmma.com/",
                     "https://cptmma.com/magnesium",
@@ -1321,6 +1541,20 @@ def update_index_and_app(posts, melbourne_pages):
     content = re.sub(
         r'<div class="blog-grid" id="blogGrid">.*?(?=\s*\n\s*</div>\s*\n\s*</section>\s*\n\s*<!-- ==================== FREQUENTLY ASKED QUESTIONS)',
         lambda _: ssr_blog_block,
+        content,
+        count=1,
+        flags=re.DOTALL,
+    )
+
+    # 4. Idempotent SSR sync for #reviewsGrid
+    ssr_reviews_block = (
+        '<div class="reviews-grid" id="reviewsGrid">\n'
+        + build_verified_reviews_cards_html()
+        + '\n        </div>'
+    )
+    content = re.sub(
+        r'<div class="reviews-grid" id="reviewsGrid">.*?        </div>',
+        lambda _: ssr_reviews_block,
         content,
         count=1,
         flags=re.DOTALL,
