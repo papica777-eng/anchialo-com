@@ -41,9 +41,18 @@ def optimize_web_assets():
     _convert_dir_to_webp(
         os.path.join(ROOT, "assets", "images"),
         os.path.join(ROOT, "assets", "images", "web"),
-        ("pomorie-salterns-lake.jpg", "pomorie-lye-harvest.jpg"),
+        ("pomorie-lye-harvest.jpg",),
         max_width=1440,
         quality=94,
+    )
+    _convert_dir_to_webp(
+        os.path.join(ROOT, "assets", "images"),
+        os.path.join(ROOT, "assets", "images", "web"),
+        ("pomorie-salterns-lake.jpg",),
+        max_width=1920,
+        min_width=1920,
+        quality=95,
+        sharpen=True,
     )
     _convert_dir_to_webp(
         os.path.join(ROOT, "assets", "images"),
