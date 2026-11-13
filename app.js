@@ -7,12 +7,29 @@
   'use strict';
 
   // ==================== MERCHANT & BACKEND CONFIGURATION ====================
+  const DEFAULT_API_BASE = 'https://5kjovtrvrtdr16bp3ps4lgjot4.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
+  const STALE_AKASH_RE = /(?:d8tepk57nhdpv1ieit2tbcdigk|3qhrsl97upfn9bh51gdj5hkcvk|digitalfrontier\.network|froggy-servers\.com)/i;
+
+  function resolveApiBaseUrl() {
+    if (typeof window === 'undefined') return DEFAULT_API_BASE;
+    try {
+      const saved = localStorage.getItem('anchialov2_api_url') || '';
+      if (saved && STALE_AKASH_RE.test(saved)) {
+        localStorage.removeItem('anchialov2_api_url');
+      }
+      const override = window.ANCHIALO_API_URL || localStorage.getItem('anchialov2_api_url') || '';
+      const clean = override.trim().replace(/\/+$/, '');
+      if (clean && !STALE_AKASH_RE.test(clean)) return clean;
+    } catch (_) {}
+    return DEFAULT_API_BASE;
+  }
+
   const MERCHANT_CONFIG = {
     brandName: 'ANCHIALO Australia',
     distributorName: 'Sotir Kichukov · CPT MMA Melbourne',
     abn: '', // Populate verified Australian Business Number when active
     gstRegistered: false, // Set true only when ABN is registered for Australian GST
-    apiBaseUrl: (typeof window !== 'undefined' && (window.ANCHIALO_API_URL || localStorage.getItem('anchialov2_api_url'))) || 'https://5kjovtrvrtdr16bp3ps4lgjot4.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so'
+    apiBaseUrl: resolveApiBaseUrl()
   };
 
   // Partner QR & Welcome Discount Registry (10% privilege on eligible codes)
@@ -94,8 +111,8 @@
       fullName: 'ARNICA BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#d97706',
       heroJar: 'assets/images/products/web/06_file_transp.webp',
-      lidImg: 'assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png',
-      sideImg: 'assets/official_labels_rendered/side_label_grey_arnica_v12.png',
+      lidImg: 'assets/official_labels_rendered/web/anhialo_massage_gel_arnica_top_fv17.webp',
+      sideImg: 'assets/official_labels_rendered/web/side_label_grey_arnica_v12.webp',
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Arnica v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Arnica Top Fv17.pdf',
       botanical: 'Arnica Montana Flower Extract',
@@ -109,8 +126,8 @@
       fullName: 'LAVENDER BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#7c3aed',
       heroJar: 'assets/images/products/web/01_file_transp.webp',
-      lidImg: 'assets/official_labels_rendered/anhialo_massage_gel_lavender_top_fv17.png',
-      sideImg: 'assets/official_labels_rendered/side_label_grey_lavender_v12.png',
+      lidImg: 'assets/official_labels_rendered/web/anhialo_massage_gel_lavender_top_fv17.webp',
+      sideImg: 'assets/official_labels_rendered/web/side_label_grey_lavender_v12.webp',
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Lavender v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Lavender Top Fv17.pdf',
       botanical: 'Lavandula Angustifolia Essential Flower Extract',
@@ -124,8 +141,8 @@
       fullName: 'ROSEMARY BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#059669',
       heroJar: 'assets/images/products/web/04_file_transp.webp',
-      lidImg: 'assets/official_labels_rendered/anhialo_massage_gel_rosemary_top_fv17.png',
-      sideImg: 'assets/official_labels_rendered/side_label_grey_rosemary_v12.png',
+      lidImg: 'assets/official_labels_rendered/web/anhialo_massage_gel_rosemary_top_fv17.webp',
+      sideImg: 'assets/official_labels_rendered/web/side_label_grey_rosemary_v12.webp',
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Rosemary v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Rosemary Top Fv17.pdf',
       botanical: 'Rosmarinus Officinalis Leaf Powder Extract',
@@ -139,8 +156,8 @@
       fullName: 'JUNIPER BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#0284c7',
       heroJar: 'assets/images/products/web/07_file_transp.webp',
-      lidImg: 'assets/official_labels_rendered/anhialo_massage_gel_juniper_top_fv17.png',
-      sideImg: 'assets/official_labels_rendered/side_label_grey_juniper_v12.png',
+      lidImg: 'assets/official_labels_rendered/web/anhialo_massage_gel_juniper_top_fv17.webp',
+      sideImg: 'assets/official_labels_rendered/web/side_label_grey_juniper_v12.webp',
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Juniper v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Juniper Top Fv17.pdf',
       botanical: 'Juniperus Chinensis Leaf Extract & Fruit Oil',
@@ -154,8 +171,8 @@
       fullName: 'GRAPE BLEND — DUAL MAGNESIUM COMPLEX',
       accentColor: '#9d174d',
       heroJar: 'assets/images/products/web/03_file_transp.webp',
-      lidImg: 'assets/official_labels_rendered/anhialo_massage_gel_grape_top_fv17.png',
-      sideImg: 'assets/official_labels_rendered/side_label_grey_grape_v12.png',
+      lidImg: 'assets/official_labels_rendered/web/anhialo_massage_gel_grape_top_fv17.webp',
+      sideImg: 'assets/official_labels_rendered/web/side_label_grey_grape_v12.webp',
       sidePdf: 'assets/official_drive_assets/labels/Side Label Grey Grape v12.pdf',
       lidPdf: 'assets/official_drive_assets/labels/Anhialo Massage Gel_Grape Top Fv17.pdf',
       botanical: 'Vitis Vinifera (Grape) Seed Polyphenol Extract',
@@ -688,17 +705,25 @@
   }
 
   async function postBackendEvent(path, payload) {
-    const base = (MERCHANT_CONFIG.apiBaseUrl || '').replace(/\/+$/, '');
-    if (!base) return null;
-    try {
-      const res = await fetch(`${base}${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) return await res.json();
-    } catch (err) {
-      console.warn(`[Anchialo Sync] ${path} offline fallback:`, err);
+    const primary = (MERCHANT_CONFIG.apiBaseUrl || DEFAULT_API_BASE).replace(/\/+$/, '');
+    const candidates = primary === DEFAULT_API_BASE ? [primary] : [primary, DEFAULT_API_BASE];
+    for (const base of candidates) {
+      try {
+        const res = await fetch(`${base}${path}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          if (base === DEFAULT_API_BASE && primary !== DEFAULT_API_BASE) {
+            MERCHANT_CONFIG.apiBaseUrl = DEFAULT_API_BASE;
+            try { localStorage.removeItem('anchialov2_api_url'); } catch (_) {}
+          }
+          return await res.json();
+        }
+      } catch (err) {
+        console.warn(`[Anchialo Sync] ${base}${path} fallback:`, err);
+      }
     }
     return null;
   }
@@ -884,14 +909,14 @@
     const featured = STATE.blogPosts.slice(0, 6);
 
     grid.innerHTML = featured.map((post, idx) => {
-      const imgUrl = (post.image && post.image.url) ? post.image.url : 'assets/images/blog/01_blog.png';
+      const imgUrl = (post.image && post.image.url) ? post.image.url : 'assets/images/blog/web/01_7336c1_cd82bf5be33d41c58aba06de51a60164_mv2.webp';
       const author = post.author || 'Sotir Kichukov';
       const desc = post.description || '';
 
       return `
         <div class="blog-card">
           <div class="blog-card-thumb">
-            <img src="${imgUrl}" alt="${post.title}" loading="lazy">
+            <img src="${imgUrl}" alt="${post.title}" loading="lazy" decoding="async">
           </div>
           <div class="blog-card-body">
             <span class="blog-card-meta">BALNEOLOGY REPORT · ${author}</span>
@@ -985,7 +1010,7 @@
     const stripeBtn = document.getElementById('btnStripeCheckout');
     if (stripeBtn) {
       stripeBtn.addEventListener('click', async (e) => {
-        const base = (MERCHANT_CONFIG.apiBaseUrl || '').replace(/\/+$/, '');
+        const base = (MERCHANT_CONFIG.apiBaseUrl || DEFAULT_API_BASE).replace(/\/+$/, '');
         if (!base || !STATE.cart.length) return; // Fall through seamlessly to href Payment Link
         e.preventDefault();
         const origHtml = stripeBtn.innerHTML;
@@ -1480,7 +1505,7 @@
         btn.classList.add('active');
         const page = btn.getAttribute('data-page');
         if (certImg) {
-          certImg.src = `assets/official_labels_rendered/quality_certificate_page_${page}.png`;
+          certImg.src = `assets/official_labels_rendered/web/quality_certificate_page_${page}.webp`;
         }
       });
     });
@@ -1492,7 +1517,7 @@
           b.classList.toggle('active', b.getAttribute('data-page') === page);
         });
         if (certImg) {
-          certImg.src = `assets/official_labels_rendered/quality_certificate_page_${page}.png`;
+          certImg.src = `assets/official_labels_rendered/web/quality_certificate_page_${page}.webp`;
         }
         if (certModal) certModal.classList.add('active');
       });

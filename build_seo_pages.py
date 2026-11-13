@@ -1,11 +1,89 @@
+import glob
 import html
 import json
 import os
 import re
 import urllib.parse
 
+from PIL import Image
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
-BUILD_DATE = "2026-11-11"
+BUILD_DATE = "2026-11-14"
+
+
+def _convert_dir_to_webp(src_dir, dst_dir, patterns, max_width=1000, quality=84):
+    """Idempotently convert heavy PNG/JPG/WebP assets to lightweight WebP files."""
+    if not os.path.isdir(src_dir):
+        return
+    os.makedirs(dst_dir, exist_ok=True)
+    for pat in patterns:
+        for src_path in sorted(glob.glob(os.path.join(src_dir, pat))):
+            stem = os.path.splitext(os.path.basename(src_path))[0]
+            out_path = os.path.join(dst_dir, f"{stem}.webp")
+            if os.path.exists(out_path) and os.path.getmtime(out_path) >= os.path.getmtime(src_path):
+                continue
+            with Image.open(src_path) as im:
+                if im.mode not in ("RGB", "RGBA"):
+                    im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
+                if max_width and im.width > max_width:
+                    new_h = max(1, int(im.height * (max_width / float(im.width))))
+                    im = im.resize((max_width, new_h), Image.Resampling.LANCZOS)
+                im.save(out_path, "WEBP", quality=quality, method=6)
+
+
+def optimize_web_assets():
+    """Ensure lightweight WebP derivatives exist for blog, labels, and flyer assets."""
+    _convert_dir_to_webp(
+        os.path.join(ROOT, "assets", "images", "blog"),
+        os.path.join(ROOT, "assets", "images", "blog", "web"),
+        ("*.png", "*.jpg", "*.jpeg", "*.webp"),
+        max_width=1000,
+        quality=82,
+    )
+    _convert_dir_to_webp(
+        os.path.join(ROOT, "assets", "official_labels_rendered"),
+        os.path.join(ROOT, "assets", "official_labels_rendered", "web"),
+        ("*.png",),
+        max_width=1100,
+        quality=85,
+    )
+    _convert_dir_to_webp(
+        os.path.join(ROOT, "assets", "flyers-gallery"),
+        os.path.join(ROOT, "assets", "flyers-gallery", "web"),
+        ("*.jpg", "*.jpeg", "*.png"),
+        max_width=1000,
+        quality=82,
+    )
+
+
+def resolve_product_web_image(rel_path):
+    """Map product PNG/JPG asset path to its compressed web/*.webp twin if present."""
+    norm = rel_path.replace("\\", "/").lstrip("/")
+    fname = os.path.splitext(os.path.basename(norm))[0] + ".webp"
+    cand = os.path.join(ROOT, "assets", "images", "products", "web", fname)
+    if os.path.exists(cand):
+        return f"assets/images/products/web/{fname}"
+    return norm
+
+
+def resolve_blog_local_image(url_or_path, index_hint=0):
+    """Map legacy wixstatic media URLs or blog asset paths to local WebP derivatives."""
+    web_dir = os.path.join(ROOT, "assets", "images", "blog", "web")
+    available = sorted(os.listdir(web_dir)) if os.path.isdir(web_dir) else []
+    raw = (url_or_path or "").strip()
+    m = re.search(r"([0-9a-f]+_[0-9a-f]+~mv2)", raw, re.IGNORECASE)
+    if m and available:
+        needle = m.group(1).replace("~", "_")
+        for fn in available:
+            if needle in fn:
+                return f"assets/images/blog/web/{fn}"
+    if "assets/images/blog/" in raw:
+        stem = os.path.splitext(os.path.basename(raw))[0]
+        if f"{stem}.webp" in available:
+            return f"assets/images/blog/web/{stem}.webp"
+    if available and 0 <= index_hint < len(available):
+        return f"assets/images/blog/web/{available[index_hint]}"
+    return "assets/images/products/web/06_file_transp.webp"
 
 PRODUCTS = [
     {
@@ -342,18 +420,35 @@ NICHE_AEO_PAGES = [
 
 
 def load_blog_posts():
-    with open(os.path.join(ROOT, "data", "blog_posts.json"), "r", encoding="utf-8") as f:
+    blog_path = os.path.join(ROOT, "data", "blog_posts.json")
+    with open(blog_path, "r", encoding="utf-8") as f:
         posts = json.load(f)
-    for p in posts:
+    changed = False
+    for idx, p in enumerate(posts):
         if not p.get("description") or len(p["description"].strip()) < 30:
             body_lines = [ln.strip() for ln in p.get("body_text", "").splitlines() if len(ln.strip()) > 60]
             p["description"] = body_lines[0][:240] if body_lines else p["title"]
+            changed = True
+        img_obj = p.get("image") if isinstance(p.get("image"), dict) else {}
+        orig_url = img_obj.get("url", "")
+        local_webp = resolve_blog_local_image(orig_url, idx)
+        if orig_url != local_webp:
+            img_obj["@type"] = img_obj.get("@type", "ImageObject")
+            img_obj["url"] = local_webp
+            p["image"] = img_obj
+            changed = True
+    if changed:
+        with open(blog_path, "w", encoding="utf-8") as f:
+            json.dump(posts, f, ensure_ascii=False, indent=2)
+            f.write("\n")
     return posts
 
 
 def build_product_html(prod, depth_prefix="../"):
     canonical = f"https://anchialo.com/product-page/{prod['slug']}"
     img_abs = f"https://anchialo.com/{prod['image']}"
+    web_img_rel = resolve_product_web_image(prod['image'])
+    shipping_val = "0.00" if float(prod["priceAUD"]) >= 80.0 else "15.00"
     wa_msg = f"Hi Sotir, I would like to order {prod['name']} (A$ {prod['priceAUD']} AUD) from anchialo.com."
     wa_url = f"https://wa.me/61423269586?text={urllib.parse.quote(wa_msg)}"
 
@@ -365,6 +460,7 @@ def build_product_html(prod, depth_prefix="../"):
                 "@id": f"{canonical}#product",
                 "name": prod["name"],
                 "sku": prod["sku"],
+                "mpn": prod["sku"],
                 "gtin13": prod["gtin13"],
                 "description": prod["description"],
                 "image": [img_abs, f"https://anchialo.com/{prod['lidImg']}"],
@@ -395,6 +491,7 @@ def build_product_html(prod, depth_prefix="../"):
                     },
                     "shippingDetails": {
                         "@type": "OfferShippingDetails",
+                        "shippingRate": {"@type": "MonetaryAmount", "value": shipping_val, "currency": "AUD"},
                         "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "AU"},
                         "deliveryTime": {
                             "@type": "ShippingDeliveryTime",
@@ -506,7 +603,7 @@ def build_product_html(prod, depth_prefix="../"):
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 48px; align-items: start; background: #fff; padding: 40px; border-radius: 24px; border: 1px solid #E6E0D6; box-shadow: 0 12px 32px rgba(30,58,47,0.06);">
         <div style="text-align: center; background: radial-gradient(circle at 50% 40%, #F4EFE6, #FAF7F2); border-radius: 18px; padding: 36px; border: 1px solid #EAE4DA;">
           <span style="display: inline-block; background: #1E3A2F; color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;">{html.escape(prod['badge'])}</span>
-          <img src="{depth_prefix}{prod['image']}" alt="{html.escape(prod['name'])}" style="max-width: 320px; width: 100%; height: auto; margin: 0 auto; display: block;">
+          <img src="{depth_prefix}{web_img_rel}" width="640" height="640" decoding="async" alt="{html.escape(prod['name'])}" style="max-width: 320px; width: 100%; height: auto; margin: 0 auto; display: block;">
         </div>
 
         <div>
@@ -581,7 +678,9 @@ def build_post_html(post, all_posts, depth_prefix="../"):
     desc = post.get("description", title)
     date_pub = post.get("datePublished", f"{BUILD_DATE}T00:00:00Z")[:10]
     date_mod = post.get("dateModified", date_pub)[:10]
-    img_url = post.get("image", {}).get("url", "https://anchialo.com/assets/images/products/06_file_transp.png")
+    img_rel = post.get("image", {}).get("url", "assets/images/products/web/06_file_transp.webp").lstrip("/")
+    img_url = img_rel if img_rel.startswith("http") else f"https://anchialo.com/{img_rel}"
+    img_local = img_rel if img_rel.startswith("http") else f"{depth_prefix}{img_rel}"
 
     raw_lines = [ln.strip() for ln in post.get("body_text", "").splitlines() if ln.strip()]
     filtered_lines = []
@@ -706,7 +805,7 @@ def build_post_html(post, all_posts, depth_prefix="../"):
         By <a href="https://cptmma.com/" style="color: #1E3A2F; font-weight: 600; text-decoration: none;">Sotir Kichukov</a> (ONE Championship Veteran &amp; Founder of CPT MMA Melbourne) · Lake Pomorie Mineral Archive
       </div>
 
-      <img src="{img_url}" alt="{html.escape(title)}" style="width: 100%; max-height: 440px; object-fit: cover; border-radius: 16px; margin-bottom: 32px;">
+      <img src="{img_local}" alt="{html.escape(title)}" loading="lazy" decoding="async" style="width: 100%; max-height: 440px; object-fit: cover; border-radius: 16px; margin-bottom: 32px;">
 
       <div class="article-content">
         {body_html}
@@ -948,6 +1047,7 @@ def build_home_jsonld():
     item_elements = []
     for idx, prod in enumerate(PRODUCTS, start=1):
         canonical = f"https://anchialo.com/product-page/{prod['slug']}"
+        shipping_val = "0.00" if float(prod["priceAUD"]) >= 80.0 else "15.00"
         item_elements.append({
             "@type": "ListItem",
             "position": idx,
@@ -957,6 +1057,7 @@ def build_home_jsonld():
                 "name": prod["name"],
                 "url": canonical,
                 "sku": prod["sku"],
+                "mpn": prod["sku"],
                 "gtin13": prod["gtin13"],
                 "image": f"https://anchialo.com/{prod['image']}",
                 "description": prod["description"],
@@ -971,6 +1072,7 @@ def build_home_jsonld():
                     "itemCondition": "https://schema.org/NewCondition",
                     "shippingDetails": {
                         "@type": "OfferShippingDetails",
+                        "shippingRate": {"@type": "MonetaryAmount", "value": shipping_val, "currency": "AUD"},
                         "shippingDestination": {"@type": "DefinedRegion", "addressCountry": "AU"},
                         "deliveryTime": {
                             "@type": "ShippingDeliveryTime",
@@ -1151,11 +1253,12 @@ def update_index_and_app(posts, melbourne_pages):
     # 2. Idempotent SSR replacement for #productsGrid
     ssr_products = []
     for prod in PRODUCTS:
+        web_img = resolve_product_web_image(prod["image"])
         wa_msg = urllib.parse.quote(f"Hi Sotir, I would like to order {prod['name']} (A$ {prod['priceAUD']} AUD). Please confirm delivery / Melbourne pickup.")
         ssr_products.append(f"""          <div class="product-card">
             <div class="product-thumb">
               <span class="product-flag">{html.escape(prod['badge'])}</span>
-              <a href="product-page/{prod['slug']}" title="{html.escape(prod['name'])}"><img src="{prod['image']}" alt="{html.escape(prod['name'])}" loading="lazy"></a>
+              <a href="product-page/{prod['slug']}" title="{html.escape(prod['name'])}"><img src="{web_img}" width="640" height="640" alt="{html.escape(prod['name'])}" loading="lazy" decoding="async"></a>
             </div>
             <div class="product-body">
               <h3 class="product-name"><a href="product-page/{prod['slug']}" style="color:inherit;text-decoration:none;">{html.escape(prod['name'])}</a></h3>
@@ -1183,10 +1286,10 @@ def update_index_and_app(posts, melbourne_pages):
     # 3. Idempotent SSR replacement for #blogGrid + journal archive + Melbourne local hub nav
     ssr_blogs = []
     for idx, post in enumerate(posts[:6]):
-        img_url = post.get("image", {}).get("url", "assets/images/products/06_file_transp.png")
+        img_url = post.get("image", {}).get("url", "assets/images/products/web/06_file_transp.webp")
         ssr_blogs.append(f"""          <div class="blog-card">
             <div class="blog-card-thumb">
-              <a href="post/{post['slug']}"><img src="{img_url}" alt="{html.escape(post['title'])}" loading="lazy"></a>
+              <a href="post/{post['slug']}"><img src="{img_url}" alt="{html.escape(post['title'])}" loading="lazy" decoding="async"></a>
             </div>
             <div class="blog-card-body">
               <span class="blog-card-meta">BALNEOLOGY REPORT · Sotir Kichukov</span>
@@ -1233,6 +1336,7 @@ def update_index_and_app(posts, melbourne_pages):
 
 
 def main():
+    optimize_web_assets()
     posts = load_blog_posts()
     melbourne_pages = build_melbourne_pages_data()
 

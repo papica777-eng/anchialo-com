@@ -108,11 +108,20 @@
   </div>
 
   <script>
+    const DEFAULT_API_BASE = 'https://5kjovtrvrtdr16bp3ps4lgjot4.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
+    const STALE_AKASH_RE = /(?:d8tepk57nhdpv1ieit2tbcdigk|3qhrsl97upfn9bh51gdj5hkcvk|digitalfrontier\.network|froggy-servers\.com)/i;
     const input = document.getElementById('apiUrlInput');
     const urlParam = new URLSearchParams(window.location.search).get('api');
-    const saved = urlParam || localStorage.getItem('anchialov2_api_url') || 'https://5kjovtrvrtdr16bp3ps4lgjot4.ingress.h6i-dedicated.eu-se-1.digitalfrontier.so';
+    let stored = localStorage.getItem('anchialov2_api_url') || '';
+    if (stored && STALE_AKASH_RE.test(stored)) {
+      localStorage.removeItem('anchialov2_api_url');
+      stored = '';
+    }
+    const saved = (urlParam || stored || DEFAULT_API_BASE).replace(/\/+$/, '');
     input.value = saved;
-    if (urlParam) localStorage.setItem('anchialov2_api_url', urlParam.replace(/\/$/, ''));
+    if (urlParam && !STALE_AKASH_RE.test(urlParam)) {
+      localStorage.setItem('anchialov2_api_url', urlParam.replace(/\/+$/, ''));
+    }
     let demoAutoEnabled = false;
 
     function getBaseUrl() {
