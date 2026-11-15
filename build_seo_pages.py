@@ -354,7 +354,7 @@ PRODUCTS = [
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, LAVANDULA ANGUSTIFOLIA FLOWER EXTRACT.",
         "description": "Topical Magnesium Gel enriched with authentic Bulgarian Lavender, 253.14 g/L Magnesium Chloride, and 70.36 g/L Magnesium Sulfate to ease muscle tension and support deep evening relaxation. 300g net.",
         "benefits": [
-            "Targeted topical magnesium application for evening muscle relaxation, restless legs, and nighttime comfort",
+            "Targeted topical magnesium application for evening muscle relaxation, tired legs, and nighttime comfort",
             "Dual Magnesium synergy: concentrated Magnesium Chloride (253.14 g/L) + Magnesium Sulfate (70.36 g/L)",
             "Pure Bulgarian Lavender botanical extract promoting a calm nervous system and restful wind-down ritual",
             "Physiological skin pH 6.9, non-sticky gel texture, zero parabens or artificial fragrances"
@@ -593,6 +593,12 @@ MELBOURNE_SUBURBS = [
     ("point-cook", "Point Cook", "VIC 3030", "Bayside West Trainers & Families", "Australian-stocked Black Sea magnesium body care delivered quickly to Point Cook."),
     ("geelong", "Geelong", "VIC 3220", "Regional VIC Surf Coast & Gyms", "Next-day regional Express Post from Melbourne to Geelong, Torquay, and Surf Coast athletes."),
     ("ballarat", "Ballarat", "VIC 3350", "Regional VIC Track, Gym & Winter Baths", "Warm evening mineral massage rituals and Express dispatch from Melbourne to Ballarat."),
+    ("sydney-nsw", "Sydney CBD & NSW", "NSW 2000", "New South Wales Express Delivery Hub", "Australia Post Express dispatch from our Melbourne hub to Sydney CBD, Bondi, Manly, Parramatta, and across New South Wales."),
+    ("brisbane-qld", "Brisbane & Gold Coast", "QLD 4000", "Queensland Athletic Recovery Hub", "Direct 2–3 business day Express shipping from Melbourne to Brisbane, Gold Coast, Sunshine Coast, and Queensland combat gyms."),
+    ("perth-wa", "Perth & Western Australia", "WA 6000", "Western Australia Fast Air Express", "Reliable Australia Post Express delivery across Perth, Fremantle, and WA for active runners, surfers, and trades."),
+    ("adelaide-sa", "Adelaide & South Australia", "SA 5000", "South Australia Mineral Care Hub", "Quick interstate parcel delivery from Melbourne to Adelaide, North Adelaide, Norwood, and South Australian fitness studios."),
+    ("gold-coast-qld", "Gold Coast & Surfers Paradise", "QLD 4217", "Coastal Training & Muscle Recovery", "Fast Express delivery for Gold Coast combat fighters, triathletes, and beach fitness communities."),
+    ("canberra-act", "Canberra & ACT", "ACT 2600", "ACT Government & Athletic Recovery", "Fast Express delivery to Canberra, Belconnen, Barton, and ACT running trails and gyms."),
 ]
 
 NICHE_AEO_PAGES = [
@@ -770,6 +776,9 @@ def build_product_html(prod, depth_prefix="../"):
   <meta name="description" content="{html.escape(prod['description'])}">
   <meta name="keywords" content="Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia, post-workout recovery">
   <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta property="og:type" content="product">
   <meta property="og:title" content="{html.escape(prod['title'])}">
@@ -1007,6 +1016,9 @@ def build_post_html(post, all_posts, depth_prefix="../"):
   <title>{html.escape(title)} | ANCHIALO Balneology Journal</title>
   <meta name="description" content="{html.escape(desc)}">
   <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta property="og:type" content="article">
   <meta property="og:title" content="{html.escape(title)}">
@@ -1114,6 +1126,458 @@ def build_post_html(post, all_posts, depth_prefix="../"):
 """
 
 
+def build_product_catalog_hub_html(products, depth_prefix="../"):
+    canonical = "https://anchialo.com/product-page/"
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": f"{canonical}#collection",
+                "name": "Certified Dual Magnesium Collection Australia | ANCHIALO",
+                "description": "Complete catalog of certified Bulgarian Black Sea Magnesium Gels and Pure Mineral Oil (253.14 g/L MgCl2 & 70.36 g/L MgSO4) stocked in Melbourne, Australia.",
+                "url": canonical,
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "ANCHIALO Australia", "item": "https://anchialo.com/"},
+                        {"@type": "ListItem", "position": 2, "name": "Products Collection", "item": canonical}
+                    ]
+                }
+            },
+            {
+                "@type": "ItemList",
+                "@id": f"{canonical}#itemlist",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": idx,
+                        "name": p["name"],
+                        "url": f"https://anchialo.com/product-page/{p['slug']}"
+                    }
+                    for idx, p in enumerate(products, start=1)
+                ]
+            }
+        ]
+    }
+
+    cards_html = []
+    for prod in products:
+        web_img = resolve_product_web_image(prod["image"])
+        wa_msg = urllib.parse.quote(f"Hi Sotir, I would like to order {prod['name']} (A$ {prod['priceAUD']} AUD) from anchialo.com.")
+        cards_html.append(f"""
+          <article class="product-card" style="background:#fff; border-radius:20px; overflow:hidden; border:1px solid #E6E0D6; box-shadow:0 8px 24px rgba(30,58,47,0.05); display:flex; flex-direction:column;">
+            <div style="position:relative; background:#FAF7F2; padding:24px; text-align:center;">
+              <span style="position:absolute; top:14px; left:14px; background:#1E3A2F; color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px;">{html.escape(prod['badge'])}</span>
+              <a href="{depth_prefix}product-page/{prod['slug']}"><img src="{depth_prefix}{web_img}" alt="{html.escape(prod['name'])}" style="max-height:220px; width:auto; object-fit:contain;" loading="lazy"></a>
+            </div>
+            <div style="padding:24px; display:flex; flex-direction:column; flex:1; justify-content:space-between;">
+              <div>
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:22px; color:#162820; margin:0 0 8px;"><a href="{depth_prefix}product-page/{prod['slug']}" style="color:inherit; text-decoration:none;">{html.escape(prod['name'])}</a></h3>
+                <div style="font-size:18px; font-weight:700; color:#1E3A2F; margin-bottom:10px;">A$ {prod['priceAUD']} AUD <span style="font-size:13px; font-weight:400; color:#6B7280;">{html.escape(prod['unitLabel'])}</span></div>
+                <p style="font-size:13.5px; color:#4A5550; line-height:1.6; margin-bottom:16px;">{html.escape(prod['description'][:150])}...</p>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="{depth_prefix}product-page/{prod['slug']}" style="flex:1; background:#1E3A2F; color:#fff; text-align:center; padding:10px 14px; border-radius:999px; text-decoration:none; font-size:13.5px; font-weight:700;">View Product →</a>
+                <a href="https://wa.me/61423269586?text={wa_msg}" target="_blank" rel="noopener" style="background:#F3EFEA; color:#1E3A2F; border:1px solid #C8B99E; padding:10px 14px; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600;">WhatsApp</a>
+              </div>
+            </div>
+          </article>""")
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certified Dual Magnesium Products Catalog (9 Formulations) | ANCHIALO Australia</title>
+  <meta name="description" content="Explore the full collection of authentic Bulgarian Black Sea Magnesium Gels and Pure Mineral Brine (253.14 g/L MgCl2 + 70.36 g/L MgSO4) stocked in Melbourne, Australia.">
+  <meta name="keywords" content="Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia">
+  <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/products/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Certified Dual Magnesium Products Catalog | ANCHIALO Australia">
+  <meta property="og:description" content="Explore the full collection of authentic Bulgarian Black Sea Magnesium Gels and Pure Mineral Brine stocked in Melbourne.">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ 100% NATURAL SOLAR HARVEST</span>
+      <p class="announcement-text">Dual Magnesium Formula (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · FREE Express Delivery Across Australia on Orders Over $80</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}post/">Balneology Journal</a>
+        <a href="{depth_prefix}melbourne/">Regional Hubs</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 1140px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>Products Catalog</span>
+      </nav>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">OFFICIAL AUSTRALIAN PRODUCT CATALOG</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4.5vw, 52px); color: #162820; margin: 12px 0 16px;">Certified Dual Magnesium Formulations</h1>
+        <p style="font-size: 16.5px; color: #4A5550; max-width: 720px; margin: 0 auto; line-height: 1.7;">Solar-evaporated Lake Pomorie Black Sea brine providing high-density Magnesium Chloride &amp; Magnesium Sulfate. Dispatched same-day or next-day from Melbourne across Australia.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        {''.join(cards_html)}
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
+def build_journal_hub_html(posts, depth_prefix="../"):
+    canonical = "https://anchialo.com/post/"
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": f"{canonical}#journal",
+                "name": "Balneology & Recovery Journal Archive | ANCHIALO Australia",
+                "description": "Comprehensive research archive on Lake Pomorie mineral lye, topical magnesium chloride/sulfate synergy, athletic recovery, and skincare rituals by Sotir Kichukov.",
+                "url": canonical,
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "ANCHIALO Australia", "item": "https://anchialo.com/"},
+                        {"@type": "ListItem", "position": 2, "name": "Balneology Journal", "item": canonical}
+                    ]
+                }
+            },
+            {
+                "@type": "ItemList",
+                "@id": f"{canonical}#articles",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": idx,
+                        "name": p["title"],
+                        "url": f"https://anchialo.com/post/{p['slug']}"
+                    }
+                    for idx, p in enumerate(posts, start=1)
+                ]
+            }
+        ]
+    }
+
+    cards_html = []
+    for post in posts:
+        img_url = post.get("image", {}).get("url", "assets/images/products/web/06_file_transp.webp")
+        cards_html.append(f"""
+          <article style="background:#fff; border-radius:20px; overflow:hidden; border:1px solid #E6E0D6; box-shadow:0 8px 24px rgba(30,58,47,0.05); display:flex; flex-direction:column;">
+            <a href="{depth_prefix}post/{post['slug']}"><img src="{depth_prefix}{img_url}" alt="{html.escape(post['title'])}" style="width:100%; height:200px; object-fit:cover;" loading="lazy"></a>
+            <div style="padding:22px; display:flex; flex-direction:column; flex:1; justify-content:space-between;">
+              <div>
+                <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#B4833E;">RESEARCH REPORT · SOTIR KICHUKOV</span>
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:22px; color:#162820; margin:8px 0 10px; line-height:1.25;"><a href="{depth_prefix}post/{post['slug']}" style="color:inherit; text-decoration:none;">{html.escape(post['title'])}</a></h3>
+                <p style="font-size:13.5px; color:#4A5550; line-height:1.6; margin-bottom:18px;">{html.escape(post.get('description', '')[:160])}...</p>
+              </div>
+              <a href="{depth_prefix}post/{post['slug']}" style="color:#1E3A2F; font-weight:700; text-decoration:none; font-size:14px;">Read Full Publication →</a>
+            </div>
+          </article>""")
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balneology &amp; Recovery Research Journal (16 Publications) | ANCHIALO Australia</title>
+  <meta name="description" content="Read 16 original research publications and guides authored by Sotir Kichukov exploring Black Sea magnesium lye, transdermal mineral absorption, and athletic muscle recovery.">
+  <meta name="keywords" content="Balneotherapy, Black Sea lye, Magnesium gel, Muscle recovery, Sotir Kichukov, Lake Pomorie mineral research, Australia">
+  <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Balneology &amp; Recovery Research Journal | ANCHIALO Australia">
+  <meta property="og:description" content="16 original research publications and practical guides exploring Black Sea magnesium lye, transdermal absorption, and athletic recovery.">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ POMORIE BALNEOLOGY JOURNAL</span>
+      <p class="announcement-text">Certified Dual Magnesium (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · Official Australian Store ($49 AUD)</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · POMORIE</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}product-page/">Products Catalog</a>
+        <a href="{depth_prefix}melbourne/">Regional Hubs</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 1140px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>Balneology Journal</span>
+      </nav>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">BALNEOTHERAPY &amp; RECOVERY RESEARCH</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4.5vw, 52px); color: #162820; margin: 12px 0 16px;">The Balneology Journal Archive</h1>
+        <p style="font-size: 16.5px; color: #4A5550; max-width: 740px; margin: 0 auto; line-height: 1.7;">Original self-care guides, ancestral medical history, and clinical recovery protocols authored by ONE Championship fighter Sotir Kichukov exploring authentic Lake Pomorie mineral science.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+        {''.join(cards_html)}
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
+def build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../"):
+    canonical = "https://anchialo.com/melbourne/"
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": f"{canonical}#directory",
+                "name": "Melbourne & Australian Cities Magnesium Recovery Directory | ANCHIALO",
+                "description": "Directory of 111 regional delivery hubs, local gym partner pickup points, and sports recovery guides across Melbourne and Australian capital cities.",
+                "url": canonical,
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "ANCHIALO Australia", "item": "https://anchialo.com/"},
+                        {"@type": "ListItem", "position": 2, "name": "Regional Recovery Directory", "item": canonical}
+                    ]
+                }
+            },
+            {
+                "@type": "ItemList",
+                "@id": f"{canonical}#locations",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": idx,
+                        "name": p["h1"],
+                        "url": f"https://anchialo.com/melbourne/{p['slug']}"
+                    }
+                    for idx, p in enumerate(melbourne_pages, start=1)
+                ]
+            }
+        ]
+    }
+
+    suburb_cards = []
+    niche_cards = []
+    metro_cards = []
+
+    for p in melbourne_pages:
+        slug = p["slug"]
+        h1 = p["h1"]
+        desc = p["description"]
+        kicker = p["kicker"]
+        card = f"""
+          <div style="background:#fff; border-radius:16px; padding:20px; border:1px solid #E6E0D6; box-shadow:0 4px 16px rgba(30,58,47,0.04); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#B4833E;">{html.escape(kicker)}</span>
+              <h3 style="font-family:'Cormorant Garamond',serif; font-size:20px; color:#162820; margin:6px 0 10px; line-height:1.2;"><a href="{depth_prefix}melbourne/{slug}" style="color:inherit; text-decoration:none;">{html.escape(h1)}</a></h3>
+              <p style="font-size:13px; color:#5C6460; line-height:1.6; margin-bottom:14px;">{html.escape(desc[:140])}...</p>
+            </div>
+            <a href="{depth_prefix}melbourne/{slug}" style="color:#1E3A2F; font-size:13px; font-weight:700; text-decoration:none;">Explore Hub &amp; Fast Delivery →</a>
+          </div>"""
+
+        if slug in ("sydney-nsw", "brisbane-qld", "perth-wa", "adelaide-sa", "gold-coast-qld", "canberra-act"):
+            metro_cards.append(card)
+        elif p.get("kind") == "niche":
+            niche_cards.append(card)
+        else:
+            suburb_cards.append(card)
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topical Magnesium Recovery Directory Melbourne &amp; Australia (111 Hubs) | ANCHIALO</title>
+  <meta name="description" content="Complete directory of 111 Australian regional delivery hubs, Melbourne suburb clinic partners, and specialized athletic recovery guides. Dispatched from Melbourne.">
+  <meta name="keywords" content="Magnesium gel Melbourne, Magnesium oil Australia, Sydney, Brisbane, Perth, Adelaide, muscle recovery directory, topical magnesium Australia">
+  <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Topical Magnesium Recovery Directory Melbourne &amp; Australia | ANCHIALO">
+  <meta property="og:description" content="111 regional delivery hubs, clinic partner points, and athletic recovery protocols across Australia.">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ MELBOURNE &amp; AUSTRALIA DIRECTORY</span>
+      <p class="announcement-text">Direct Australia Post Express Dispatch from CPT MMA Rowville (VIC 3178) Across All Australian States</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}product-page/">Products Catalog</a>
+        <a href="{depth_prefix}post/">Balneology Journal</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 1140px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>Regional Delivery &amp; Clinic Hubs</span>
+      </nav>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">AUSTRALIAN RECOVERY DIRECTORY · 111 LOCATIONS</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4.5vw, 52px); color: #162820; margin: 12px 0 16px;">Local Delivery Hubs &amp; Athletic Recovery Guides</h1>
+        <p style="font-size: 16.5px; color: #4A5550; max-width: 760px; margin: 0 auto; line-height: 1.7;">Find your suburb or city below for fast Australia Post Express delivery times, local Melbourne gym pickup at CPT MMA (2/24 Laser Dr, Rowville), and tailored muscle recovery guides.</p>
+      </div>
+
+      <section style="margin-bottom: 48px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#162820; border-bottom:2px solid #E6E0D6; padding-bottom:8px; margin-bottom:20px;">✦ Major Australian Metropolitan Express Delivery Hubs</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
+          {''.join(metro_cards)}
+        </div>
+      </section>
+
+      <section style="margin-bottom: 48px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#162820; border-bottom:2px solid #E6E0D6; padding-bottom:8px; margin-bottom:20px;">✦ Melbourne Suburbs &amp; Regional Victoria Local Hubs</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+          {''.join(suburb_cards)}
+        </div>
+      </section>
+
+      <section style="margin-bottom: 48px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#162820; border-bottom:2px solid #E6E0D6; padding-bottom:8px; margin-bottom:20px;">✦ Specialized Athletic, Clinical &amp; Lifestyle Recovery Guides</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+          {''.join(niche_cards)}
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
 def build_melbourne_pages_data():
     pages = []
     for slug, suburb, postcode, kicker, intro in MELBOURNE_SUBURBS:
@@ -1211,6 +1675,9 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <meta name="description" content="{html.escape(page['description'])}">
   <meta name="keywords" content="Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, {html.escape(page['area'])}, Melbourne Australia">
   <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta property="og:type" content="website">
   <meta property="og:title" content="{html.escape(page['title'])}">
@@ -1333,6 +1800,458 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
 """
 
 
+def build_product_catalog_hub_html(products, depth_prefix="../"):
+    canonical = "https://anchialo.com/product-page/"
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": f"{canonical}#collection",
+                "name": "Certified Dual Magnesium Collection Australia | ANCHIALO",
+                "description": "Complete catalog of certified Bulgarian Black Sea Magnesium Gels and Pure Mineral Oil (253.14 g/L MgCl2 & 70.36 g/L MgSO4) stocked in Melbourne, Australia.",
+                "url": canonical,
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "ANCHIALO Australia", "item": "https://anchialo.com/"},
+                        {"@type": "ListItem", "position": 2, "name": "Products Collection", "item": canonical}
+                    ]
+                }
+            },
+            {
+                "@type": "ItemList",
+                "@id": f"{canonical}#itemlist",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": idx,
+                        "name": p["name"],
+                        "url": f"https://anchialo.com/product-page/{p['slug']}"
+                    }
+                    for idx, p in enumerate(products, start=1)
+                ]
+            }
+        ]
+    }
+
+    cards_html = []
+    for prod in products:
+        web_img = resolve_product_web_image(prod["image"])
+        wa_msg = urllib.parse.quote(f"Hi Sotir, I would like to order {prod['name']} (A$ {prod['priceAUD']} AUD) from anchialo.com.")
+        cards_html.append(f"""
+          <article class="product-card" style="background:#fff; border-radius:20px; overflow:hidden; border:1px solid #E6E0D6; box-shadow:0 8px 24px rgba(30,58,47,0.05); display:flex; flex-direction:column;">
+            <div style="position:relative; background:#FAF7F2; padding:24px; text-align:center;">
+              <span style="position:absolute; top:14px; left:14px; background:#1E3A2F; color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px;">{html.escape(prod['badge'])}</span>
+              <a href="{depth_prefix}product-page/{prod['slug']}"><img src="{depth_prefix}{web_img}" alt="{html.escape(prod['name'])}" style="max-height:220px; width:auto; object-fit:contain;" loading="lazy"></a>
+            </div>
+            <div style="padding:24px; display:flex; flex-direction:column; flex:1; justify-content:space-between;">
+              <div>
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:22px; color:#162820; margin:0 0 8px;"><a href="{depth_prefix}product-page/{prod['slug']}" style="color:inherit; text-decoration:none;">{html.escape(prod['name'])}</a></h3>
+                <div style="font-size:18px; font-weight:700; color:#1E3A2F; margin-bottom:10px;">A$ {prod['priceAUD']} AUD <span style="font-size:13px; font-weight:400; color:#6B7280;">{html.escape(prod['unitLabel'])}</span></div>
+                <p style="font-size:13.5px; color:#4A5550; line-height:1.6; margin-bottom:16px;">{html.escape(prod['description'][:150])}...</p>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="{depth_prefix}product-page/{prod['slug']}" style="flex:1; background:#1E3A2F; color:#fff; text-align:center; padding:10px 14px; border-radius:999px; text-decoration:none; font-size:13.5px; font-weight:700;">View Product →</a>
+                <a href="https://wa.me/61423269586?text={wa_msg}" target="_blank" rel="noopener" style="background:#F3EFEA; color:#1E3A2F; border:1px solid #C8B99E; padding:10px 14px; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600;">WhatsApp</a>
+              </div>
+            </div>
+          </article>""")
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certified Dual Magnesium Products Catalog (9 Formulations) | ANCHIALO Australia</title>
+  <meta name="description" content="Explore the full collection of authentic Bulgarian Black Sea Magnesium Gels and Pure Mineral Brine (253.14 g/L MgCl2 + 70.36 g/L MgSO4) stocked in Melbourne, Australia.">
+  <meta name="keywords" content="Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia">
+  <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/products/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Certified Dual Magnesium Products Catalog | ANCHIALO Australia">
+  <meta property="og:description" content="Explore the full collection of authentic Bulgarian Black Sea Magnesium Gels and Pure Mineral Brine stocked in Melbourne.">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ 100% NATURAL SOLAR HARVEST</span>
+      <p class="announcement-text">Dual Magnesium Formula (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · FREE Express Delivery Across Australia on Orders Over $80</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}post/">Balneology Journal</a>
+        <a href="{depth_prefix}melbourne/">Regional Hubs</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 1140px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>Products Catalog</span>
+      </nav>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">OFFICIAL AUSTRALIAN PRODUCT CATALOG</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4.5vw, 52px); color: #162820; margin: 12px 0 16px;">Certified Dual Magnesium Formulations</h1>
+        <p style="font-size: 16.5px; color: #4A5550; max-width: 720px; margin: 0 auto; line-height: 1.7;">Solar-evaporated Lake Pomorie Black Sea brine providing high-density Magnesium Chloride &amp; Magnesium Sulfate. Dispatched same-day or next-day from Melbourne across Australia.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        {''.join(cards_html)}
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
+def build_journal_hub_html(posts, depth_prefix="../"):
+    canonical = "https://anchialo.com/post/"
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": f"{canonical}#journal",
+                "name": "Balneology & Recovery Journal Archive | ANCHIALO Australia",
+                "description": "Comprehensive research archive on Lake Pomorie mineral lye, topical magnesium chloride/sulfate synergy, athletic recovery, and skincare rituals by Sotir Kichukov.",
+                "url": canonical,
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "ANCHIALO Australia", "item": "https://anchialo.com/"},
+                        {"@type": "ListItem", "position": 2, "name": "Balneology Journal", "item": canonical}
+                    ]
+                }
+            },
+            {
+                "@type": "ItemList",
+                "@id": f"{canonical}#articles",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": idx,
+                        "name": p["title"],
+                        "url": f"https://anchialo.com/post/{p['slug']}"
+                    }
+                    for idx, p in enumerate(posts, start=1)
+                ]
+            }
+        ]
+    }
+
+    cards_html = []
+    for post in posts:
+        img_url = post.get("image", {}).get("url", "assets/images/products/web/06_file_transp.webp")
+        cards_html.append(f"""
+          <article style="background:#fff; border-radius:20px; overflow:hidden; border:1px solid #E6E0D6; box-shadow:0 8px 24px rgba(30,58,47,0.05); display:flex; flex-direction:column;">
+            <a href="{depth_prefix}post/{post['slug']}"><img src="{depth_prefix}{img_url}" alt="{html.escape(post['title'])}" style="width:100%; height:200px; object-fit:cover;" loading="lazy"></a>
+            <div style="padding:22px; display:flex; flex-direction:column; flex:1; justify-content:space-between;">
+              <div>
+                <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#B4833E;">RESEARCH REPORT · SOTIR KICHUKOV</span>
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:22px; color:#162820; margin:8px 0 10px; line-height:1.25;"><a href="{depth_prefix}post/{post['slug']}" style="color:inherit; text-decoration:none;">{html.escape(post['title'])}</a></h3>
+                <p style="font-size:13.5px; color:#4A5550; line-height:1.6; margin-bottom:18px;">{html.escape(post.get('description', '')[:160])}...</p>
+              </div>
+              <a href="{depth_prefix}post/{post['slug']}" style="color:#1E3A2F; font-weight:700; text-decoration:none; font-size:14px;">Read Full Publication →</a>
+            </div>
+          </article>""")
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balneology &amp; Recovery Research Journal (16 Publications) | ANCHIALO Australia</title>
+  <meta name="description" content="Read 16 original research publications and guides authored by Sotir Kichukov exploring Black Sea magnesium lye, transdermal mineral absorption, and athletic muscle recovery.">
+  <meta name="keywords" content="Balneotherapy, Black Sea lye, Magnesium gel, Muscle recovery, Sotir Kichukov, Lake Pomorie mineral research, Australia">
+  <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Balneology &amp; Recovery Research Journal | ANCHIALO Australia">
+  <meta property="og:description" content="16 original research publications and practical guides exploring Black Sea magnesium lye, transdermal absorption, and athletic recovery.">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ POMORIE BALNEOLOGY JOURNAL</span>
+      <p class="announcement-text">Certified Dual Magnesium (253.14 g/L MgCl₂ &amp; 70.36 g/L MgSO₄) · Official Australian Store ($49 AUD)</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · POMORIE</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}product-page/">Products Catalog</a>
+        <a href="{depth_prefix}melbourne/">Regional Hubs</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 1140px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>Balneology Journal</span>
+      </nav>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">BALNEOTHERAPY &amp; RECOVERY RESEARCH</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4.5vw, 52px); color: #162820; margin: 12px 0 16px;">The Balneology Journal Archive</h1>
+        <p style="font-size: 16.5px; color: #4A5550; max-width: 740px; margin: 0 auto; line-height: 1.7;">Original self-care guides, ancestral medical history, and clinical recovery protocols authored by ONE Championship fighter Sotir Kichukov exploring authentic Lake Pomorie mineral science.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+        {''.join(cards_html)}
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
+def build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../"):
+    canonical = "https://anchialo.com/melbourne/"
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": f"{canonical}#directory",
+                "name": "Melbourne & Australian Cities Magnesium Recovery Directory | ANCHIALO",
+                "description": "Directory of 111 regional delivery hubs, local gym partner pickup points, and sports recovery guides across Melbourne and Australian capital cities.",
+                "url": canonical,
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {"@type": "ListItem", "position": 1, "name": "ANCHIALO Australia", "item": "https://anchialo.com/"},
+                        {"@type": "ListItem", "position": 2, "name": "Regional Recovery Directory", "item": canonical}
+                    ]
+                }
+            },
+            {
+                "@type": "ItemList",
+                "@id": f"{canonical}#locations",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": idx,
+                        "name": p["h1"],
+                        "url": f"https://anchialo.com/melbourne/{p['slug']}"
+                    }
+                    for idx, p in enumerate(melbourne_pages, start=1)
+                ]
+            }
+        ]
+    }
+
+    suburb_cards = []
+    niche_cards = []
+    metro_cards = []
+
+    for p in melbourne_pages:
+        slug = p["slug"]
+        h1 = p["h1"]
+        desc = p["description"]
+        kicker = p["kicker"]
+        card = f"""
+          <div style="background:#fff; border-radius:16px; padding:20px; border:1px solid #E6E0D6; box-shadow:0 4px 16px rgba(30,58,47,0.04); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <span style="font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#B4833E;">{html.escape(kicker)}</span>
+              <h3 style="font-family:'Cormorant Garamond',serif; font-size:20px; color:#162820; margin:6px 0 10px; line-height:1.2;"><a href="{depth_prefix}melbourne/{slug}" style="color:inherit; text-decoration:none;">{html.escape(h1)}</a></h3>
+              <p style="font-size:13px; color:#5C6460; line-height:1.6; margin-bottom:14px;">{html.escape(desc[:140])}...</p>
+            </div>
+            <a href="{depth_prefix}melbourne/{slug}" style="color:#1E3A2F; font-size:13px; font-weight:700; text-decoration:none;">Explore Hub &amp; Fast Delivery →</a>
+          </div>"""
+
+        if slug in ("sydney-nsw", "brisbane-qld", "perth-wa", "adelaide-sa", "gold-coast-qld", "canberra-act"):
+            metro_cards.append(card)
+        elif p.get("kind") == "niche":
+            niche_cards.append(card)
+        else:
+            suburb_cards.append(card)
+
+    return f"""<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google-site-verification" content="G2RuPksRn9KZ88AvHmiol_yZ1x-yz3LFeHwcCuFgjvI">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topical Magnesium Recovery Directory Melbourne &amp; Australia (111 Hubs) | ANCHIALO</title>
+  <meta name="description" content="Complete directory of 111 Australian regional delivery hubs, Melbourne suburb clinic partners, and specialized athletic recovery guides. Dispatched from Melbourne.">
+  <meta name="keywords" content="Magnesium gel Melbourne, Magnesium oil Australia, Sydney, Brisbane, Perth, Adelaide, muscle recovery directory, topical magnesium Australia">
+  <link rel="canonical" href="{canonical}">
+  <link rel="alternate" hreflang="en-AU" href="{canonical}">
+  <link rel="alternate" hreflang="bg-BG" href="https://www.anchialo.bg/en/">
+  <link rel="alternate" hreflang="x-default" href="{canonical}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Topical Magnesium Recovery Directory Melbourne &amp; Australia | ANCHIALO">
+  <meta property="og:description" content="111 regional delivery hubs, clinic partner points, and athletic recovery protocols across Australia.">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:locale" content="en_AU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="announcement-badge">✦ MELBOURNE &amp; AUSTRALIA DIRECTORY</span>
+      <p class="announcement-text">Direct Australia Post Express Dispatch from CPT MMA Rowville (VIC 3178) Across All Australian States</p>
+      <div class="announcement-contact">
+        <a href="https://wa.me/61423269586" target="_blank" rel="noopener"><span>Sotir Kichukov: +61 423 269 586</span></a>
+      </div>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{depth_prefix}index.html" class="brand-group">
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
+        <a href="{depth_prefix}product-page/">Products Catalog</a>
+        <a href="{depth_prefix}post/">Balneology Journal</a>
+        <a href="https://cptmma.com/" target="_blank" rel="noopener">CPT MMA Melbourne</a>
+      </nav>
+    </div>
+  </header>
+  <main style="padding: 56px 0 88px; background: var(--bg-canvas, #FAF7F2);">
+    <div class="container" style="max-width: 1140px;">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 13.5px; color: #5C6460;">
+        <a href="{depth_prefix}index.html" style="color: #1E3A2F; text-decoration: none; font-weight: 600;">ANCHIALO Australia</a>
+        <span style="margin: 0 8px;">/</span>
+        <span>Regional Delivery &amp; Clinic Hubs</span>
+      </nav>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #B4833E;">AUSTRALIAN RECOVERY DIRECTORY · 111 LOCATIONS</span>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(34px, 4.5vw, 52px); color: #162820; margin: 12px 0 16px;">Local Delivery Hubs &amp; Athletic Recovery Guides</h1>
+        <p style="font-size: 16.5px; color: #4A5550; max-width: 760px; margin: 0 auto; line-height: 1.7;">Find your suburb or city below for fast Australia Post Express delivery times, local Melbourne gym pickup at CPT MMA (2/24 Laser Dr, Rowville), and tailored muscle recovery guides.</p>
+      </div>
+
+      <section style="margin-bottom: 48px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#162820; border-bottom:2px solid #E6E0D6; padding-bottom:8px; margin-bottom:20px;">✦ Major Australian Metropolitan Express Delivery Hubs</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
+          {''.join(metro_cards)}
+        </div>
+      </section>
+
+      <section style="margin-bottom: 48px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#162820; border-bottom:2px solid #E6E0D6; padding-bottom:8px; margin-bottom:20px;">✦ Melbourne Suburbs &amp; Regional Victoria Local Hubs</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+          {''.join(suburb_cards)}
+        </div>
+      </section>
+
+      <section style="margin-bottom: 48px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#162820; border-bottom:2px solid #E6E0D6; padding-bottom:8px; margin-bottom:20px;">✦ Specialized Athletic, Clinical &amp; Lifestyle Recovery Guides</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+          {''.join(niche_cards)}
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-bottom-inner" style="padding: 28px 0; text-align: center;">
+      <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+
 def build_home_jsonld():
     item_elements = []
     for idx, prod in enumerate(PRODUCTS, start=1):
@@ -1412,9 +2331,10 @@ def build_home_jsonld():
                 "paymentAccepted": "Credit Card, Apple Pay, Google Pay, PayPal, Stripe",
                 "address": {
                     "@type": "PostalAddress",
-                    "addressLocality": "Melbourne",
+                    "streetAddress": "2/24 Laser Dr",
+                    "addressLocality": "Rowville",
                     "addressRegion": "VIC",
-                    "postalCode": "3000",
+                    "postalCode": "3178",
                     "addressCountry": "AU"
                 },
                 "areaServed": [
@@ -1595,10 +2515,9 @@ def update_index_and_app(posts, melbourne_pages):
         f'            <a href="post/{p["slug"]}" style="font-size:13.5px; color:#1E3A2F; text-decoration:underline; margin-right:14px; display:inline-block; margin-bottom:6px;">{html.escape(p["title"])}</a>'
         for p in posts
     )
-    featured_melbourne = melbourne_pages[:24]
     melbourne_links = "\n".join(
         f'            <a href="melbourne/{m["slug"]}" style="font-size:12.5px; color:#4A5550; text-decoration:underline; margin-right:12px; display:inline-block; margin-bottom:5px;">{html.escape(m["area"] if m["kind"] == "suburb" else m["h1"].split("(")[0].strip())}</a>'
-        for m in featured_melbourne
+        for m in melbourne_pages
     )
 
     ssr_blog_block = (
@@ -1606,11 +2525,11 @@ def update_index_and_app(posts, melbourne_pages):
         + "\n".join(ssr_blogs)
         + '\n        </div>\n'
         + '        <nav aria-label="Complete Balneotherapy Research Archive" style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(30,58,47,0.12);">\n'
-        + f'          <strong style="display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460; margin-bottom:10px;">Complete Balneology &amp; Recovery Archive ({len(posts)} Publications):</strong>\n'
+        + f'          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><strong style="font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460;">Complete Balneology &amp; Recovery Archive ({len(posts)} Publications):</strong><a href="post/" style="font-size:13px; font-weight:700; color:#1E3A2F; text-decoration:none;">View Journal Hub →</a></div>\n'
         + archive_links
         + '\n        </nav>\n'
-        + '        <nav aria-label="Melbourne Local Dispatch & Clinic Guides" style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(30,58,47,0.08);">\n'
-        + f'          <strong style="display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460; margin-bottom:8px;">Melbourne Suburb Delivery &amp; Clinic Hubs ({len(melbourne_pages)} Local Pages):</strong>\n'
+        + '        <nav aria-label="Melbourne & Australian Cities Local Dispatch & Clinic Guides" style="margin-top:18px; padding-top:16px; border-top:1px solid rgba(30,58,47,0.08);">\n'
+        + f'          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><strong style="font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:#5C6460;">Melbourne Suburbs &amp; Australian City Hubs ({len(melbourne_pages)} Locations):</strong><a href="melbourne/" style="font-size:13px; font-weight:700; color:#1E3A2F; text-decoration:none;">View Directory Hub →</a></div>\n'
         + melbourne_links
         + '\n        </nav>'
     )
@@ -1648,6 +2567,13 @@ def main():
 
     prod_root = os.path.join(ROOT, "product-page")
     os.makedirs(prod_root, exist_ok=True)
+    prod_hub_html = build_product_catalog_hub_html(PRODUCTS, depth_prefix="../")
+    with open(os.path.join(prod_root, "index.html"), "w", encoding="utf-8") as f:
+        f.write(prod_hub_html)
+    products_dir = os.path.join(ROOT, "products")
+    os.makedirs(products_dir, exist_ok=True)
+    with open(os.path.join(products_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(prod_hub_html)
     for prod in PRODUCTS:
         slugs = [prod["slug"]]
         if prod.get("alias_slug"):
@@ -1662,6 +2588,13 @@ def main():
 
     post_root = os.path.join(ROOT, "post")
     os.makedirs(post_root, exist_ok=True)
+    post_hub_html = build_journal_hub_html(posts, depth_prefix="../")
+    with open(os.path.join(post_root, "index.html"), "w", encoding="utf-8") as f:
+        f.write(post_hub_html)
+    blog_dir = os.path.join(ROOT, "blog")
+    os.makedirs(blog_dir, exist_ok=True)
+    with open(os.path.join(blog_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(post_hub_html)
     for post in posts:
         s = post["slug"]
         with open(os.path.join(post_root, f"{s}.html"), "w", encoding="utf-8") as f:
@@ -1684,6 +2617,9 @@ def main():
 
     mel_root = os.path.join(ROOT, "melbourne")
     os.makedirs(mel_root, exist_ok=True)
+    mel_hub_html = build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../")
+    with open(os.path.join(mel_root, "index.html"), "w", encoding="utf-8") as f:
+        f.write(mel_hub_html)
     for page in melbourne_pages:
         s = page["slug"]
         with open(os.path.join(mel_root, f"{s}.html"), "w", encoding="utf-8") as f:
@@ -1693,7 +2629,14 @@ def main():
         with open(os.path.join(sub, "index.html"), "w", encoding="utf-8") as f:
             f.write(build_melbourne_html(page, melbourne_pages, depth_prefix="../../"))
 
-    urls = [("https://anchialo.com/", BUILD_DATE, "daily", "1.0")]
+    urls = [
+        ("https://anchialo.com/", BUILD_DATE, "daily", "1.0"),
+        ("https://anchialo.com/product-page/", BUILD_DATE, "weekly", "0.9"),
+        ("https://anchialo.com/products/", BUILD_DATE, "weekly", "0.9"),
+        ("https://anchialo.com/post/", BUILD_DATE, "weekly", "0.9"),
+        ("https://anchialo.com/blog/", BUILD_DATE, "weekly", "0.9"),
+        ("https://anchialo.com/melbourne/", BUILD_DATE, "weekly", "0.9"),
+    ]
     for prod in PRODUCTS:
         urls.append((f"https://anchialo.com/product-page/{prod['slug']}", BUILD_DATE, "weekly", "0.9"))
     for post in posts:
