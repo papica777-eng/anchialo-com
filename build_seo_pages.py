@@ -316,23 +316,23 @@ PRODUCTS = [
         "slug": "anchialo-dual-magnesium-gel-arnica-blend",
         "sku": "ANCH-GEL-ARN-300",
         "gtin13": "3800230111746",
-        "name": "Dual Magnesium Gel | Arnica Blend",
-        "title": "Anchialo Dual Magnesium Gel — Arnica Montana Blend (300g) | $49 AUD",
+        "name": "Magnesium Gel for Muscle Recovery · Arnica Blend (300g)",
+        "title": "Magnesium Gel for Muscle Recovery & Joint Mobility (Arnica, 300g) | Australia",
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
         "image": "assets/images/products/06_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
-        "badge": "Bestseller · Post-Training Ritual",
+        "badge": "Bestseller · Muscle Recovery Ritual",
         "stripe": "https://buy.stripe.com/9B67sL4tmfBa9CD0eb5Ne0e",
         "botanical": "Arnica Montana Flower Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ARNICA MONTANA FLOWER EXTRACT.",
-        "description": "Fast-absorbing topical gel with 253.14 g/L Black Sea magnesium chloride, 70.36 g/L magnesium sulfate, and Arnica Montana extract to hydrate skin and refresh tired muscles. 300g net. Dispatched from Melbourne, Australia.",
+        "description": "High-potency topical Magnesium Gel with 253.14 g/L Magnesium Chloride, 70.36 g/L Magnesium Sulfate, and Arnica Montana. Formulated for rapid muscle recovery, joint mobility, and post-workout comfort. 300g net. Dispatched from Melbourne, Australia.",
         "benefits": [
-            "Fast-absorbing topical body gel formulated to relax and nourish the skin after intense sessions",
-            "253.14 g/L Magnesium Chloride & 70.36 g/L Magnesium Sulfate from Lake Pomorie, Bulgaria",
-            "Enriched with Arnica Montana extract, traditionally used to soothe and comfort the body",
-            "Certified zero heavy metals (BDS 8840:1971 & ISO 22716 GMP · Lot 04)"
+            "Fast-absorbing topical magnesium gel formulated for rapid muscle recovery and joint mobility after intense training",
+            "Delivers 253.14 g/L natural Magnesium Chloride & 70.36 g/L Magnesium Sulfate from Lake Pomorie",
+            "Infused with organic Arnica Montana flower extract to soothe tired muscles and support daily physical comfort",
+            "Zero oral digestive upset, non-drip smooth glide, certified BDS 8840:1971 & ISO 22716 GMP (Lot 04)"
         ]
     },
     {
@@ -341,23 +341,23 @@ PRODUCTS = [
         "alias_slug": "anchialo-dual-magnesium-gel-lavender-blend",
         "sku": "ANCH-GEL-LAV-300",
         "gtin13": "3800230111746",
-        "name": "Dual Magnesium Gel | Lavender Blend",
-        "title": "Anchialo Dual Magnesium Gel — Bulgarian Lavender Blend (300g) | $49 AUD",
+        "name": "Magnesium Gel for Muscle Relaxation · Bulgarian Lavender (300g)",
+        "title": "Magnesium Gel for Muscle Relaxation & Evening Rest (Lavender, 300g) | Australia",
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
         "image": "assets/images/products/01_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_lavender_top_fv17.png",
-        "badge": "Evening Calm & Wind-Down",
+        "badge": "Evening Rest & Muscle Calm",
         "stripe": "https://buy.stripe.com/cNi14ncZS9cMeWX9OL5Ne0d",
         "botanical": "Lavandula Angustifolia Essential Flower Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, LAVANDULA ANGUSTIFOLIA FLOWER EXTRACT.",
-        "description": "Infused with authentic Bulgarian Lavender flower extract and Lake Pomorie Dual Magnesium (253.14 g/L MgCl2) to nourish dry skin and support a calming evening massage ritual. 300g net.",
+        "description": "Topical Magnesium Gel enriched with authentic Bulgarian Lavender, 253.14 g/L Magnesium Chloride, and 70.36 g/L Magnesium Sulfate to ease muscle tension and support deep evening relaxation. 300g net.",
         "benefits": [
-            "Formulated with Lavender extract, valued for its calming and relaxing aroma before rest",
-            "Combines concentrated Black Sea magnesium salts with skin-hydrating glycerine",
-            "Non-drip smooth gel texture ideal for calves, shoulders, and evening wind-down routines",
-            "Gentle physiological pH 6.9 — zero parabens, zero synthetic perfumes"
+            "Targeted topical magnesium application for evening muscle relaxation, restless legs, and nighttime comfort",
+            "Dual Magnesium synergy: concentrated Magnesium Chloride (253.14 g/L) + Magnesium Sulfate (70.36 g/L)",
+            "Pure Bulgarian Lavender botanical extract promoting a calm nervous system and restful wind-down ritual",
+            "Physiological skin pH 6.9, non-sticky gel texture, zero parabens or artificial fragrances"
         ]
     },
     {
@@ -365,23 +365,23 @@ PRODUCTS = [
         "slug": "anchialo-dual-magnesium-gel-rosemary-blend",
         "sku": "ANCH-GEL-ROS-300",
         "gtin13": "3800230111746",
-        "name": "Dual Magnesium Gel | Rosemary Blend",
-        "title": "Anchialo Dual Magnesium Gel — Garden Rosemary Blend (300g) | $49 AUD",
+        "name": "Magnesium Gel for Active Muscle Care · Garden Rosemary (300g)",
+        "title": "Magnesium Gel for Active Muscle Care & Massage (Rosemary, 300g) | Australia",
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
         "image": "assets/images/products/04_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_rosemary_top_fv17.png",
-        "badge": "Invigorating Massage",
+        "badge": "Invigorating Muscle Care",
         "stripe": "https://buy.stripe.com/8x2dR9cZSbkUdST5yv5Ne0f",
         "botanical": "Rosmarinus Officinalis Leaf Powder Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, ROSMARINUS OFFICINALIS LEAF POWDER EXTRACT.",
-        "description": "Enhanced with Garden Rosemary extract traditionally used to invigorate skin during massage. Paired with 253.14 g/L Black Sea Magnesium Chloride for active athletes and daily body care. 300g net.",
+        "description": "Revitalising topical Magnesium Gel formulated with Rosemary leaf extract, 253.14 g/L Magnesium Chloride, and 70.36 g/L Magnesium Sulfate for pre-training warm-ups, post-workout muscle recovery, and joint mobility. 300g net.",
         "benefits": [
-            "Invigorating herbal massage experience before training or after heavy workouts",
-            "Supports skin hydration and contributes to a feeling of refreshment and revitalisation",
-            "High magnesium content helps nourish skin across shoulders, lower back, and legs",
-            "Non-greasy leave-on or rinse-off cosmetic gel texture"
+            "Invigorating botanical massage gel to support blood flow, muscle warm-up, and post-session recovery",
+            "High-density topical Magnesium Chloride (253.14 g/L) and Magnesium Sulfate (70.36 g/L)",
+            "Ideal for combat athletes, runners, and weightlifters targeting shoulders, lumbar area, quads, and knees",
+            "Clean non-greasy absorption, handcrafted under ISO 22716 GMP standards"
         ]
     },
     {
@@ -389,23 +389,23 @@ PRODUCTS = [
         "slug": "anchialo-dual-magnesium-gel-juniper-blend",
         "sku": "ANCH-GEL-JUN-300",
         "gtin13": "3800230111746",
-        "name": "Dual Magnesium Gel | Juniper Blend",
-        "title": "Anchialo Dual Magnesium Gel — Alpine Juniper Blend (300g) | $49 AUD",
+        "name": "Magnesium Gel for Tired Legs & Recovery · Alpine Juniper (300g)",
+        "title": "Magnesium Gel for Tired Legs & Post-Workout Recovery (Juniper, 300g) | Australia",
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
         "image": "assets/images/products/07_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_juniper_top_fv17.png",
-        "badge": "Crisp Refresh & Sauna Ritual",
+        "badge": "Post-Workout Leg Recovery",
         "stripe": "https://buy.stripe.com/14A3cv7Fy4Ww5mne515Ne0g",
         "botanical": "Juniperus Chinensis Leaf Extract & Fruit Oil",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE, JUNIPERUS CHINENSIS LEAF EXTRACT.",
-        "description": "Alpine Juniper botanical blend crafted to hydrate skin and refresh weary legs, shoulders, and feet after showers, contrast therapy, or long shifts. 300g net.",
+        "description": "Cooling topical Magnesium Gel infused with Alpine Juniper extract, Magnesium Chloride (253.14 g/L), and Magnesium Sulfate (70.36 g/L). Specially formulated to revive heavy, tired legs, calves, and feet after standing shifts or endurance runs. 300g net.",
         "benefits": [
-            "Infused with Juniper extract, valued for its crisp, refreshing and revitalising qualities",
-            "Ideal post-sauna, post-shower, and after-work lower-body massage gel",
-            "High-density Pomorie mineral brine (253.14 g/L MgCl2 + 70.36 g/L MgSO4)",
-            "Handcrafted by Azimut 6000 Ltd under ISO 22716 GMP standards"
+            "Specifically formulated to refresh tired, overworked legs, calves, and feet after sport or long working hours",
+            "Combines natural Magnesium Chloride and Magnesium Sulfate for rapid transdermal muscle nourishment",
+            "Alpine Juniper botanical extract delivers a crisp, cooling sensation and promotes refreshed joint mobility",
+            "Fast absorption with zero sticky residue, perfect post-shower or post-contrast hydrotherapy"
         ]
     },
     {
@@ -413,23 +413,23 @@ PRODUCTS = [
         "slug": "anchialo-dual-magnesium-gel-grape-blend",
         "sku": "ANCH-GEL-GRP-300",
         "gtin13": "3800230111746",
-        "name": "Dual Magnesium Gel | Grape Blend",
-        "title": "Anchialo Dual Magnesium Gel — Red Grape Seed Blend (300g) | $49 AUD",
+        "name": "Magnesium Gel for Skin & Body Recovery · Grape Seed (300g)",
+        "title": "Magnesium Gel for Skin Hydration & Joint Comfort (Grape Seed, 300g) | Australia",
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
         "image": "assets/images/products/03_file_transp.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_grape_top_fv17.png",
-        "badge": "Skin Softness & Daily Care",
+        "badge": "Skin Care & Joint Comfort",
         "stripe": "https://buy.stripe.com/cNidR97FycoY0239OL5Ne0h",
         "botanical": "Vitis Vinifera (Grape) Seed Polyphenol Extract",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, PARFUM, GLYCERINE.",
-        "description": "Lightly fragranced with a subtle vineyard grape aroma alongside pure Lake Pomorie dual magnesium salts to condition skin and leave a smooth, velvet finish. 300g net.",
+        "description": "Hydrating topical Magnesium Gel pairing antioxidant-rich Grape Seed polyphenols with concentrated Magnesium Chloride (253.14 g/L) and Magnesium Sulfate (70.36 g/L) for skin conditioning, muscle relaxation, and joint comfort. 300g net.",
         "benefits": [
-            "Helps maintain soft, hydrated skin and overall body refreshment",
-            "Pleasant light grape fragrance ideal for everyday massage and evening routines",
-            "Non-greasy finish — absorbs cleanly or rinses smoothly with cool water",
-            "100% natural Black Sea solar-evaporated lye base"
+            "Antioxidant Grape Seed extract conditions dry skin while concentrated magnesium salts soothe tired muscles",
+            "Dual Magnesium formula (253.14 g/L MgCl2 + 70.36 g/L MgSO4) supports joint mobility and everyday body comfort",
+            "Subtle vineyard grape aroma leaving a silky smooth finish without greasy after-feel",
+            "100% natural solar-evaporated mineral base, handcrafted under European cosmetic GMP standards"
         ]
     },
     {
@@ -437,23 +437,23 @@ PRODUCTS = [
         "slug": "anchialo-dual-magnesium-oil-natural-topical-oil",
         "sku": "ANCH-OIL-PUR-300",
         "gtin13": "3800230111746",
-        "name": "Dual Magnesium Oil | Natural Topical Brine",
-        "title": "Anchialo Dual Magnesium Oil — 100% Pure Black Sea Topical Brine (300ml) | $49 AUD",
+        "name": "Pure Topical Magnesium Oil Brine (253 g/L MgCl2, 300ml)",
+        "title": "Pure Magnesium Oil Australia (253 g/L Magnesium Chloride Topical Brine, 300ml)",
         "category": "oil",
         "priceAUD": "49.00",
         "unitLabel": "/ 300ml Net",
         "image": "assets/images/products/08_file_transp.png",
         "lidImg": "assets/images/products/08_file_transp.png",
-        "badge": "100% Pure Liquid Brine",
+        "badge": "100% Pure Magnesium Brine",
         "stripe": "https://buy.stripe.com/aFaeVdgc4ex6cOP1if5Ne0i",
         "botanical": "100% Unscented Natural Lake Pomorie Mineral Brine (Luga)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM CHLORIDE 253.14 g/L, MAGNESIUM SULFATE 70.36 g/L, SODIUM CHLORIDE, TRACE BROMINE & IODINE).",
-        "description": "Unscented, concentrated liquid Black Sea mineral brine (luga). Silky natural glide tailored for full-body studio massage or evening mineral foot soaks. 300ml.",
+        "description": "100% pure unscented liquid Magnesium Oil brine. Exceptionally concentrated with 253.14 g/L Magnesium Chloride and 70.36 g/L Magnesium Sulfate for deep-tissue remedial massage, mineral baths, foot soaks, and muscle recovery. 300ml net.",
         "benefits": [
-            "100% pure unfragranced fractional solar brine from Lake Pomorie",
-            "High mineral density ideal for remedial massage glide, wraps, and warm foot baths",
-            "Zero added synthetic fragrance, preservatives, or petroleum oils",
-            "Certified under BDS 8840:1971 & ATA Translation #267262"
+            "100% pure fractional solar-evaporated Magnesium Oil brine with silky natural mineral glide",
+            "Ultra-concentrated: 253.14 g/L natural Magnesium Chloride + 70.36 g/L Magnesium Sulfate",
+            "Versatile application: remedial deep-tissue massage, compress wraps, or recovery foot soaks",
+            "Zero preservatives, zero synthetic fragrances, certified BDS 8840:1971 lab purity"
         ]
     },
     {
@@ -461,23 +461,23 @@ PRODUCTS = [
         "slug": "special-offer-gel-oil-combo",
         "sku": "ANCH-CMB-GELOIL",
         "gtin13": "3800230111746",
-        "name": "Special Offer | Gel + Oil Combo",
-        "title": "Anchialo Special Offer — Dual Magnesium Gel + Pure Magnesium Oil Combo | $49 AUD",
+        "name": "Magnesium Gel + Pure Magnesium Oil Recovery Duo",
+        "title": "Magnesium Gel + Pure Magnesium Oil Recovery Pack | Australia Post Express",
         "category": "combo",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g + 300ml",
         "image": "assets/images/products/02_file.png",
         "lidImg": "assets/images/products/02_file.png",
-        "badge": "1+1 Free Value Deal",
+        "badge": "1+1 Value Duo · Gel & Oil",
         "stripe": "https://buy.stripe.com/4gM28rgc44WwbKL3qn5Ne0l",
-        "botanical": "Choice of Signature Botanical Gel (300g) + Pure Magnesium Brine Oil (300ml)",
+        "botanical": "Choice of Botanical Magnesium Gel (300g) + Pure Magnesium Brine Oil (300ml)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, BOTANICAL EXTRACT.",
-        "description": "Buy 1 Dual Magnesium Gel (300g) and receive 1 Pure Dual Magnesium Oil (300ml) FREE. Complete topical gel and bath/massage brine set for the price of one item ($49 AUD).",
+        "description": "Complete Muscle Recovery & Joint Mobility Duo: Buy 1 Dual Magnesium Gel (300g) and receive 1 Pure Magnesium Oil Brine (300ml) FREE. Full-body targeted gel and mineral foot soak set for $49 AUD.",
         "benefits": [
-            "Includes 1x 300g Dual Magnesium Botanical Gel + 1x 300ml Pure Magnesium Oil",
-            "Complete ritual set: targeted gel massage + full-body or foot-soak liquid brine",
-            "Dispatched directly from Melbourne via Australia Post with tracking",
-            "Same-day local pickup available at CPT MMA Melbourne"
+            "Complete topical recovery pack: 1x 300g Dual Magnesium Gel + 1x 300ml Pure Magnesium Oil",
+            "Covers both targeted muscle rub (gel) and full-body massage or foot-soak recovery (oil)",
+            "Delivers 253.14 g/L Magnesium Chloride and 70.36 g/L Magnesium Sulfate directly to skin",
+            "Dispatched from Melbourne with Australia Post tracking or same-day CPT MMA pickup"
         ]
     },
     {
@@ -485,23 +485,23 @@ PRODUCTS = [
         "slug": "starter-combo-dual-magnesium-gel",
         "sku": "ANCH-CMB-START2",
         "gtin13": "3800230111746",
-        "name": "Starter Combo | Dual Magnesium Gel (2-Pack)",
-        "title": "Anchialo Starter Combo — Dual Magnesium Gel 2-Pack (600g Total) | $89 AUD + Free Shipping",
+        "name": "Magnesium Gel 2-Pack · Day Recovery & Night Relaxation (600g)",
+        "title": "Magnesium Gel 2-Pack (Day Muscle Recovery & Night Relaxation, 600g) | Australia",
         "category": "combo",
         "priceAUD": "89.00",
         "unitLabel": "/ 600g (2 × 300g)",
         "image": "assets/images/products/05_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
-        "badge": "Save $9 · Day & Night Pair",
+        "badge": "Save $9 · Day & Night Recovery",
         "stripe": "https://buy.stripe.com/6oU4gzcZS60AeWX9OL5Ne0j",
-        "botanical": "Any 2 Signature Botanical Blends (e.g., Arnica Day Ritual + Lavender Night Wind-Down)",
+        "botanical": "Any 2 Signature Botanical Blends (e.g., Arnica Day Recovery + Lavender Night Rest)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, BOTANICAL EXTRACTS.",
-        "description": "Pair Arnica for daytime post-training massage with Bulgarian Lavender for your calm evening wind-down ritual. Total 600g pure Pomorie magnesium gels with FREE Australia-wide Express shipping.",
+        "description": "Targeted 24-hour muscle recovery protocol: Pair Arnica for daytime post-training muscle recovery and joint mobility with Lavender for nighttime muscle relaxation. 600g total with FREE Australia-wide Express shipping.",
         "benefits": [
-            "Save $9 AUD instantly + qualifies for FREE Australia Post Express Delivery",
-            "2x 300g jars (600g total) — choose any combination of the 5 botanical blends",
-            "Ideal 24-hour routine: post-training body massage + relaxing evening care",
-            "Dispatched fast from Melbourne hub"
+            "Save $9 AUD instantly + qualifies for FREE Australia Post Express shipping across Australia",
+            "2x 300g jars (600g total) of certified Dual Magnesium Gel (253 g/L MgCl2 + 70 g/L MgSO4)",
+            "Optimized 24-hour recovery routine: morning/post-workout mobility + evening wind-down",
+            "Fast dispatch from Melbourne hub"
         ]
     },
     {
@@ -509,23 +509,23 @@ PRODUCTS = [
         "slug": "best-value-combo-dual-magnesium-gel",
         "sku": "ANCH-CMB-BEST3",
         "gtin13": "3800230111746",
-        "name": "Best Value Combo | Dual Magnesium Gel (3-Pack)",
-        "title": "Anchialo Best Value Combo — Dual Magnesium Gel 3-Pack (900g Total) | $129 AUD + Free Shipping",
+        "name": "Magnesium Gel 3-Pack · Athletic Recovery & Joint Mobility (900g)",
+        "title": "Magnesium Gel 3-Pack (Athletic Muscle Recovery & Joint Mobility, 900g) | Australia",
         "category": "combo",
         "priceAUD": "129.00",
         "unitLabel": "/ 900g (3 × 300g)",
         "image": "assets/images/products/09_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
-        "badge": "Save $18 · Combat Team Pack",
+        "badge": "Save $18 · Combat Recovery Pack",
         "stripe": "https://buy.stripe.com/7sYeVdgc4dt28yzbWT5Ne0k",
         "botanical": "Any 3 Signature Botanical Blends (900g Total Net Weight)",
         "inci": "AQUA (WATER), MINERALS DERIVED FROM BLACK SEA LYE (MAGNESIUM SULFATE, MAGNESIUM CHLORIDE, SODIUM CHLORIDE), HYDROXYETHYLCELLULOSE, GLYCERINE, BOTANICAL EXTRACTS.",
-        "description": "Choose any three 300g jars. Maximum value package designed for active fighters, gyms, families, and mineral ritual enthusiasts. Includes FREE Australia Post Express shipping.",
+        "description": "Ultimate athletic recovery and joint mobility pack: 3x 300g jars (900g total) of certified Dual Magnesium Gel. Trusted by ONE Championship fighter Sotir Kichukov and Melbourne combat athletes. FREE Express shipping across Australia.",
         "benefits": [
-            "Save $18 AUD + FREE Express Delivery across Australia",
-            "3x 300g jars (900g total) of certified Lake Pomorie Dual Magnesium Gel",
-            "Trusted by ONE Championship veteran Sotir Kichukov and CPT MMA athletes",
-            "Full batch traceability (Lot № 04 · Expiry 2027 · ISO 22716 GMP)"
+            "Save $18 AUD + FREE Australia Post Express shipping nationwide",
+            "3x 300g jars (900g total) delivering 253.14 g/L Magnesium Chloride & 70.36 g/L Magnesium Sulfate",
+            "Trusted by combat fighters, runners, and physiotherapists for rapid muscle recovery and joint mobility",
+            "Traceable batch purity (Lot 04 · Expiry 2027 · ISO 22716 GMP)"
         ]
     }
 ]
@@ -687,6 +687,8 @@ def build_product_html(prod, depth_prefix="../"):
                 "sku": prod["sku"],
                 "mpn": prod["sku"],
                 "gtin13": prod["gtin13"],
+                "category": "Health & Beauty > Personal Care > Topical Magnesium Gel",
+                "keywords": "Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia",
                 "description": prod["description"],
                 "image": [img_abs, f"https://anchialo.com/{prod['lidImg']}"],
                 "brand": {"@type": "Brand", "name": "ANCHIALO"},
@@ -765,6 +767,7 @@ def build_product_html(prod, depth_prefix="../"):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{html.escape(prod['title'])}</title>
   <meta name="description" content="{html.escape(prod['description'])}">
+  <meta name="keywords" content="Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia, post-workout recovery">
   <link rel="canonical" href="{canonical}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta property="og:type" content="product">
@@ -1091,12 +1094,12 @@ def build_melbourne_pages_data():
         pages.append({
             "slug": slug,
             "kind": "suburb",
-            "title": f"Dual Magnesium Gel {suburb} ({postcode}) — Black Sea Lye Delivery | ANCHIALO",
-            "h1": f"Certified Black Sea Magnesium Gel in {suburb} ({postcode})",
+            "title": f"Magnesium Gel & Oil {suburb} ({postcode}) — Muscle Recovery & Joint Mobility | Melbourne",
+            "h1": f"Magnesium Gel & Topical Oil for Muscle Recovery in {suburb} ({postcode})",
             "kicker": f"{suburb.upper()} · {kicker.upper()}",
             "area": f"{suburb}, {postcode}",
-            "description": f"{intro} Authentic Lake Pomorie Dual Magnesium Gels (253.14 g/L MgCl2 + 70.36 g/L MgSO4, 300g jar $49 AUD) dispatched fast across {suburb} and Melbourne.",
-            "faq_q": f"How fast does ANCHIALO Dual Magnesium Gel arrive in {suburb} ({postcode})?",
+            "description": f"{intro} High-potency Magnesium Gel & Pure Magnesium Oil (253.14 g/L MgCl2 + 70.36 g/L MgSO4) for muscle recovery, joint mobility, and relaxation. Fast Melbourne dispatch to {suburb}.",
+            "faq_q": f"How fast does Magnesium Gel & Oil arrive in {suburb} ({postcode})?",
             "faq_a": f"Orders placed on anchialo.com dispatch from our Melbourne hub via Australia Post (typically 1–2 business days to {suburb} {postcode}), with free Express delivery over $80 AUD or local pickup at CPT MMA."
         })
 
@@ -1104,7 +1107,7 @@ def build_melbourne_pages_data():
         pages.append({
             "slug": slug,
             "kind": "niche",
-            "title": f"{heading} — ANCHIALO Lake Pomorie Dual Magnesium Australia",
+            "title": f"{heading} | Magnesium Gel & Oil Australia",
             "h1": heading,
             "kicker": f"MELBOURNE SPECIALTY GUIDE · {kicker.upper()}",
             "area": "Melbourne, Victoria, Australia",
@@ -1129,6 +1132,7 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
                 "@id": f"{canonical}#local",
                 "name": f"ANCHIALO Australia — {page['area']}",
                 "description": page["description"],
+                "keywords": "Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia",
                 "url": canonical,
                 "telephone": "+61423269586",
                 "areaServed": page["area"],
@@ -1179,6 +1183,7 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{html.escape(page['title'])}</title>
   <meta name="description" content="{html.escape(page['description'])}">
+  <meta name="keywords" content="Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, {html.escape(page['area'])}, Melbourne Australia">
   <link rel="canonical" href="{canonical}">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta property="og:type" content="website">
@@ -1305,6 +1310,8 @@ def build_home_jsonld():
                 "sku": prod["sku"],
                 "mpn": prod["sku"],
                 "gtin13": prod["gtin13"],
+                "category": "Health & Beauty > Personal Care > Topical Magnesium Gel",
+                "keywords": "Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia",
                 "image": f"https://anchialo.com/{prod['image']}",
                 "description": prod["description"],
                 "brand": {"@type": "Brand", "name": "ANCHIALO"},
@@ -1348,8 +1355,14 @@ def build_home_jsonld():
                 "@id": "https://anchialo.com/#business",
                 "name": "ANCHIALO Australia",
                 "legalName": "ANCHIALO · Azimut 6000 Ltd & CPT MMA Australia",
-                "alternateName": ["Anchialo Dual Magnesium", "Anchialo Black Sea Balneology"],
-                "description": "Authentic Bulgarian Black Sea mineral cosmetics. 100% natural Dual Magnesium gels (253.14 g/L MgCl2 & 70.36 g/L MgSO4) and pure topical brine oil harvested from Lake Pomorie. Official Australian Store ($49 AUD) dispatched from Melbourne.",
+                "alternateName": [
+                    "Magnesium Gel Australia",
+                    "Magnesium Oil Australia",
+                    "Dual Magnesium Chloride & Magnesium Sulfate",
+                    "Topical Magnesium for Muscle Recovery & Joint Mobility"
+                ],
+                "description": "Certified topical Magnesium Gel and pure Magnesium Oil delivering 253.14 g/L Magnesium Chloride & 70.36 g/L Magnesium Sulfate. Formulated for rapid muscle recovery, joint mobility, and evening relaxation. Official Australian Store ($49 AUD) dispatched from Melbourne.",
+                "keywords": "Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia",
                 "url": "https://anchialo.com/",
                 "logo": "https://anchialo.com/assets/images/products/06_file_transp.png",
                 "image": "https://anchialo.com/assets/images/products/06_file_transp.png",
@@ -1388,7 +1401,13 @@ def build_home_jsonld():
                 "@type": "WebSite",
                 "@id": "https://anchialo.com/#website",
                 "url": "https://anchialo.com/",
-                "name": "ANCHIALO — Pure Black Sea Balneology & Certified Dual Magnesium",
+                "name": "Magnesium Gel & Magnesium Oil Australia | Muscle Recovery & Joint Mobility",
+                "alternateName": [
+                    "Magnesium Gel Australia",
+                    "Magnesium Oil Australia",
+                    "Dual Magnesium Gel Melbourne",
+                    "Topical Magnesium Chloride & Magnesium Sulfate"
+                ],
                 "inLanguage": "en-AU",
                 "publisher": {"@id": "https://anchialo.com/#business"}
             },
