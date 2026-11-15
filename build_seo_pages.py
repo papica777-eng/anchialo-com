@@ -708,6 +708,7 @@ def build_product_html(prod, depth_prefix="../"):
                     "url": canonical,
                     "priceCurrency": "AUD",
                     "price": prod["priceAUD"],
+                    "validFrom": "2025-01-01",
                     "priceValidUntil": "2027-12-31",
                     "availability": "https://schema.org/InStock",
                     "itemCondition": "https://schema.org/NewCondition",
@@ -1358,6 +1359,7 @@ def build_home_jsonld():
                     "url": canonical,
                     "priceCurrency": "AUD",
                     "price": prod["priceAUD"],
+                    "validFrom": "2025-01-01",
                     "priceValidUntil": "2027-12-31",
                     "availability": "https://schema.org/InStock",
                     "itemCondition": "https://schema.org/NewCondition",
@@ -1628,7 +1630,7 @@ def update_index_and_app(posts, melbourne_pages):
         + '\n        </div>'
     )
     content = re.sub(
-        r'<div class="reviews-grid" id="reviewsGrid">.*?        </div>',
+        r'<div class="reviews-grid" id="reviewsGrid">.*?(?=\s*\n\s*</div>\s*\n\s*</section>\s*\n\s*<!-- ==================== WELLNESS & BALNEOLOGY JOURNAL)',
         lambda _: ssr_reviews_block,
         content,
         count=1,
