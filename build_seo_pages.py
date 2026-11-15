@@ -321,7 +321,7 @@ PRODUCTS = [
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
-        "image": "assets/images/products/06_file_transp.png",
+        "image": "assets/images/products/06_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_arnica_top_fv17.png",
         "badge": "Bestseller · Muscle Recovery Ritual",
         "stripe": "https://buy.stripe.com/9B67sL4tmfBa9CD0eb5Ne0e",
@@ -346,7 +346,7 @@ PRODUCTS = [
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
-        "image": "assets/images/products/01_file_transp.png",
+        "image": "assets/images/products/01_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_lavender_top_fv17.png",
         "badge": "Evening Rest & Muscle Calm",
         "stripe": "https://buy.stripe.com/cNi14ncZS9cMeWX9OL5Ne0d",
@@ -370,7 +370,7 @@ PRODUCTS = [
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
-        "image": "assets/images/products/04_file_transp.png",
+        "image": "assets/images/products/04_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_rosemary_top_fv17.png",
         "badge": "Invigorating Muscle Care",
         "stripe": "https://buy.stripe.com/8x2dR9cZSbkUdST5yv5Ne0f",
@@ -394,7 +394,7 @@ PRODUCTS = [
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
-        "image": "assets/images/products/07_file_transp.png",
+        "image": "assets/images/products/07_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_juniper_top_fv17.png",
         "badge": "Post-Workout Leg Recovery",
         "stripe": "https://buy.stripe.com/14A3cv7Fy4Ww5mne515Ne0g",
@@ -418,7 +418,7 @@ PRODUCTS = [
         "category": "gel",
         "priceAUD": "49.00",
         "unitLabel": "/ 300g Net",
-        "image": "assets/images/products/03_file_transp.png",
+        "image": "assets/images/products/03_file.png",
         "lidImg": "assets/official_labels_rendered/anhialo_massage_gel_grape_top_fv17.png",
         "badge": "Skin Care & Joint Comfort",
         "stripe": "https://buy.stripe.com/cNidR97FycoY0239OL5Ne0h",
@@ -442,7 +442,7 @@ PRODUCTS = [
         "category": "oil",
         "priceAUD": "49.00",
         "unitLabel": "/ 300ml Net",
-        "image": "assets/images/products/08_file_transp.png",
+        "image": "assets/images/products/08_file.jpg",
         "lidImg": "assets/images/products/08_file_transp.png",
         "badge": "100% Pure Magnesium Brine",
         "stripe": "https://buy.stripe.com/aFaeVdgc4ex6cOP1if5Ne0i",
@@ -775,6 +775,10 @@ def build_product_html(prod, depth_prefix="../"):
   <meta property="og:description" content="{html.escape(prod['description'])}">
   <meta property="og:url" content="{canonical}">
   <meta property="og:image" content="{img_abs}">
+  <meta property="og:image:secure_url" content="{img_abs}">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image:alt" content="{html.escape(prod['title'])}">
   <meta property="og:site_name" content="ANCHIALO">
   <meta property="og:locale" content="en_AU">
   <meta property="product:price:amount" content="{prod['priceAUD']}">
@@ -783,9 +787,15 @@ def build_product_html(prod, depth_prefix="../"):
   <meta name="twitter:title" content="{html.escape(prod['title'])}">
   <meta name="twitter:description" content="{html.escape(prod['description'])}">
   <meta name="twitter:image" content="{img_abs}">
+  <meta name="thumbnail" content="{img_abs}">
+  <link rel="image_src" href="{img_abs}">
   <meta name="geo.region" content="AU-VIC">
   <meta name="geo.placename" content="Melbourne">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="{depth_prefix}assets/images/logo/icon-192.png">
   <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
   <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -807,8 +817,11 @@ def build_product_html(prod, depth_prefix="../"):
   <header class="site-header">
     <div class="container header-inner">
       <a href="{depth_prefix}index.html" class="brand-group">
-        <span class="brand-logo-text">ANCHIALO</span>
-        <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · POMORIE</span>
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · POMORIE</span>
+        </div>
       </a>
       <nav class="nav-links">
         <a href="{depth_prefix}index.html#collection">Full Collection</a>
@@ -999,13 +1012,22 @@ def build_post_html(post, all_posts, depth_prefix="../"):
   <meta property="og:description" content="{html.escape(desc)}">
   <meta property="og:url" content="{canonical}">
   <meta property="og:image" content="{img_url}">
+  <meta property="og:image:secure_url" content="{img_url}">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:site_name" content="ANCHIALO">
   <meta property="og:locale" content="en_AU">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{html.escape(title)}">
   <meta name="twitter:description" content="{html.escape(desc)}">
   <meta name="twitter:image" content="{img_url}">
+  <meta name="thumbnail" content="{img_url}">
+  <link rel="image_src" href="{img_url}">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
   <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
   <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1027,8 +1049,11 @@ def build_post_html(post, all_posts, depth_prefix="../"):
   <header class="site-header">
     <div class="container header-inner">
       <a href="{depth_prefix}index.html" class="brand-group">
-        <span class="brand-logo-text">ANCHIALO</span>
-        <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · POMORIE</span>
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · POMORIE</span>
+        </div>
       </a>
       <nav class="nav-links">
         <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
@@ -1190,15 +1215,25 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <meta property="og:title" content="{html.escape(page['title'])}">
   <meta property="og:description" content="{html.escape(page['description'])}">
   <meta property="og:url" content="{canonical}">
-  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
+  <meta property="og:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:image:secure_url" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:site_name" content="ANCHIALO">
   <meta property="og:locale" content="en_AU">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{html.escape(page['title'])}">
   <meta name="twitter:description" content="{html.escape(page['description'])}">
-  <meta name="twitter:image" content="https://anchialo.com/assets/images/products/06_file_transp.png">
+  <meta name="twitter:image" content="https://anchialo.com/assets/images/products/06_file.png">
+  <meta name="thumbnail" content="https://anchialo.com/assets/images/products/06_file.png">
+  <link rel="image_src" href="https://anchialo.com/assets/images/products/06_file.png">
   <meta name="geo.region" content="AU-VIC">
   <meta name="geo.placename" content="{html.escape(page['area'])}">
+  <link rel="icon" type="image/svg+xml" href="{depth_prefix}favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="{depth_prefix}assets/images/logo/icon-192.png">
   <link rel="icon" type="image/x-icon" href="{depth_prefix}favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="{depth_prefix}assets/images/logo/apple-touch-icon.png">
   <link rel="manifest" href="{depth_prefix}manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1220,8 +1255,11 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <header class="site-header">
     <div class="container header-inner">
       <a href="{depth_prefix}index.html" class="brand-group">
-        <span class="brand-logo-text">ANCHIALO</span>
-        <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+        <img src="{depth_prefix}assets/images/logo/anchialo-logo-emblem.svg" width="44" height="44" alt="ANCHIALO Logo" class="brand-logo-img">
+        <div class="brand-text-col">
+          <span class="brand-logo-text">ANCHIALO</span>
+          <span class="brand-tagline">BULGARIAN BLACK SEA BALNEOLOGY · MELBOURNE</span>
+        </div>
       </a>
       <nav class="nav-links">
         <a href="{depth_prefix}index.html#collection">Shop Collection ($49)</a>
@@ -1364,8 +1402,8 @@ def build_home_jsonld():
                 "description": "Certified topical Magnesium Gel and pure Magnesium Oil delivering 253.14 g/L Magnesium Chloride & 70.36 g/L Magnesium Sulfate. Formulated for rapid muscle recovery, joint mobility, and evening relaxation. Official Australian Store ($49 AUD) dispatched from Melbourne.",
                 "keywords": "Magnesium gel, Magnesium oil, Magnesium Chloride, Magnesium Sulfate, Recovery, Muscle Recovery, Joint mobility, topical magnesium Australia",
                 "url": "https://anchialo.com/",
-                "logo": "https://anchialo.com/assets/images/products/06_file_transp.png",
-                "image": "https://anchialo.com/assets/images/products/06_file_transp.png",
+                "logo": "https://anchialo.com/assets/images/logo/icon-512.png",
+                "image": "https://anchialo.com/assets/images/products/06_file.png",
                 "telephone": "+61423269586",
                 "priceRange": "$49 - $129 AUD",
                 "currenciesAccepted": "AUD, USD, EUR, BGN",
@@ -1410,6 +1448,24 @@ def build_home_jsonld():
                 ],
                 "inLanguage": "en-AU",
                 "publisher": {"@id": "https://anchialo.com/#business"}
+            },
+            {
+                "@type": "WebPage",
+                "@id": "https://anchialo.com/#webpage",
+                "url": "https://anchialo.com/",
+                "name": "Magnesium Gel & Magnesium Oil Australia | Muscle Recovery & Joint Mobility",
+                "description": "Certified topical Magnesium Gel and pure Magnesium Oil delivering 253.14 g/L Magnesium Chloride & 70.36 g/L Magnesium Sulfate. Formulated for rapid muscle recovery, joint mobility, and evening relaxation. Official Australian Store ($49 AUD) dispatched from Melbourne.",
+                "primaryImageOfPage": {
+                    "@type": "ImageObject",
+                    "@id": "https://anchialo.com/#primaryimage",
+                    "url": "https://anchialo.com/assets/images/products/06_file.png",
+                    "contentUrl": "https://anchialo.com/assets/images/products/06_file.png",
+                    "width": 1080,
+                    "height": 1080,
+                    "caption": "ANCHIALO Dual Magnesium Gel 300g Arnica Blend for Muscle Recovery & Joint Mobility"
+                },
+                "image": "https://anchialo.com/assets/images/products/06_file.png",
+                "thumbnailUrl": "https://anchialo.com/assets/images/products/06_file.png"
             },
             {
                 "@type": "ItemList",

@@ -1,4 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#fff"/>
-  <text x="256" y="426" fill="#b7860b" font-family="Georgia, 'Times New Roman', serif" font-size="410" font-weight="400" text-anchor="middle">A</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#244A3B" />
+      <stop offset="70%" stop-color="#142B22" />
+      <stop offset="100%" stop-color="#0B1813" />
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBF0D1" />
+      <stop offset="25%" stop-color="#D4AF37" />
+      <stop offset="50%" stop-color="#F6E7B0" />
+      <stop offset="75%" stop-color="#AA821C" />
+      <stop offset="100%" stop-color="#E8CA72" />
+    </linearGradient>
+    <linearGradient id="waveGold" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#AA821C" />
+      <stop offset="50%" stop-color="#F9E8BA" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Base Circle -->
+  <circle cx="256" cy="256" r="250" fill="url(#bgGrad)" />
+  
+  <!-- Outer Decorative Ring -->
+  <circle cx="256" cy="256" r="240" fill="none" stroke="url(#goldGrad)" stroke-width="4" />
+  <circle cx="256" cy="256" r="232" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-dasharray="4,4" />
+  
+  <!-- Inner Ring -->
+  <circle cx="256" cy="256" r="185" fill="none" stroke="url(#goldGrad)" stroke-width="2.5" />
+
+  <!-- Circular Text Paths -->
+  <path id="textArcTop" d="M 85,256 A 171,171 0 0,1 427,256" fill="none" />
+  <path id="textArcBottom" d="M 427,256 A 171,171 0 0,1 85,256" fill="none" />
+
+  <!-- Perimeter Inscriptions -->
+  <text font-family="'Cinzel', 'Times New Roman', serif" font-size="18" font-weight="700" fill="url(#goldGrad)" letter-spacing="7.5">
+    <textPath href="#textArcTop" startOffset="50%" text-anchor="middle">
+      &#10022; ANCHIALO &#183; POMORIE &#10022;
+    </textPath>
+  </text>
+  <text font-family="'Cinzel', 'Times New Roman', serif" font-size="14.5" font-weight="600" fill="url(#goldGrad)" letter-spacing="6">
+    <textPath href="#textArcBottom" startOffset="50%" text-anchor="middle">
+      &#183; DUAL MAGNESIUM &#183;
+    </textPath>
+  </text>
+
+  <!-- Center Mineral Crest: 8-Point Salt Crystal Star -->
+  <g transform="translate(256, 126)">
+    <path d="M 0,-18 L 4.5,-4.5 L 18,0 L 4.5,4.5 L 0,18 L -4.5,4.5 L -18,0 L -4.5,-4.5 Z" fill="url(#goldGrad)" filter="url(#subtleGlow)" />
+    <circle cx="0" cy="0" r="2.5" fill="#FFF" />
+  </g>
+
+  <!-- Central Monogram A with Classical Serif and Sea Mineral Wave -->
+  <!-- Left Leg of A -->
+  <polygon points="196,335 244,160 258,160 216,335 235,335 235,342 180,342 180,335" fill="url(#goldGrad)" />
+  <!-- Right Leg of A -->
+  <polygon points="254,160 268,160 316,335 332,335 332,342 275,342 275,335 292,335 278,280 234,280 228,304" fill="url(#goldGrad)" />
+  <!-- Top Serif & Apex -->
+  <polygon points="238,160 274,160 256,146" fill="url(#goldGrad)" />
+
+  <!-- Sea Salt Mineral Wave through the Crossbar -->
+  <path d="M 175,278 C 205,260 230,292 256,276 C 282,260 307,290 337,274 C 337,282 307,298 256,284 C 230,300 205,268 175,286 Z" fill="url(#waveGold)" />
+  <path d="M 185,284 C 210,270 232,298 256,284 C 280,270 302,296 327,282" fill="none" stroke="#FFF" stroke-width="1.8" opacity="0.9" />
+
+  <!-- Foundation Mineral Pedestal -->
+  <rect x="220" y="352" width="72" height="3" fill="url(#goldGrad)" rx="1.5" />
+  <circle cx="256" cy="364" r="3" fill="url(#goldGrad)" />
+  <circle cx="242" cy="364" r="2" fill="url(#goldGrad)" />
+  <circle cx="270" cy="364" r="2" fill="url(#goldGrad)" />
 </svg>
