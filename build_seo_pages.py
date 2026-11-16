@@ -810,7 +810,7 @@ def build_product_html(prod, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -919,6 +919,7 @@ def build_product_html(prod, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne (Sotir Kichukov)</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Back to Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -1045,7 +1046,7 @@ def build_post_html(post, all_posts, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1121,6 +1122,7 @@ def build_post_html(post, all_posts, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -1215,7 +1217,7 @@ def build_product_catalog_hub_html(products, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1267,6 +1269,7 @@ def build_product_catalog_hub_html(products, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -1354,7 +1357,7 @@ def build_journal_hub_html(posts, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1406,6 +1409,7 @@ def build_journal_hub_html(posts, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -1503,7 +1507,7 @@ def build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1573,6 +1577,7 @@ def build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -1706,7 +1711,7 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1795,6 +1800,7 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -1889,7 +1895,7 @@ def build_product_catalog_hub_html(products, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1941,6 +1947,7 @@ def build_product_catalog_hub_html(products, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -2028,7 +2035,7 @@ def build_journal_hub_html(posts, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -2080,6 +2087,7 @@ def build_journal_hub_html(posts, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """
@@ -2177,7 +2185,7 @@ def build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../"):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{depth_prefix}styles.css?v=4">
+  <link rel="stylesheet" href="{depth_prefix}styles.css?v=5">
   <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -2247,6 +2255,7 @@ def build_melbourne_directory_hub_html(melbourne_pages, depth_prefix="../"):
       <p>© 2025–2027 ANCHIALO · Azimut 6000 Ltd &amp; <a href="https://cptmma.com/" style="color:inherit; text-decoration:underline;">CPT MMA Melbourne</a> · <a href="{depth_prefix}index.html" style="color:inherit; text-decoration:underline;">Main Store</a></p>
     </div>
   </footer>
+  <script src="{depth_prefix}app.js?v=3" defer></script>
 </body>
 </html>
 """

@@ -10,7 +10,13 @@ from typing import Any
 import httpx
 
 from db import get_conn, init_db
-from notifications import is_unsubscribed, normalize_email, send_resend_email, send_telegram_alert
+from notifications import (
+    check_inbox_replies,
+    is_unsubscribed,
+    normalize_email,
+    send_resend_email,
+    send_telegram_alert,
+)
 
 logger = logging.getLogger("anchialo.outreach")
 
@@ -223,3 +229,20 @@ async def notify_warm_leads_digest(db_path: str | None = None) -> list[dict[str,
             lines.append(f"{i}. {ld['name']} ({ld['suburb']}) — {ld['address']} | {ld['phone'] or ld['email']}")
         await send_telegram_alert("\n".join(lines))
     return leads
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser(description="Anchialo B2B Outreach & Inbox Checker")
+    parser.add_argument("--check-inbox", action="store_true", help="Check Sotir's inbox via IMAP for replies")
+    parser.add_argument("--limit", type=int, default=15, help="Number of recent emails to check")
+    args = parser.parse_args()
+
+    if args.check_inbox:
+        replies = check_inbox_replies(limit=args.limit)
+        print(f"CHECK_INBOX_RESULT: {json.dumps(replies, ensure_ascii=False, indent=2)}")
+    else:
+        res = asyncio.run(run_daily_b2b_outreach())
+        print(f"OUTREACH_RESULT: {res}")

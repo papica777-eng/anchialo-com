@@ -297,3 +297,103 @@ def render_lifecycle_template(stage: str, payload: dict) -> tuple[str, str, str]
     )
     return subject, body, txt
 
+
+def check_inbox_replies(
+    *,
+    imap_host: str = "imap.gmail.com",
+    user: str | None = None,
+    password: str | None = None,
+    limit: int = 25,
+) -> list[dict[str, Any]]:
+    """Connect via IMAP4_SSL to inspect recent incoming replies in Sotir's inbox."""
+    import email
+    from email.header import decode_header
+    import imaplib
+
+    u = user or os.environ.get("SMTP_USER") or ""
+    p = password or os.environ.get("SMTP_PASS") or ""
+    if not u or not p:
+        env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+        if os.path.exists(env_file):
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith("SMTP_USER=") and not u:
+                        u = line.split("=", 1)[1].strip()
+                    elif line.startswith("SMTP_PASS=") and not p:
+                        p = line.split("=", 1)[1].strip()
+
+    if not u or not p:
+        logger.warning("IMAP check aborted: SMTP_USER or SMTP_PASS not configured.")
+        return []
+
+    results = []
+    try:
+        mail = imaplib.IMAP4_SSL(imap_host, 993)
+        mail.login(u, p)
+        mail.select("INBOX", readonly=True)
+
+        status, data = mail.search(None, "ALL")
+        if status != "OK" or not data or not data[0]:
+            mail.logout()
+            return []
+
+        msg_ids = data[0].split()
+        target_ids = msg_ids[-limit:]
+        target_ids.reverse()
+
+        for mid in target_ids:
+            res, mdata = mail.fetch(mid, "(RFC822)")
+            if res != "OK" or not mdata or not mdata[0]:
+                continue
+            raw_email = mdata[0][1]
+            if not isinstance(raw_email, bytes):
+                continue
+            msg = email.message_from_bytes(raw_email)
+
+            def _decode(hdr):
+                if not hdr:
+                    return ""
+                parts = decode_header(hdr)
+                decoded = []
+                for b, enc in parts:
+                    if isinstance(b, bytes):
+                        decoded.append(b.decode(enc or "utf-8", errors="replace"))
+                    else:
+                        decoded.append(str(b))
+                return "".join(decoded)
+
+            subj = _decode(msg.get("Subject", ""))
+            from_hdr = _decode(msg.get("From", ""))
+            date_hdr = msg.get("Date", "")
+
+            body_preview = ""
+            if msg.is_multipart():
+                for part in msg.walk():
+                    ctype = part.get_content_type()
+                    cdispo = str(part.get("Content-Disposition"))
+                    if ctype == "text/plain" and "attachment" not in cdispo:
+                        payload = part.get_payload(decode=True)
+                        if payload:
+                            body_preview = payload.decode("utf-8", errors="replace")[:300].strip()
+                            break
+            else:
+                payload = msg.get_payload(decode=True)
+                if payload:
+                    body_preview = payload.decode("utf-8", errors="replace")[:300].strip()
+
+            results.append({
+                "id": mid.decode("utf-8", errors="ignore"),
+                "from": from_hdr,
+                "subject": subj,
+                "date": date_hdr,
+                "preview": body_preview[:200],
+            })
+
+        mail.logout()
+    except Exception as exc:
+        logger.error("IMAP error checking %s: %s", u, exc)
+        return [{"error": str(exc)}]
+
+    return results
+

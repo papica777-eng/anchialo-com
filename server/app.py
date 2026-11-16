@@ -329,6 +329,12 @@ class DemoToggleRequest(BaseModel):
     enabled: bool
 
 
+class AiConciergeRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=1000)
+    lang: str | None = None
+    current_path: str = "/"
+
+
 HEARTBEAT_STATE: dict[str, Any] = {
     "started_at": int(time.time()),
     "scheduler_ticks": 0,
@@ -714,6 +720,101 @@ def submit_ritual_quiz(req: QuizSubmitRequest) -> dict[str, Any]:
             {"promo_code": "QUIZ10", "recommended_id": req.recommended_id},
         )
     return {"status": "ok", "promo_code": "QUIZ10"}
+
+
+@app.post("/api/ai/concierge")
+async def ai_balneology_concierge(req: AiConciergeRequest) -> dict[str, Any]:
+    """Intelligent ANCHIALO AI Balneology Concierge & Store Navigator (EN/BG)."""
+    q_raw = req.message.strip()
+    q = q_raw.lower()
+
+    is_bg = bool(
+        (req.lang and req.lang.lower() == "bg")
+        or re.search(r"[а-яА-ЯёЁ]", q_raw)
+        or re.search(r"\b(kakvi|oferti|kak|izvlicha|lugata|pomaga|kolko|struva|dostavka|gel|olio|melburn)\b", q)
+    )
+    lang = "bg" if is_bg else "en"
+
+    topic = "general"
+    nav_target = "#collection"
+    recommended_skus = ["combo-gel-oil", "combo-starter", "gel-arnica"]
+
+    if any(k in q for k in ("оферт", "промо", "пакет", "отстъпк", "цена", "цени", "струва", "ofert", "promo", "offer", "deal", "bundle", "combo", "discount", "price", "cost", "1+1")):
+        topic = "offers"
+        nav_target = "#collection"
+        recommended_skus = ["combo-gel-oil", "combo-starter", "combo-best-value"]
+        reply = (
+            "Актуални оферти и пакети в ANCHIALO Australia:\n"
+            "1. Специална 1+1 Оферта (Gel + Oil Combo) — A$ 49.00 AUD: Купуваш 1 Магнезиев гел (300g) и получаваш 1 Чисто магнезиево олио/луга (300ml) БЕЗПЛАТНО.\n"
+            "2. Двоен пакет Ден и Нощ (Starter 2-Pack, 600g) — A$ 89.00 AUD: Спестяваш A$9 + БЕЗПЛАТНА експресна доставка с Australia Post (Арника за след тренировка + Лавандула за вечерна релаксация).\n"
+            "3. Троен пакет (Best Value 3-Pack, 900g) — A$ 129.00 AUD: Спестяваш A$18 + БЕЗПЛАТНА експресна доставка.\n"
+            "4. Промо код FOUNDING10 / QUIZ10: Дава -10% отстъпка върху поръчката ти!"
+            if is_bg
+            else (
+                "Current Special Offers & Value Bundles on ANCHIALO Australia:\n"
+                "1. 1+1 FREE Gel + Pure Oil Combo — A$ 49.00 AUD: Buy 1 Dual Magnesium Gel (300g) and receive 1 Pure Magnesium Oil Brine (300ml) FREE.\n"
+                "2. Day & Night 2-Pack (600g) — A$ 89.00 AUD: Save A$9 + unlock FREE Australia-wide Express Shipping (pair Arnica for daytime muscle recovery with Lavender for evening wind-down).\n"
+                "3. Combat Team & Family 3-Pack (900g) — A$ 129.00 AUD: Save A$18 + FREE Express Shipping.\n"
+                "4. Welcome Privilege Code FOUNDING10: Unlocks an instant 10% OFF in your shopping bag!"
+            )
+        )
+    elif any(k in q for k in ("извлича", "добив", "луга", "помори", "езеро", "кристализ", "произход", "izvlicha", "luga", "pomorie", "extract", "harvest", "saltern", "brine", "origin", "black sea")):
+        topic = "extraction"
+        nav_target = "#heritage"
+        recommended_skus = ["oil-pure", "gel-arnica", "combo-gel-oil"]
+        reply = (
+            "Как се извлича Поморийската черноморска луга (Ancient Anchialos):\n"
+            "• Естествена слънчева фракционна кристализация: В крайбрежните солници на Поморийското солено езеро морската вода се изпарява бавно под слънцето и морския бриз без термична или химична обработка.\n"
+            "• Утаяване на солта: Обикновената морска сол (NaCl) кристализира и пада на дъното първа.\n"
+            "• Добив на Матерна луга: Над солния пласт остава гъстата златисто-кехлибарена „матерна луга“ с изключителна минерализация: 253.14 g/L Магнезиев хлорид (MgCl₂) и 70.36 g/L Магнезиев сулфат (MgSO₄) — общо над 323.5 g/L двоен магнезий, плюс микроелементи от лиманната кал (БДС 8840:1971, ISO 22716 GMP)."
+            if is_bg
+            else (
+                "How Lake Pomorie Black Sea Lye is Naturally Harvested:\n"
+                "• Fractional Solar Crystallization: In the ancient coastal salterns of Lake Pomorie (Anchialos, Bulgaria), Black Sea lagoon water evaporates slowly under summer sunlight and sea breezes with zero boiling or synthetic processing.\n"
+                "• Salt Precipitation: Ordinary sodium chloride (sea salt) crystallizes and settles to the bottom first.\n"
+                "• Pure Supernatant Mother Lye: Rising above the salt bed is the dense, golden-amber mineral brine ('Mother Lye') reaching 253.14 g/L Magnesium Chloride (MgCl₂) and 70.36 g/L Magnesium Sulfate (MgSO₄) — over 323.5 g/L total Dual Magnesium plus trace marine electrolytes (ISO 22716 GMP & BDS 8840:1971 certified)."
+            )
+        )
+    elif any(k in q for k in ("помага", "ползи", "действ", "мускул", "став", "крак", "сън", "трениров", "pomaga", "muskul", "stavi", "help", "benefit", "recover", "muscle", "joint", "sleep", "leg", "blend", "which")):
+        topic = "benefits"
+        nav_target = "#blends"
+        recommended_skus = ["gel-arnica", "gel-lavender", "gel-rosemary", "gel-juniper", "gel-grape"]
+        reply = (
+            "За какво помага ANCHIALO Dual Magnesium и кой вид да избереш:\n"
+            "• Възстановяване след тренировка и спорт (Arnica Blend): Отпуска натоварените мускули и подкрепя комфорта и подвижността на ставите след фитнес, бойни спортове или физически труд.\n"
+            "• Вечерна релаксация и спокоен ритуал преди сън (Bulgarian Lavender): Отпуска врата, раменете и прасците вечер без стомашен дискомфорт.\n"
+            "• Загряващ и тонизиращ масаж (Garden Rosemary): Идеален преди тренировка или при сутрешна скованост.\n"
+            "• Тежки и уморени крака / След сауна (Alpine Juniper): Освежава прасците и стъпалата след дълъг ден на крак или бягане.\n"
+            "• Хидратация и мекота на кожата (Red Grape Seed): Полифенолна грижа за гладка и подхранена кожа."
+            if is_bg
+            else (
+                "How ANCHIALO Dual Magnesium Supports Your Body & Which Blend to Choose:\n"
+                "• Post-Training Muscle Recovery & Joint Mobility (Arnica Montana): Rapidly refreshes overworked muscles, knees, shoulders, and wrists after combat sports, gym sessions, or heavy physical work.\n"
+                "• Evening Wind-Down & Restful Nighttime Ritual (Bulgarian Lavender): Soothes neck, shoulder, and calf tension before bed without the digestive heaviness of oral tablets.\n"
+                "• Pre-Workout Warm-Up & Deep-Tissue Massage (Garden Rosemary): Invigorates stiff limbs before or after active sessions.\n"
+                "• Tired, Heavy Legs & Post-Sauna Refresh (Alpine Juniper): Cools weary calves and feet after standing shifts or endurance runs.\n"
+                "• Skin Conditioning & Antioxidant Care (Red Grape Seed): Leaves dry skin silky, hydrated, and nourished."
+            )
+        )
+    else:
+        reply = (
+            "Здравей! Аз съм AI навигаторът на ANCHIALO Australia. Мога веднага да ти покажа актуалните оферти (1+1 за A$49, 2-Pack с безплатна доставка), да ти разкажа как се добива черноморската луга от Поморийското езеро (253.14 g/L MgCl₂), за какво помага всеки от 5-те ботанически гела и да те отведа до всяка секция в сайта."
+            if is_bg
+            else (
+                "Welcome to ANCHIALO Australia! I am your AI Balneology Concierge & Store Navigator. Ask me about our live offers (1+1 Gel+Oil for A$49, Day & Night 2-Pack with Free Express Shipping), how Lake Pomorie Black Sea Lye is harvested (253.14 g/L MgCl₂ + 70.36 g/L MgSO₄), what each botanical blend helps with, or Melbourne dispatch & local pickup."
+            )
+        )
+
+    return {
+        "status": "ok",
+        "lang": lang,
+        "topic": topic,
+        "reply": reply,
+        "nav_target": nav_target,
+        "recommended_skus": recommended_skus,
+        "promo_code": "FOUNDING10",
+    }
+
 
 
 @app.post("/api/lifecycle/run")

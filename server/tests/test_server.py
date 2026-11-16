@@ -601,3 +601,35 @@ def test_ebay_catalog_tga_compliance_and_xml_builder(tmp_path, monkeypatch):
         rows = conn.execute("SELECT external_tx_id, total_cents FROM orders").fetchall()
         assert [(r["external_tx_id"], r["total_cents"]) for r in rows] == [("ebay_99-00001-00002", 8900)]
 
+
+def test_ai_balneology_concierge_en_and_bg(tmp_path, monkeypatch):
+    """Verify AI Balneology Concierge answers offers, lye extraction, and benefits in EN and BG with zero TGA violations."""
+    db_file = str(tmp_path / "ai.db")
+    init_db(db_file)
+    monkeypatch.setenv("ANCHIALO_DB_PATH", db_file)
+    client = TestClient(server_app.app)
+
+    res_offers = client.post("/api/ai/concierge", json={"message": "What offers and bundles do you have?"})
+    assert res_offers.status_code == 200
+    d_offers = res_offers.json()
+    assert d_offers["topic"] == "offers"
+    assert d_offers["lang"] == "en"
+    assert "49.00" in d_offers["reply"]
+    assert not server_app.TGA_FORBIDDEN_PATTERN.search(d_offers["reply"])
+
+    res_lye_bg = client.post("/api/ai/concierge", json={"message": "как се извлича лугата от Поморие?"})
+    assert res_lye_bg.status_code == 200
+    d_lye = res_lye_bg.json()
+    assert d_lye["topic"] == "extraction"
+    assert d_lye["lang"] == "bg"
+    assert "253.14 g/L" in d_lye["reply"]
+    assert d_lye["nav_target"] == "#heritage"
+
+    res_benefits = client.post("/api/ai/concierge", json={"message": "za kakvo pomaga"})
+    assert res_benefits.status_code == 200
+    d_ben = res_benefits.json()
+    assert d_ben["topic"] == "benefits"
+    assert d_ben["lang"] == "bg"
+    assert d_ben["nav_target"] == "#blends"
+
+

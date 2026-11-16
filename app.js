@@ -2226,11 +2226,575 @@
     startAutoPlay();
   }
 
+  // ==================== ANCHIALO AI BALNEOLOGY CONCIERGE & SITE NAVIGATOR ====================
+  function initAiBalneologyConcierge() {
+    if (document.getElementById('anchialoAiWidget')) return;
+
+    const isSubpage = /\/(product-page|melbourne|post)\//i.test(window.location.pathname || '');
+    const assetPrefix = isSubpage ? (window.location.pathname.replace(/\/+$/, '').split('/').length > 3 ? '../../' : '../') : '';
+    const resolveAsset = (relPath) => {
+      if (!relPath) return '';
+      if (/^https?:\/\//i.test(relPath) || relPath.startsWith('/')) return relPath;
+      return '/' + relPath.replace(/^\/+/, '');
+    };
+
+    let aiLang = (localStorage.getItem('anchialov2_ai_lang') || 'en').toLowerCase() === 'bg' ? 'bg' : 'en';
+
+    const widget = document.createElement('div');
+    widget.id = 'anchialoAiWidget';
+    widget.className = 'anchialo-ai-widget';
+    widget.innerHTML = `
+      <div class="anchialo-ai-panel" id="anchialoAiPanel" role="dialog" aria-label="ANCHIALO AI Balneology Concierge">
+        <div class="anchialo-ai-header">
+          <div class="anchialo-ai-brand">
+            <div class="anchialo-ai-avatar">✦</div>
+            <div class="anchialo-ai-title-wrap">
+              <h4 id="aiHeaderTitle">ANCHIALO AI Concierge</h4>
+              <div class="anchialo-ai-status">
+                <span class="anchialo-ai-status-dot"></span>
+                <span id="aiHeaderSubtitle">Balneology · Offers · Site Navigator</span>
+              </div>
+            </div>
+          </div>
+          <div class="anchialo-ai-header-actions">
+            <button type="button" class="anchialo-ai-lang-btn" id="aiLangToggleBtn" title="Switch Language (EN / БГ)">БГ / EN</button>
+            <button type="button" class="anchialo-ai-close-btn" id="aiClosePanelBtn" aria-label="Close AI Concierge">&times;</button>
+          </div>
+        </div>
+        <div class="anchialo-ai-quickbar" id="aiQuickChipsBar"></div>
+        <div class="anchialo-ai-messages" id="aiMessagesContainer"></div>
+        <form class="anchialo-ai-inputbar" id="aiChatForm" autocomplete="off">
+          <input type="text" class="anchialo-ai-input" id="aiChatInput" placeholder="Ask about offers, how lye is extracted, benefits..." />
+          <button type="submit" class="anchialo-ai-send" aria-label="Send">➤</button>
+        </form>
+      </div>
+      <button type="button" class="anchialo-ai-fab" id="anchialoAiFabBtn" aria-expanded="false">
+        <span class="anchialo-ai-fab-badge" id="aiFabBadge">1+1 &amp; 10% OFF</span>
+        <span class="anchialo-ai-fab-orb">✦</span>
+        <span class="anchialo-ai-fab-text">
+          <span class="anchialo-ai-fab-kicker" id="aiFabKicker">ANCHIALO AI GUIDE</span>
+          <span class="anchialo-ai-fab-label" id="aiFabLabel">Offers, Lye &amp; Benefits</span>
+        </span>
+      </button>
+    `;
+    document.body.appendChild(widget);
+
+    const panel = document.getElementById('anchialoAiPanel');
+    const fabBtn = document.getElementById('anchialoAiFabBtn');
+    const closeBtn = document.getElementById('aiClosePanelBtn');
+    const langBtn = document.getElementById('aiLangToggleBtn');
+    const chipsBar = document.getElementById('aiQuickChipsBar');
+    const msgContainer = document.getElementById('aiMessagesContainer');
+    const chatForm = document.getElementById('aiChatForm');
+    const chatInput = document.getElementById('aiChatInput');
+    const headerTitle = document.getElementById('aiHeaderTitle');
+    const headerSub = document.getElementById('aiHeaderSubtitle');
+    const fabKicker = document.getElementById('aiFabKicker');
+    const fabLabel = document.getElementById('aiFabLabel');
+
+    const CHIPS = {
+      en: [
+        { topic: 'offers', label: '🎁 Current Offers & 1+1' },
+        { topic: 'extraction', label: '🌊 How Lye is Extracted' },
+        { topic: 'benefits', label: '💪 What It Helps With' },
+        { topic: 'blends', label: '🌿 Compare 5 Gels + Oil' },
+        { topic: 'usage', label: '🧴 How to Apply' },
+        { topic: 'shipping', label: '🇦🇺 Melbourne & Shipping' }
+      ],
+      bg: [
+        { topic: 'offers', label: '🎁 Оферти и Пакети (1+1)' },
+        { topic: 'extraction', label: '🌊 Как се извлича лугата' },
+        { topic: 'benefits', label: '💪 За какво помага' },
+        { topic: 'blends', label: '🌿 Кой гел да избера?' },
+        { topic: 'usage', label: '🧴 Начин на употреба' },
+        { topic: 'shipping', label: '🇦🇺 Доставка и Мелбърн' }
+      ]
+    };
+
+    function updateUiLocale() {
+      if (aiLang === 'bg') {
+        if (headerTitle) headerTitle.textContent = 'ANCHIALO AI Навигатор';
+        if (headerSub) headerSub.textContent = 'Оферти · Добив на луга · Ползи';
+        if (chatInput) chatInput.placeholder = 'Питай за оферти, добив на луга, за какво помага...';
+        if (fabKicker) fabKicker.textContent = 'ANCHIALO AI АСИСТЕНТ';
+        if (fabLabel) fabLabel.textContent = 'Оферти, Луга и Навигация';
+        if (langBtn) langBtn.textContent = 'EN / БГ';
+      } else {
+        if (headerTitle) headerTitle.textContent = 'ANCHIALO AI Concierge';
+        if (headerSub) headerSub.textContent = 'Balneology · Live Offers · Navigator';
+        if (chatInput) chatInput.placeholder = 'Ask about offers, how lye is extracted, benefits...';
+        if (fabKicker) fabKicker.textContent = 'ANCHIALO AI GUIDE';
+        if (fabLabel) fabLabel.textContent = 'Offers, Lye & Benefits';
+        if (langBtn) langBtn.textContent = 'БГ / EN';
+      }
+
+      if (chipsBar) {
+        chipsBar.innerHTML = (CHIPS[aiLang] || CHIPS.en).map(c =>
+          `<button type="button" class="anchialo-ai-chip" data-ai-topic="${c.topic}">${c.label}</button>`
+        ).join('');
+        chipsBar.querySelectorAll('.anchialo-ai-chip').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const topic = btn.getAttribute('data-ai-topic');
+            appendUserMessage(btn.textContent);
+            respondWithTopic(topic, aiLang);
+          });
+        });
+      }
+    }
+
+    function navigateToSiteSection(selector, extraAction) {
+      if (extraAction && typeof extraAction === 'function') {
+        extraAction();
+      }
+      const target = document.querySelector(selector);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.classList.remove('ai-section-pulse');
+        void target.offsetWidth;
+        target.classList.add('ai-section-pulse');
+        if (window.innerWidth <= 640 && panel) {
+          panel.classList.remove('open');
+          fabBtn.setAttribute('aria-expanded', 'false');
+        }
+      } else {
+        window.location.href = `/index.html${selector}`;
+      }
+    }
+
+    function miniProductCardHtml(prodId, customBadge) {
+      const p = CATALOG_PRODUCTS.find(it => it.id === prodId) || CATALOG_PRODUCTS[0];
+      const priceText = formatPrice(p.priceAUD);
+      const addLabel = aiLang === 'bg' ? '+ Купи' : '+ Add to Bag';
+      return `
+        <div class="ai-prod-mini">
+          <div class="ai-prod-mini-left">
+            <img src="${resolveAsset(p.image)}" alt="${p.name}">
+            <div class="ai-prod-mini-meta">
+              <div class="ai-prod-mini-title">${p.name}</div>
+              <div class="ai-prod-mini-sub"><strong>${priceText}</strong> · ${customBadge || p.badge}</div>
+            </div>
+          </div>
+          <button type="button" class="ai-prod-mini-add" data-ai-add="${p.id}">${addLabel}</button>
+        </div>
+      `;
+    }
+
+    function bindMessageInteractiveButtons(containerEl) {
+      containerEl.querySelectorAll('[data-ai-add]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const pid = btn.getAttribute('data-ai-add');
+          if (document.getElementById('bagDrawer')) {
+            addToCart(pid);
+            const orig = btn.textContent;
+            btn.textContent = aiLang === 'bg' ? '✓ Добавено' : '✓ Added!';
+            setTimeout(() => { btn.textContent = orig; }, 1800);
+          } else {
+            const p = CATALOG_PRODUCTS.find(it => it.id === pid);
+            if (p) {
+              const existing = STATE.cart.find(it => it.id === p.id);
+              if (existing) existing.qty += 1;
+              else STATE.cart.push({ id: p.id, name: p.name, priceAUD: p.priceAUD, packagingText: p.packagingText, weightKg: p.weightKg, image: p.image, qty: 1 });
+              localStorage.setItem('anchialov2_cart', JSON.stringify(STATE.cart));
+            }
+            window.location.href = '/index.html#collection';
+          }
+        });
+      });
+
+      containerEl.querySelectorAll('[data-ai-nav]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sel = btn.getAttribute('data-ai-nav');
+          const cat = btn.getAttribute('data-ai-cat');
+          const blend = btn.getAttribute('data-ai-blend');
+          navigateToSiteSection(sel, () => {
+            if (cat) {
+              const pill = document.querySelector(`.btn-filter-pill[data-cat="${cat}"]`);
+              if (pill) pill.click();
+            }
+            if (blend && BLENDS[blend]) {
+              applyHeroBlend(blend);
+            }
+          });
+        });
+      });
+
+      containerEl.querySelectorAll('[data-ai-promo]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const code = btn.getAttribute('data-ai-promo') || 'FOUNDING10';
+          STATE.promoCode = code;
+          localStorage.setItem('anchialov2_promo_code', code);
+          initPartnerAttribution();
+          updateCartDrawer();
+          btn.textContent = aiLang === 'bg'
+            ? `✓ Код ${code} (-10%) е активиран в количката!`
+            : `✓ Code ${code} (10% OFF) Applied to Bag!`;
+          btn.classList.add('primary');
+        });
+      });
+
+      containerEl.querySelectorAll('[data-ai-cert]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const certModal = document.getElementById('certModalBackdrop');
+          if (certModal) {
+            certModal.classList.add('active');
+          } else {
+            window.location.href = '/index.html#purity';
+          }
+        });
+      });
+
+      containerEl.querySelectorAll('[data-ai-topic-trigger]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = btn.getAttribute('data-ai-topic-trigger');
+          appendUserMessage(btn.textContent);
+          respondWithTopic(t, aiLang);
+        });
+      });
+    }
+
+    function appendBotHtml(htmlContent) {
+      if (!msgContainer) return;
+      const div = document.createElement('div');
+      div.className = 'ai-msg ai-msg-bot';
+      div.innerHTML = htmlContent;
+      msgContainer.appendChild(div);
+      bindMessageInteractiveButtons(div);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    function appendUserMessage(text) {
+      if (!msgContainer) return;
+      const div = document.createElement('div');
+      div.className = 'ai-msg ai-msg-user';
+      div.textContent = text;
+      msgContainer.appendChild(div);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    function buildTopicHtml(topic, lang) {
+      const isBg = lang === 'bg';
+
+      if (topic === 'offers') {
+        if (isBg) {
+          return `
+            <h5>🎁 Актуални Оферти и Пакети в Сайта</h5>
+            <p>Ето най-изгодните предложения на <strong>ANCHIALO Australia</strong> в момента:</p>
+            <ul>
+              <li><strong>Специална 1+1 Оферта (${formatPrice(49)}):</strong> Купуваш 1 Магнезиев гел (300g) и получаваш <strong>1 Чисто магнезиево олио/луга (300ml) БЕЗПЛАТНО</strong>!</li>
+              <li><strong>Двоен пакет Ден и Нощ — 2-Pack (${formatPrice(89)}):</strong> Спестяваш A$9 + получаваш <strong>БЕЗПЛАТНА експресна доставка</strong> в цяла Австралия (Арника за след спорт + Лавандула за вечерна релаксация, общо 600g).</li>
+              <li><strong>Троен пакет — Combat Team 3-Pack (${formatPrice(129)}):</strong> Спестяваш A$18 + <strong>БЕЗПЛАТНА експресна доставка</strong> (3 × 300g бурканчета).</li>
+              <li><strong>Допълнителна 10% Отстъпка:</strong> Активирай промо код <code>FOUNDING10</code> с един клик по-долу!</li>
+            </ul>
+            <div class="ai-prod-cards">
+              ${miniProductCardHtml('combo-gel-oil', '1+1 БЕЗПЛАТНО Олио')}
+              ${miniProductCardHtml('combo-starter', 'Спести A$9 + Безплатна Доставка')}
+              ${miniProductCardHtml('combo-best-value', 'Спести A$18 + Безплатна Доставка')}
+            </div>
+            <div class="ai-nav-actions">
+              <button type="button" class="ai-nav-btn primary" data-ai-promo="FOUNDING10">🎟️ Активирай -10% Код (FOUNDING10)</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#collection" data-ai-cat="combo">🧭 Покажи Пакетните Оферти в Сайта</button>
+            </div>
+          `;
+        }
+        return `
+          <h5>🎁 Live Special Offers &amp; Value Bundles</h5>
+          <p>Here are the best active deals on <strong>ANCHIALO Australia</strong> right now:</p>
+          <ul>
+            <li><strong>1+1 FREE Gel + Pure Oil Deal (${formatPrice(49)}):</strong> Buy 1 Dual Magnesium Gel (300g) and receive <strong>1 Pure Magnesium Oil Brine (300ml) FREE</strong> (600g/ml total for the price of one!).</li>
+            <li><strong>Day &amp; Night 2-Pack (${formatPrice(89)}):</strong> Save A$9 + unlock <strong>FREE Australia-Wide Express Shipping</strong> (Arnica for daytime recovery + Lavender for evening wind-down).</li>
+            <li><strong>Combat Team &amp; Studio 3-Pack (${formatPrice(129)}):</strong> Save A$18 + <strong>FREE Express Shipping</strong> (900g total).</li>
+            <li><strong>10% Welcome Privilege:</strong> Click below to apply promo code <code>FOUNDING10</code> (-10% OFF) directly to your bag!</li>
+          </ul>
+          <div class="ai-prod-cards">
+            ${miniProductCardHtml('combo-gel-oil', '1+1 FREE Oil Included')}
+            ${miniProductCardHtml('combo-starter', 'Save A$9 + FREE Express Post')}
+            ${miniProductCardHtml('combo-best-value', 'Save A$18 + FREE Express Post')}
+          </div>
+          <div class="ai-nav-actions">
+            <button type="button" class="ai-nav-btn primary" data-ai-promo="FOUNDING10">🎟️ Apply 10% OFF Code (FOUNDING10)</button>
+            <button type="button" class="ai-nav-btn" data-ai-nav="#collection" data-ai-cat="combo">🧭 Navigate to Value Bundles</button>
+          </div>
+        `;
+      }
+
+      if (topic === 'extraction') {
+        if (isBg) {
+          return `
+            <h5>🌊 Как се извлича Поморийската черноморска луга</h5>
+            <p>Нашата луга произхожда от вековните солници на <strong>Поморийското солено езеро (древно Анхиало, България)</strong> — свръхсолена крайбрежна лагуна, богата на морски микроводорасли и лечебна лиманна кал:</p>
+            <ul>
+              <li><strong>1. Слънчева фракционна кристализация:</strong> Черноморската езерна вода се изпарява бавно и напълно естествено в плитки басейни под лятното слънце и морския вятър — <em>без варене и без химическа намеса</em>.</li>
+              <li><strong>2. Утаяване на готварската сол:</strong> С насищането на разтвора обикновената морска сол (NaCl) кристализира и пада на дъното първа.</li>
+              <li><strong>3. Добив на гъстата „Матерна луга“:</strong> Над солния пласт се отделя златисто-кехлибарената <strong>матерна луга</strong> с рекордна природна концентрация: <strong>253.14 g/L Магнезиев хлорид (MgCl₂)</strong> и <strong>70.36 g/L Магнезиев сулфат (MgSO₄)</strong> — общо <strong>323.5 g/L двоен магнезий</strong> плюс микроелементи (бром, калий, калций).</li>
+              <li><strong>4. Лабораторен стандарт (БДС 8840:1971 &amp; ISO 22716 GMP):</strong> Филтрира се студено от <em>Азимут 6000 ООД (Поморие)</em>, за да се запазят 100% от активните магнезиеви йони.</li>
+            </ul>
+            <div class="ai-nav-actions">
+              <button type="button" class="ai-nav-btn primary" data-ai-nav="#heritage">🏛️ Разгледай Секцията за Поморийското Езеро</button>
+              <button type="button" class="ai-nav-btn" data-ai-cert="true">📜 Отвори Лабораторния Сертификат (253 g/L)</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#purity">🔬 Виж Химичния Анализ (#purity)</button>
+            </div>
+          `;
+        }
+        return `
+          <h5>🌊 How Lake Pomorie Black Sea Lye is Harvested</h5>
+          <p>Every jar begins in the ancient coastal salterns of <strong>Lake Pomorie (ancient Anchialos, Bulgaria)</strong> — a protected hyper-saline Black Sea lagoon famous since Roman times:</p>
+          <ul>
+            <li><strong>1. Natural Solar Evaporation:</strong> Mineral-rich lagoon water evaporates slowly across shallow coastal pans under summer sunlight and Black Sea breezes — with <em>zero artificial boiling or chemical processing</em>.</li>
+            <li><strong>2. Fractional Salt Precipitation:</strong> As the brine concentrates, ordinary table salt (sodium chloride) crystallizes and settles to the bottom first.</li>
+            <li><strong>3. Harvesting the Supernatant "Mother Lye":</strong> Rising above the salt bed is the dense, golden-amber mineral liquid rich in marine microalgae and electrolytes, naturally reaching <strong>253.14 g/L Magnesium Chloride (MgCl₂)</strong> and <strong>70.36 g/L Magnesium Sulfate (MgSO₄)</strong> — over <strong>323.5 g/L total Dual Magnesium</strong>.</li>
+            <li><strong>4. Cold Botanical Formulation (ISO 22716 GMP):</strong> Stabilized with pure plant cellulose and botanical extracts in Pomorie so every bio-available ion remains intact.</li>
+          </ul>
+          <div class="ai-nav-actions">
+            <button type="button" class="ai-nav-btn primary" data-ai-nav="#heritage">🏛️ Tour Lake Pomorie Salterns (#heritage)</button>
+            <button type="button" class="ai-nav-btn" data-ai-cert="true">📜 View Lab Assay Certificate (253.14 g/L)</button>
+            <button type="button" class="ai-nav-btn" data-ai-nav="#purity">🔬 Inspect Mineral Purity (#purity)</button>
+          </div>
+        `;
+      }
+
+      if (topic === 'benefits' || topic === 'blends') {
+        if (isBg) {
+          return `
+            <h5>💪 За какво помага лугата и кой от 5-те гела да избереш</h5>
+            <p>Двойният магнезиев комплекс (<strong>253.14 g/L MgCl₂ + 70.36 g/L MgSO₄</strong>) действа директно през кожата при масаж, без да дразни стомаха като таблетките:</p>
+            <ul>
+              <li>🟠 <strong>Arnica Montana (Арника):</strong> №1 за <strong>възстановяване след тренировка, бойни спортове, фитнес, схванати мускули и подвижност на ставите</strong> (колене, рамене, китки, кръст).</li>
+              <li>🟣 <strong>Bulgarian Lavender (Българска Лавандула):</strong> За <strong>вечерно отпускане, нервно напрежение във врата/раменете и дълбок, спокоен ритуал преди сън</strong>.</li>
+              <li>🟢 <strong>Garden Rosemary (Розмарин):</strong> За <strong>предтренировъчно загряване, сутрешна скованост и енергизиращ дълбокотъканен масаж</strong>.</li>
+              <li>🔵 <strong>Alpine Juniper (Алпийска Хвойна):</strong> За <strong>тежки, уморени крака, прасци и стъпала</strong> след дълги смени на крак, бягане или след сауна.</li>
+              <li>🔴 <strong>Red Grape Seed (Червено Грозде):</strong> С полифеноли за <strong>дълбока хидратация, еластичност и кадифена мекота на кожата</strong>.</li>
+              <li>💧 <strong>Pure Magnesium Oil (Чиста течна луга):</strong> 100% натурална течна рапа за цялостен масаж или <strong>вечерни минерални вани за крака</strong>.</li>
+            </ul>
+            <div class="ai-prod-cards">
+              ${miniProductCardHtml('gel-arnica', '№1 за Мускули и Стави')}
+              ${miniProductCardHtml('gel-lavender', 'Вечерен Релакс и Сън')}
+              ${miniProductCardHtml('combo-starter', 'Арника + Лавандула (Безплатна Доставка)')}
+            </div>
+            <div class="ai-nav-actions">
+              <button type="button" class="ai-nav-btn primary" data-ai-nav="#blends" data-ai-blend="arnica">🟠 Виж Арника в 3D Студиото</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#blends" data-ai-blend="lavender">🟣 Виж Лавандула</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#blends" data-ai-blend="rosemary">🟢 Виж Розмарин</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#blends" data-ai-blend="juniper">🔵 Виж Хвойна</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#ritual-quiz">⚡ Направи 30-сек Тест (#ritual-quiz)</button>
+            </div>
+          `;
+        }
+        return `
+          <h5>💪 What ANCHIALO Helps With &amp; Which Blend Fits You</h5>
+          <p>Our transdermal Dual Magnesium matrix (<strong>253.14 g/L MgCl₂ + 70.36 g/L MgSO₄</strong>) absorbs directly where you massage it — bypassing digestive stress:</p>
+          <ul>
+            <li>🟠 <strong>Arnica Montana Blend (${formatPrice(49)}):</strong> #1 Bestseller for <strong>post-workout muscle recovery, joint mobility (knees, shoulders, wrists, lower back), MMA/BJJ, and heavy training</strong>.</li>
+            <li>🟣 <strong>Bulgarian Lavender Blend (${formatPrice(49)}):</strong> Formulated for <strong>evening muscle relaxation, easing neck/shoulder tension, and your bedtime wind-down ritual</strong>.</li>
+            <li>🟢 <strong>Garden Rosemary Blend (${formatPrice(49)}):</strong> Ideal for <strong>pre-training warm-ups, morning stiffness, and invigorating deep-tissue massage</strong>.</li>
+            <li>🔵 <strong>Alpine Juniper Blend (${formatPrice(49)}):</strong> Cools and refreshes <strong>heavy, tired legs, calves, and feet</strong> after standing shifts, runs, or sauna sessions.</li>
+            <li>🔴 <strong>Red Grape Seed Blend (${formatPrice(49)}):</strong> Antioxidant polyphenol care for <strong>daily skin hydration, softness, and full-body spa conditioning</strong>.</li>
+            <li>💧 <strong>Pure Magnesium Oil Brine (${formatPrice(49)}):</strong> 100% pure unscented liquid lye for <strong>remedial massage glide or warm mineral foot soaks</strong>.</li>
+          </ul>
+          <div class="ai-prod-cards">
+            ${miniProductCardHtml('gel-arnica', '#1 Post-Training & Joint Ritual')}
+            ${miniProductCardHtml('gel-lavender', 'Calming Evening & Bedtime Care')}
+            ${miniProductCardHtml('combo-starter', 'Day & Night 2-Pack + Free Express')}
+          </div>
+          <div class="ai-nav-actions">
+            <button type="button" class="ai-nav-btn primary" data-ai-nav="#blends" data-ai-blend="arnica">🟠 Preview Arnica in 3D Studio</button>
+            <button type="button" class="ai-nav-btn" data-ai-nav="#blends" data-ai-blend="lavender">🟣 Preview Lavender</button>
+            <button type="button" class="ai-nav-btn" data-ai-nav="#blends" data-ai-blend="juniper">🔵 Preview Juniper</button>
+            <button type="button" class="ai-nav-btn" data-ai-nav="#ritual-quiz">⚡ Take 30-Sec Ritual Quiz</button>
+          </div>
+        `;
+      }
+
+      if (topic === 'usage') {
+        if (isBg) {
+          return `
+            <h5>🧴 Как се нанася гелът и топлият компрес</h5>
+            <ul>
+              <li><strong>Ежедневен масаж:</strong> Нанеси количество колкото орех върху чиста и суха кожа (прасци, колене, рамене, кръст или предмишници) и масажирай 1–2 минути.</li>
+              <li><strong>Време на действие:</strong> Остави да попие за <strong>30–45 минути</strong> или го остави <strong>през цялата нощ</strong> за дълбоко отпускане. Ако се образуват фини солни кристали след изсъхване, просто изплакни с вода или избърши с влажна кърпа.</li>
+              <li><strong>Балнеологичен топъл компрес:</strong> След намазване покрий зоната с топла кърпа за 20 минути — топлината отваря порите и ускорява проникването на магнезиевите йони.</li>
+              <li><strong>Леко боцкане/затопляне:</strong> Заради високата концентрация на естествени соли (323.5 g/L) при първите намазвания е напълно нормално да усетиш приятно затопляне или леко пощипване.</li>
+            </ul>
+            <div class="ai-nav-actions">
+              <button type="button" class="ai-nav-btn primary" data-ai-nav="#heritage">🔥 Виж Протокола с Топла Кърпа (#heritage)</button>
+              <button type="button" class="ai-nav-btn" data-ai-nav="#faq">❓ Често Задавани Въпроси (#faq)</button>
+            </div>
+          `;
+        }
+        return `
+          <h5>🧴 How to Apply &amp; Warm Towel Balneology Protocol</h5>
+          <ul>
+            <li><strong>Direct Topical Massage:</strong> Massage a walnut-sized amount onto clean, dry skin over calves, knees, shoulders, forearms, or lower back for 1–2 minutes.</li>
+            <li><strong>Absorption Time:</strong> Leave on for <strong>30 minutes to several hours</strong>, or <strong>leave overnight</strong> for deeper relaxation. If light mineral salt crystals appear on the skin, simply wipe with a damp cloth or rinse with cool water.</li>
+            <li><strong>Warm Towel Compress Ritual:</strong> Cover the massaged area with a warm towel for 15–20 minutes after showering to amplify transdermal mineral comfort.</li>
+            <li><strong>Why does it tingle slightly?</strong> With over 323.5 g/L pure Lake Pomorie mineral salts, a gentle warming or tingling sensation during the first few uses is completely natural.</li>
+          </ul>
+          <div class="ai-nav-actions">
+            <button type="button" class="ai-nav-btn primary" data-ai-nav="#heritage">🔥 View Warm Wrap Protocol (#heritage)</button>
+            <button type="button" class="ai-nav-btn" data-ai-nav="#faq">❓ Read Application FAQs (#faq)</button>
+          </div>
+        `;
+      }
+
+      if (topic === 'shipping') {
+        if (isBg) {
+          return `
+            <h5>🇦🇺 Наличност в Мелбърн и Доставка с Australia Post</h5>
+            <ul>
+              <li><strong>Локален склад в Мелбърн:</strong> Цялата наличност се намира в Мелбърн при официалния дистрибутор <strong>Сотир Кичуков (CPT MMA, 2/24 Laser Dr, Rowville VIC 3178)</strong>.</li>
+              <li><strong>Експресна доставка:</strong> Изпращане до 24 часа с <strong>Australia Post</strong> и номер за проследяване (1–2 работни дни за Мелбърн/VIC; 2–3 дни за Сидни, Бризбейн, Пърт, Аделаида).</li>
+              <li><strong>БЕЗПЛАТНА Доставка:</strong> За всички поръчки над <strong>A$ 80.00 AUD</strong> (включително 2-Pack и 3-Pack пакетите). Под A$80 доставката е фиксирана A$15.</li>
+              <li><strong>Лично предаване / WhatsApp:</strong> Можеш да вземеш поръчката си на място от CPT MMA Мелбърн или да пишеш директно на Сотир на <strong>+61 423 269 586</strong>.</li>
+            </ul>
+            <div class="ai-nav-actions">
+              <button type="button" class="ai-nav-btn primary" data-ai-nav="#collection">📦 Поръчай с Доставка от Мелбърн</button>
+              <a class="ai-nav-btn" href="https://wa.me/61423269586" target="_blank" rel="noopener">💬 Пиши на Сотир в WhatsApp</a>
+            </div>
+          `;
+        }
+        return `
+          <h5>🇦🇺 Melbourne Local Dispatch &amp; Australia Post Delivery</h5>
+          <ul>
+            <li><strong>100% Melbourne Stock:</strong> All formulations are held locally in Melbourne by official Australian distributor <strong>Sotir Kichukov (CPT MMA, 2/24 Laser Dr, Rowville VIC 3178)</strong>.</li>
+            <li><strong>Fast Tracked Dispatch:</strong> Orders ship within 24 hours via <strong>Australia Post</strong> (1–2 business days across Melbourne &amp; Victoria; 2–3 business days interstate to NSW, QLD, WA, SA, TAS, ACT).</li>
+            <li><strong>FREE Express Shipping:</strong> Complimentary on all orders over <strong>A$ 80.00 AUD</strong> (automatically unlocked on the 2-Pack &amp; 3-Pack!), or A$15 flat rate under A$80.</li>
+            <li><strong>Local Melbourne Pickup:</strong> Available by arrangement at CPT MMA or via direct WhatsApp with Sotir at <strong>+61 423 269 586</strong>.</li>
+          </ul>
+          <div class="ai-nav-actions">
+            <button type="button" class="ai-nav-btn primary" data-ai-nav="#collection">📦 Shop Melbourne Stock (#collection)</button>
+            <a class="ai-nav-btn" href="https://wa.me/61423269586" target="_blank" rel="noopener">💬 Message Sotir on WhatsApp</a>
+          </div>
+        `;
+      }
+
+      // Default Welcome / Full Site Overview
+      if (isBg) {
+        return `
+          <h5>✦ Добре дошли в ANCHIALO AI Навигатор</h5>
+          <p>Аз съм твоят интелигентен гид за <strong>Поморийската черноморска луга в Австралия</strong>. Избери какво те интересува или ми напиши въпрос:</p>
+          <ul>
+            <li>🎁 <strong>Актуални оферти:</strong> 1+1 Гел + Олио за <strong>${formatPrice(49)}</strong>, Двоен пакет с безплатна доставка (<strong>${formatPrice(89)}</strong>) и код за <strong>-10% отстъпка</strong>.</li>
+            <li>🌊 <strong>Добив на лугата:</strong> Как се извлича матерната луга от Поморийското езеро (<strong>253.14 g/L MgCl₂ + 70.36 g/L MgSO₄</strong>).</li>
+            <li>💪 <strong>За какво помага:</strong> Възстановяване на мускули, стави, уморени крака и спокоен вечерен ритуал.</li>
+          </ul>
+          <div class="ai-nav-actions">
+            <button type="button" class="ai-nav-btn primary" data-ai-topic-trigger="offers">🎁 Виж Офертите (1+1 &amp; -10%)</button>
+            <button type="button" class="ai-nav-btn" data-ai-topic-trigger="extraction">🌊 Как се извлича лугата</button>
+            <button type="button" class="ai-nav-btn" data-ai-topic-trigger="benefits">💪 За какво помага</button>
+          </div>
+        `;
+      }
+      return `
+        <h5>✦ Welcome to ANCHIALO AI Concierge</h5>
+        <p>I am your interactive guide to <strong>Lake Pomorie Black Sea Balneology in Australia</strong>. Click any topic below or type your question:</p>
+        <ul>
+          <li>🎁 <strong>Live Store Offers:</strong> 1+1 FREE Gel + Oil Combo (<strong>${formatPrice(49)}</strong>), Day &amp; Night 2-Pack with Free Express Post (<strong>${formatPrice(89)}</strong>), plus an instant <strong>10% OFF privilege code</strong>.</li>
+          <li>🌊 <strong>How Lye is Extracted:</strong> Fractional solar crystallization in the ancient salterns of Lake Pomorie (<strong>253.14 g/L MgCl₂ + 70.36 g/L MgSO₄</strong>).</li>
+          <li>💪 <strong>What It Helps With:</strong> Post-training muscle recovery, joint mobility, heavy legs, and evening relaxation.</li>
+        </ul>
+        <div class="ai-nav-actions">
+          <button type="button" class="ai-nav-btn primary" data-ai-topic-trigger="offers">🎁 Show Live Offers (1+1 &amp; 10% Off)</button>
+          <button type="button" class="ai-nav-btn" data-ai-topic-trigger="extraction">🌊 How Lye is Extracted</button>
+          <button type="button" class="ai-nav-btn" data-ai-topic-trigger="benefits">💪 What It Helps With</button>
+        </div>
+      `;
+    }
+
+    function detectIntentAndLang(rawQuery) {
+      const q = (rawQuery || '').toLowerCase().trim();
+      const hasCyrillic = /[а-яА-ЯёЁ]/.test(rawQuery);
+      const hasBgLatin = /\b(kakvi|oferti|ofertite|kak|izvlicha|lugata|luga|za|kakvo|pomaga|kolko|struva|dostavka|melburn|stavi|muskuli|otstapka|promociq|paket)\b/i.test(q);
+      const detectedLang = (hasCyrillic || hasBgLatin) ? 'bg' : aiLang;
+
+      if (/оферт|промо|пакет|отстъпк|цена|цени|струва|ofert|promo|paket|otstapk|kolko|struva|offer|deal|bundle|combo|discount|price|cost|1\+1|sale|free/i.test(q)) {
+        return { topic: 'offers', lang: detectedLang };
+      }
+      if (/извлича|добив|луга|помори|езеро|кристализ|произход|солниц|izvlicha|dobiv|luga|pomorie|saltern|extract|harvest|crystalliz|origin|black sea|mother lye|where.*from|how.*made/i.test(q)) {
+        return { topic: 'extraction', lang: detectedLang };
+      }
+      if (/ползва|нанася|употреб|маже|компрес|щипе|боцка|how to use|apply|application|tingl|warm towel|how much|overnight/i.test(q)) {
+        return { topic: 'usage', lang: detectedLang };
+      }
+      if (/доставк|мелбърн|сотир|австрали|адрес|dostavka|melburn|sotir|ship|deliver|melbourne|pickup|rowville|auspost|postage|track|whatsapp/i.test(q)) {
+        return { topic: 'shipping', lang: detectedLang };
+      }
+      if (/помага|ползи|действ|мускул|став|крак|сън|трениров|арника|лавандул|розмарин|хвойна|грозде|олио|pomaga|polzi|muskul|stavi|kraka|san|arnica|lavender|rosemary|juniper|grape|help|benefit|recover|muscle|joint|sleep|leg|sport|sauna|which|compare|blend|difference/i.test(q)) {
+        return { topic: 'benefits', lang: detectedLang };
+      }
+      return { topic: 'welcome', lang: detectedLang };
+    }
+
+    function respondWithTopic(topic, lang) {
+      if (lang && lang !== aiLang) {
+        aiLang = lang;
+        localStorage.setItem('anchialov2_ai_lang', aiLang);
+        updateUiLocale();
+      }
+      const html = buildTopicHtml(topic, aiLang);
+      appendBotHtml(html);
+    }
+
+    // Event bindings
+    if (fabBtn && panel) {
+      fabBtn.addEventListener('click', () => {
+        const isOpen = panel.classList.toggle('open');
+        fabBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (isOpen && msgContainer && msgContainer.children.length === 0) {
+          appendBotHtml(buildTopicHtml('welcome', aiLang));
+        }
+        if (isOpen && chatInput) {
+          setTimeout(() => chatInput.focus(), 180);
+        }
+      });
+    }
+
+    if (closeBtn && panel && fabBtn) {
+      closeBtn.addEventListener('click', () => {
+        panel.classList.remove('open');
+        fabBtn.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    if (langBtn) {
+      langBtn.addEventListener('click', () => {
+        aiLang = aiLang === 'bg' ? 'en' : 'bg';
+        localStorage.setItem('anchialov2_ai_lang', aiLang);
+        updateUiLocale();
+        appendBotHtml(buildTopicHtml('welcome', aiLang));
+      });
+    }
+
+    if (chatForm && chatInput) {
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+        chatInput.value = '';
+        appendUserMessage(text);
+        const { topic, lang } = detectIntentAndLang(text);
+        respondWithTopic(topic, lang);
+        postBackendEvent('/api/ai/concierge', {
+          message: text,
+          lang: lang,
+          current_path: window.location.pathname || '/'
+        });
+      });
+    }
+
+    updateUiLocale();
+    if (msgContainer && msgContainer.children.length === 0) {
+      appendBotHtml(buildTopicHtml('welcome', aiLang));
+    }
+  }
+
   // Hook into document load
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initFlyerCarousel);
+    document.addEventListener('DOMContentLoaded', () => {
+      initFlyerCarousel();
+      initAiBalneologyConcierge();
+    });
   } else {
     initFlyerCarousel();
+    initAiBalneologyConcierge();
   }
 
 })();
