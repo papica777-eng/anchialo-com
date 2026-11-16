@@ -1632,6 +1632,16 @@ def build_melbourne_html(page, all_melbourne, depth_prefix="../"):
                 "telephone": "+61423269586",
                 "areaServed": page["area"],
                 "priceRange": "$49 - $129 AUD",
+                "identifier": {
+                    "@type": "PropertyValue",
+                    "propertyID": "GoogleBusinessProfileID",
+                    "value": "11316057354402094737"
+                },
+                "hasMap": "https://www.google.com/maps?cid=11316057354402094737",
+                "sameAs": [
+                    "https://www.google.com/maps?cid=11316057354402094737",
+                    "https://cptmma.com/"
+                ],
                 "founder": {"@type": "Person", "name": "Sotir Kichukov", "url": "https://cptmma.com/"}
             },
             {
@@ -2358,7 +2368,14 @@ def build_home_jsonld():
                 },
                 "aggregateRating": build_aggregate_rating_schema(),
                 "review": build_reviews_schema(),
+                "identifier": {
+                    "@type": "PropertyValue",
+                    "propertyID": "GoogleBusinessProfileID",
+                    "value": "11316057354402094737"
+                },
+                "hasMap": "https://www.google.com/maps?cid=11316057354402094737",
                 "sameAs": [
+                    "https://www.google.com/maps?cid=11316057354402094737",
                     "https://cptmma.com/",
                     "https://cptmma.com/magnesium",
                     "https://www.facebook.com/ProFighterAndCoach",
